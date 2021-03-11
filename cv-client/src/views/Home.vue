@@ -9,7 +9,7 @@
         <input
           v-model="email"
           type="text"
-          placeholder="Enter email"
+          placeholder="demo@omegapoint.se"
           name="email"
           required
         />
@@ -18,13 +18,13 @@
         <input
           v-model="password"
           type="password"
-          placeholder="Enter password"
+          placeholder="*********"
           name="password"
           required
         />
 
         <div class="formRow">
-          <input type="submit" value="Sign In" />
+          <input id="loginButton" type="submit" value="Logga in" />
         </div>
       </form>
     </div>
@@ -51,21 +51,21 @@ h1 {
 .row {
   display: flex;
   flex-wrap: wrap;
+  height: calc(100vh)
 }
 
 .side {
-  flex: 70%;
-  padding: 20px;
-  color: rgb(0, 0, 0);
+  flex: 65%;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #006166;
 }
 
 /* Main column */
 .login {
-  flex: 30%;
-  padding: 60px;
+  flex: 35%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,11 +84,14 @@ form {
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
-  width: 100%;
+  width: 50%;
 }
 .formRow {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  align-items: center;
 }
 input {
   padding: 0.5em 1em;
@@ -106,12 +109,21 @@ input[type="reset"] {
 h2 {
   margin: 0;
 }
-hr {
-  width: 100%;
-  margin-bottom: 2em;
+
+#loginButton{
+  color: white;
+  background: #2185D0;
+  border: none;
+  text-decoration: none;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  border: 2px solid #2185D0;
 }
-a {
-  text-align: center;
-  margin-top: 0.5em;
+
+#loginButton:hover {
+  background-color: white; /* Green */
+  color: black;
+  border: 2px solid #2185D0;
 }
+
 </style>
