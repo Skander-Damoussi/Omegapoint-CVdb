@@ -55,7 +55,7 @@ export default {
   align-self: center;
   justify-content: left;
   width: 30vw;
-  border: 1px solid grey;
+  border: 1px solid rgb(173, 173, 173);
   padding: 5vw;
   margin-top: 5%;
 }
@@ -85,7 +85,7 @@ export default {
   width: 5vw;
   padding: 1.5%;
   color: white;
-  background-color: #2777b8;
+  background-color: #2185d0;
   border: none;
   margin-top: 10%;
 }
