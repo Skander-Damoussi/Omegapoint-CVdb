@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: "EditUser",
+  name: "EditUser"
 };
 </script>
 
@@ -56,7 +56,7 @@ export default {
   justify-content: left;
   width: 30vw;
   border: 1px solid grey;
-  padding: 5%;
+  padding: 5vw;
   margin-top: 5%;
 }
 
@@ -64,6 +64,7 @@ export default {
   height: 3vh;
   margin-bottom: 3%;
   width: 100%;
+  padding: 1%;
 }
 
 .section {
