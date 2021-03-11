@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="flex-item-right">
-      <div class="mainDiv">
+      <div>
         <RegisterUser />
       </div>
     </div>
@@ -69,10 +69,10 @@ img {
 }
 .flex {
   display: flex;
+  flex-wrap: wrap;
 }
 .flex-container {
   display: flex;
-  flex-wrap: wrap;
 }
 .flex-item-left {
   flex: 75%;

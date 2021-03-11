@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mainDiv">
     <h3>Registrera ny användare</h3>
     <div class="formDiv">
       <form>
@@ -10,13 +10,12 @@
         <label for="lname">E-post</label><br />
         <input type="text" id="email" name="email" /><br /><br />
         <label for="lname">Roll</label><br />
-        <input list="select" name="select" /><br /><br />
-        <datalist class="form-control" id="select">
-          <option value="Trans" />
-          <option value="Fund" />
-          <option value="Insta" />
-        </datalist>
-        <label for="lname">Lösenord</label><br />
+        <select id="animal-select">
+          <option value="Konsult" selected>Konsult</option>
+          <option value="Admin">Admin</option>
+          <option value="Konsultchef">Konsultchef</option>
+        </select>
+        <br /><br /><label for="lname">Lösenord</label><br />
         <input type="text" id="email" name="email" /><br /><br />
         <input type="submit" value="Registrera" class="button" />
       </form>
@@ -35,12 +34,7 @@ export default {
 </script>
 
 <style>
-.formbar {
-  position: relative;
-  border-radius: 4px;
-}
 .formDiv {
-  display: flex;
   margin-left: 2%;
 }
 form {
@@ -56,9 +50,22 @@ form {
   border: none;
 }
 input {
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  margin: 0 auto;
+  width: 60%;
+}
+select {
   flex: 1 0 auto;
   padding: 0.5em 1em;
   border-radius: 4px;
-  width: 80%;
+}
+.mainDiv {
+  border: solid 1px black;
+  height: 90vh;
+  margin: 0px 2%;
+}
+label {
+  text-align: left;
 }
 </style>
