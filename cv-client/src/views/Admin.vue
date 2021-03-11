@@ -54,8 +54,9 @@ export default {
 <style>
 .mainDiv {
   border: solid 1px black;
-  height: 90vh;
-  margin: 0px 2%;
+  min-height: 87vh;
+  margin: 25px 2%;
+  border-radius: 4px;
 }
 .imgDiv {
   margin-left: 2%;

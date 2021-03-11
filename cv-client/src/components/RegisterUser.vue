@@ -17,7 +17,9 @@
         </select>
         <br /><br /><label for="lname">Lösenord</label><br />
         <input type="text" id="email" name="email" /><br /><br />
-        <input type="submit" value="Registrera" class="button" />
+        <div class="buttonDiv">
+          <input type="submit" value="Registrera" class="button" />
+        </div>
       </form>
     </div>
     <div></div>
@@ -35,37 +37,48 @@ export default {
 
 <style>
 .formDiv {
-  margin-left: 2%;
+  margin: 0px 2%;
 }
 form {
   text-align: left;
   width: 100%;
 }
 .button {
-  background-color: rgb(51, 153, 255);
-  border-radius: 4px;
   color: white;
-  font-size: 16px;
-  padding: 10px;
+  background: #2185d0;
   border: none;
+  text-decoration: none;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  border: 2px solid #2185d0;
 }
 input {
   padding: 0.5em 1em;
   border-radius: 4px;
   margin: 0 auto;
-  width: 60%;
+  width: 100%;
+  border: 00.1px solid;
 }
 select {
   flex: 1 0 auto;
   padding: 0.5em 1em;
   border-radius: 4px;
+  width: 100%;
 }
 .mainDiv {
   border: solid 1px black;
-  height: 90vh;
+  height: 87vh;
   margin: 0px 2%;
 }
 label {
   text-align: left;
+}
+h3 {
+  margin: 30px 0px;
+}
+.buttonDiv {
+  display: flex;
+  align-content: flex-end;
+  text-align: end;
 }
 </style>
