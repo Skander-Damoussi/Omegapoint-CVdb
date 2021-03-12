@@ -39,7 +39,7 @@ export default {
           index: "1",
           fName: "Test1",
           lName: "Testsson1",
-        }
+        },
       ],
     };
   },
