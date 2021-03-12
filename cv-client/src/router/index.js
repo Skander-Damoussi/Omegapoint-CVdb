@@ -25,8 +25,9 @@ const routes = [
   {
     path: "/consultant",
     name: "Consultant",
-    component: Consultant,
+    component: Consultant
   },
+  {
     path: "/admin",
     name: "Admin",
     component: Admin
@@ -36,7 +37,6 @@ const routes = [
     name: "EditUser",
     component: EditUser
   }
-
 ];
 
 const router = new VueRouter({
