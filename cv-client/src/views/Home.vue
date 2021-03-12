@@ -34,7 +34,7 @@
 <script>
 export default {
   name: "Home",
-  components: {},
+  components: {}
 };
 </script>
 
@@ -51,7 +51,7 @@ h1 {
 .row {
   display: flex;
   flex-wrap: wrap;
-  height: calc(100vh)
+  height: calc(100vh);
 }
 
 .side {
@@ -110,20 +110,19 @@ h2 {
   margin: 0;
 }
 
-#loginButton{
+#loginButton {
   color: white;
-  background: #2185D0;
+  background: #2185d0;
   border: none;
   text-decoration: none;
   border-radius: 4px;
   transition-duration: 0.4s;
-  border: 2px solid #2185D0;
+  border: 2px solid #2185d0;
 }
 
 #loginButton:hover {
   background-color: white; /* Green */
   color: black;
-  border: 2px solid #2185D0;
+  border: 2px solid #2185d0;
 }
-
 </style>

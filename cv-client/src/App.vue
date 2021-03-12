@@ -24,11 +24,13 @@ body {
 
 #nav {
   padding: 30px;
+  background-color: #006166;
+  border-radius: 4px;
 }
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: #f4f5f7;
 }
 
 #nav a.router-link-exact-active {
