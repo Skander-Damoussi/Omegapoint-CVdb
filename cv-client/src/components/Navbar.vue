@@ -2,19 +2,18 @@
   <div v-if="loggedIn" id="nav">
     <div class="row">
       <div class="left">
-        <h2>Consultant</h2> <!-- This becomes a store binding @ role -->
+        <h2>Consultant</h2> <!-- This becomes a store binding @ user.role -->
       </div>
-
       <div class="right">
-        <div class="box"> <!-- This needs to be changed to hamburger menu, works for now -->
-          <router-link to="/about">About</router-link>
-          <router-link to="/consultant">Consultant</router-link>
-          <router-link to="/edituser">Edit User</router-link>
-          <router-link to="/admin">Admin</router-link>
-          <button v-on:click="signOut">Logout</button>
+        <div class="box"> 
+          <div class="row">
+             <h2>Hej! Sven</h2> <!-- This "Sven" becomes a store binding @ user.name -->
+             <button id="logout" v-on:click="signOut">Logout</button> <!-- Needs icon instead, works for now -->
+          </div>
         </div>
       </div>
     </div>
+          
   </div>
 </template>
 
@@ -38,8 +37,10 @@ export default {
 
 <style scoped>
 #nav {
-  padding: 30px;
+  padding: 15px;
+  padding-left: 60px;
   background-color: #006166;
+  color: white;
 }
 
 #nav a {
@@ -55,11 +56,11 @@ export default {
 .row {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .left {
   flex: 40%;
-  color: white;
   display: flex;
   justify-content: left;
   align-items: center;
@@ -74,5 +75,13 @@ export default {
 
 .box {
   margin-left: auto;
+}
+
+#logout {
+  margin-left: 35px;
+}
+
+h2 {
+  font-size: calc(14px + (18 - 14) * ((100vw - 300px) / (1600 - 300)));
 }
 </style>
