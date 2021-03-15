@@ -5,6 +5,7 @@ import ConsultantManager from "../components/ConsultantManager.vue";
 import Consultant from "../components/Consultant";
 import Admin from "../views/Admin";
 import EditUser from "../components/EditUser.vue";
+import ConsultantExperience from "../components/ConsultantExperience.vue";
 
 Vue.use(VueRouter);
 
@@ -32,6 +33,11 @@ const routes = [
     path: "/consultant",
     name: "Consultant",
     component: Consultant
+  },
+  {
+    path: "/consultantExperience",
+    name: "Consultant",
+    component: ConsultantExperience
   },
   {
     path: "/admin",
