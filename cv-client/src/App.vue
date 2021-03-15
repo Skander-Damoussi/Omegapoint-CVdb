@@ -6,7 +6,8 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/consultant">Consultant</router-link>|
       <router-link to="/edituser">Edit User</router-link>|
-      <router-link to="/admin">Admin</router-link>
+      <router-link to="/admin">Admin</router-link> |
+      <router-link to="/consultantexperience">ConsultantExp</router-link>
     </div>
   </div>
 </template>

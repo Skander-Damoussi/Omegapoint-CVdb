@@ -38,7 +38,7 @@ export default {
   methods: {
         async login() {
             await this.$store.dispatch('login')
-            this.$router.push('/consultant')
+            this.$router.push('/about')
         }
     }
 };
