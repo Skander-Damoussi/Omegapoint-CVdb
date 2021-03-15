@@ -27,6 +27,7 @@ const routes = [
     name: "Consultant",
     component: Consultant,
   },
+  {
     path: "/admin",
     name: "Admin",
     component: Admin
