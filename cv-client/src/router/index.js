@@ -6,7 +6,6 @@ import Admin from "../views/Admin";
 import EditUser from "../components/EditUser.vue";
 import ConsultantExperience from "../components/ConsultantExperience.vue";
 
-
 Vue.use(VueRouter);
 
 const routes = [

@@ -2,18 +2,20 @@
   <div v-if="loggedIn" id="nav">
     <div class="row">
       <div class="left">
-        <h2>Consultant</h2> <!-- This becomes a store binding @ user.role -->
+        <h2>Consultant</h2>
+        <!-- This becomes a store binding @ user.role -->
       </div>
       <div class="right">
-        <div class="box"> 
+        <div class="box">
           <div class="row">
-             <h2>Hej! Sven</h2> <!-- This "Sven" becomes a store binding @ user.name -->
-             <button id="logout" v-on:click="signOut">Logout</button> <!-- Needs icon instead, works for now -->
+            <h2>Hej! Sven</h2>
+            <!-- This "Sven" becomes a store binding @ user.name -->
+            <button id="logout" v-on:click="signOut">Logout</button>
+            <!-- Needs icon instead, works for now -->
           </div>
         </div>
       </div>
     </div>
-          
   </div>
 </template>
 
@@ -21,17 +23,20 @@
 export default {
   name: "Navbar",
   methods: {
-        async signOut() {
-            await this.$store.dispatch('logOut')
-            if (!this.$store.getters.getLoggedIn && this.$router.currentRoute.path !== '/')
-                this.$router.push('/')
-        }
-    },
+    async signOut() {
+      await this.$store.dispatch("logOut");
+      if (
+        !this.$store.getters.getLoggedIn &&
+        this.$router.currentRoute.path !== "/"
+      )
+        this.$router.push("/");
+    }
+  },
   computed: {
     loggedIn() {
       return this.$store.getters.getLoggedIn;
-    },
-  },
+    }
+  }
 };
 </script>
 

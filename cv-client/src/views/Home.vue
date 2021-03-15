@@ -36,11 +36,11 @@ export default {
   name: "Home",
   components: {},
   methods: {
-        async login() {
-            await this.$store.dispatch('login')
-            this.$router.push('/about')
-        }
+    async login() {
+      await this.$store.dispatch("login");
+      this.$router.push("/about");
     }
+  }
 };
 </script>
 
