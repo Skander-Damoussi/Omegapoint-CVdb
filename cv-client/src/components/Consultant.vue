@@ -203,7 +203,7 @@ div {
   flex-direction: column;
   border: 1px solid grey;
   border-radius: 10px;
-  right: -12vw;
+  right: -10vw;
   text-align: left;
   height: auto;
 }
