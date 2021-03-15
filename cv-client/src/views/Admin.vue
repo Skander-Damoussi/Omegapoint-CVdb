@@ -14,6 +14,7 @@
             <img
               src="../assets/plusicon.png"
               style="width: 175px; height: 175px;"
+              @click="createTemplate"
             />
           </div>
         </div>
@@ -47,6 +48,11 @@ export default {
   },
   components: {
     RegisterUser
+  },
+  methods: {
+    createTemplate() {
+      console.log("created template");
+    }
   }
 };
 </script>
@@ -67,6 +73,7 @@ export default {
 }
 img {
   max-width: 100%;
+  cursor: pointer;
 }
 .flex {
   display: flex;
