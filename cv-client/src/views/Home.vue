@@ -4,7 +4,7 @@
       <h1>Omegapoint.</h1>
     </div>
     <div class="login">
-      <form id="loginForm">
+      <form @submit.prevent="login" id="loginForm">
         <label for="email">Användarnamn</label>
         <input
           v-model="email"
@@ -34,7 +34,13 @@
 <script>
 export default {
   name: "Home",
-  components: {}
+  components: {},
+  methods: {
+        async login() {
+            await this.$store.dispatch('login')
+            this.$router.push('/consultant')
+        }
+    }
 };
 </script>
 
