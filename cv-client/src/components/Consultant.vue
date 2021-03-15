@@ -1,6 +1,22 @@
 <template>
   <div>
     <div id="main">
+      <div id="top">
+        <button title="Tryck för att redigera">Redigera</button>
+        <button
+          id="edit-button"
+          @click="toggleExport()"
+          title="Tryck för att exportera"
+        >
+          Exportera
+        </button>
+
+        <div id="export" v-if="exportMenu">
+          <p>Välj ett exporteringformat</p>
+          <a href>Exportera PDF</a>
+          <a href>Exportera WORD</a>
+        </div>
+      </div>
       <div id="wrapper">
         <div id="left">
           <h4>Presentation</h4>
@@ -122,6 +138,17 @@
 <script>
 export default {
   name: "Consultant",
+  props: {},
+
+  data() {
+    return { exportMenu: false };
+  },
+  methods: {
+    toggleExport() {
+      this.exportMenu = !this.exportMenu;
+      console.log("exportMenu=", this.exportMenu);
+    },
+  },
 };
 </script>
 
@@ -150,6 +177,53 @@ div {
   margin-left: 25%;
   margin-right: 25%;
   margin-bottom: 5%;
+}
+
+#top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+}
+
+#top > button {
+  width: 8vw;
+  margin: 2px;
+}
+
+/* #edit-button {
+} */
+
+#export {
+  position: absolute;
+  z-index: 1;
+  margin-left: 10vw;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid grey;
+  border-radius: 10px;
+  right: -12vw;
+  text-align: left;
+  height: auto;
+}
+
+#export > p {
+  font-size: 8px;
+  margin: 5px;
+}
+#export > a {
+  font-size: 10px;
+  margin: 5px;
+  text-decoration: none;
+  color: black;
+  padding: 2px;
+}
+#export > a:hover {
+  color: grey;
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 1px;
 }
 
 #wrapper {
@@ -239,7 +313,7 @@ footer {
   margin-bottom: 3%;
 }
 
-footer>div>p{
+footer > div > p {
   font-size: 8px;
 }
 
@@ -250,7 +324,7 @@ footer > div:nth-child(3) {
   margin-left: 10%;
 }
 
-#footer-right{
+#footer-right {
   width: 10%;
 }
 
