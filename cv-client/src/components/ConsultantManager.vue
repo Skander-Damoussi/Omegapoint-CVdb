@@ -7,7 +7,7 @@
         <md-table-cell md-label="Efternamn">{{ i.lName }}</md-table-cell>
       </md-table-row>
     </md-table> -->
-    <div class="table">
+    <div class="list-table">
       <table>
         <tr>
           <th>#</th>
@@ -21,12 +21,19 @@
         </tr>
       </table>
     </div>
+    <div class="reg-user">
+      <RegisterUser />
+    </div>
   </div>
 </template>
 
 <script>
+import RegisterUser from "./RegisterUser.vue";
 export default {
   name: "ConsultantManager",
+  components: {
+    RegisterUser,
+  },
   data() {
     return {
       test: [
@@ -47,16 +54,22 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .cons-manager {
   display: flex;
 }
 
-.table {
+.list-table {
   flex-grow: 0.5;
-  padding: 5%;
+  padding: 3%;
+  border: solid 1px black;
+  height: 87vh;
+  margin: 1.3% 5%;
+  border-radius: 1%;
+  width: 50vw;
 }
-table {
+
+.list-table > table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
@@ -68,5 +81,10 @@ th {
   text-align: left;
   padding-top: 2vh;
   padding-bottom: 1vh;
+}
+
+.reg-user {
+  width: 25vw;
+  margin: 0;
 }
 </style>
