@@ -4,13 +4,13 @@
       <p id="nomargin">Uppdrag</p>
       <button id="addButton">Lägg till nytt</button>
     </div>
-    <div class="wrapper" v-for="col in collection" :key=col.title>
+    <div class="wrapper" v-for="col in collection" :key="col.title">
       <div class="title" @click="col.show = !col.show">
-        <p>{{col.title}}</p>
+        <p>{{ col.title }}</p>
       </div>
       <div class="container" id="container" v-if="col.show">
         <p>
-          {{col.text}}
+          {{ col.text }}
         </p>
       </div>
     </div>
@@ -21,14 +21,29 @@
 export default {
   name: "EditUser",
   data: function() {
-  return {
-    collection: [
-      { show: false, title: "Uppdrag 1", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non" },
-      { show: false, title: "Uppdrag 2", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non" },
-      { show: false, title: "Uppdrag 3", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non" },
-    ],
+    return {
+      collection: [
+        {
+          show: false,
+          title: "Uppdrag 1",
+          text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non"
+        },
+        {
+          show: false,
+          title: "Uppdrag 2",
+          text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non"
+        },
+        {
+          show: false,
+          title: "Uppdrag 3",
+          text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non"
+        }
+      ]
+    };
   }
-  },
 };
 </script>
 
@@ -80,7 +95,7 @@ export default {
 .box {
   width: 400px;
   background-color: white;
-  margin: 50px; 
+  margin: 50px;
   /* ^ Will be removed after component is done */
 }
 </style>
