@@ -161,7 +161,7 @@ div {
 #left {
   background: white;
   width: 35%;
-  margin: 10px 10px 10px 10px;
+  margin: 20px 10px 10px 10px;
   font-size: 12px;
 }
 
@@ -173,7 +173,7 @@ div {
   display: flex;
   flex-direction: column;
   width: 20%;
-  margin: 10px 10px 10px 10px;
+  margin: 20px 10px 10px 10px;
 }
 
 #right > div > p {
@@ -208,7 +208,7 @@ div {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 20%;
+  margin-left: 21%;
   margin-top: 5%;
 }
 
