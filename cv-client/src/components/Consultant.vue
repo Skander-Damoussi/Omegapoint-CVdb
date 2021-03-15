@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1>Consultant</h1>
-
     <div id="main">
       <div id="wrapper">
         <div id="left">
@@ -95,9 +93,28 @@
 
       <div id="bottom">
         <h4>Urval av aktuella uppdrag</h4>
-        <p>SiteCore utvecklare- 24hr                  2020-2021</p>
+        <div id="bottom-wrapper">
+          <b>SiteCore utvecklare- 24hr</b>
 
+          <b>2020-2021</b>
+        </div>
       </div>
+
+      <footer>
+        <div id="footer-left">
+          <p>Omegapoint AB</p>
+          <p>www.omegapoint.se</p>
+        </div>
+
+        <div id="footer-middle">
+          <p>Adelgatan 6</p>
+          <p>SE-211 22 Malmö</p>
+        </div>
+
+        <div id="footer-right">
+          <img src="../assets/omegapoint.png" />
+        </div>
+      </footer>
     </div>
   </div>
 </template>
@@ -112,6 +129,9 @@ export default {
 * {
   /* all */
   /* font-size: 12px; */
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 div {
@@ -126,24 +146,27 @@ div {
   border: 1px;
   border-color: grey;
   border-style: solid;
-  margin-left: 80px;
-  margin-right: 80px;
-  margin-bottom: 100px;
+  margin-top: 5%;
+  margin-left: 25%;
+  margin-right: 25%;
+  margin-bottom: 5%;
 }
 
-#wrapper{
-    justify-content: center;
-    display:flex;
-    flex-direction: row;
+#wrapper {
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
 }
 
 #left {
   background: white;
   width: 35%;
-  border: 2px;
-  border-color: grey;
   margin: 10px 10px 10px 10px;
   font-size: 12px;
+}
+
+#left > p {
+  margin-top: 10px;
 }
 
 #right {
@@ -164,7 +187,7 @@ div {
 
 #right > div > h4 {
   font-size: 12px;
-  margin-bottom: 0;
+  margin-bottom: 0px;
 }
 
 #right-top {
@@ -181,16 +204,62 @@ div {
 }
 
 #bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 20%;
+  margin-top: 5%;
 }
 
-H4 {
+#bottom-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+#bottom > h4 {
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+#bottom-wrapper > b {
+  font-size: 12px;
+}
+
+#bottom-wrapper > b:nth-child(2) {
+  margin-left: 35%;
+}
+
+footer {
+  position: center;
+  display: flex;
+  margin-top: 10%;
+  margin-left: 18%;
+  margin-right: 5%;
+  margin-bottom: 3%;
+}
+
+footer>div>p{
+  font-size: 8px;
+}
+
+footer > div:nth-child(2) {
+  margin-left: 30%;
+}
+footer > div:nth-child(3) {
+  margin-left: 10%;
+}
+
+#footer-right{
+  width: 10%;
+}
+
+h4 {
   color: GREY;
+  font-size: 12px;
 }
 
 p {
+  font-size: 12px;
 }
 </style>
