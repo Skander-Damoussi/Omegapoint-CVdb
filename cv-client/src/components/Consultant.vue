@@ -194,11 +194,6 @@ div {
   position: relative;
 }
 
-/* #top > button {
-  width: 8vw;
-  margin: 2px;
-} */
-
 .btn {
   margin: 2px;
   /* width: 20px; */
@@ -208,9 +203,6 @@ div {
   cursor: pointer;
 }
 
-/* #edit-button {
-} */
-
 #export {
   position: absolute;
   z-index: 1;
@@ -218,8 +210,9 @@ div {
   display: flex;
   flex-direction: column;
   border: 1px solid grey;
-  border-radius: 10px;
-  right: -12vw;
+  border-radius: 5px;
+  right: -105px;
+  top: 30px;
   text-align: left;
   height: auto;
 }
@@ -236,9 +229,9 @@ div {
   padding: 2px;
 }
 #export > a:hover {
-  color: grey;
+  /* color: grey; */
   border: 1px solid grey;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 1px;
 }
 
