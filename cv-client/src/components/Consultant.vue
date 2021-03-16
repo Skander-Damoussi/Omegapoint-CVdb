@@ -2,15 +2,21 @@
   <div>
     <div id="main">
       <div id="top">
-        <button title="Tryck för att redigera">Redigera</button>
+        <p class="icon-click" v-on:click="editMethod()">
+          <i
+            class="btn fas fa-edit fa-2x"
+            v-on:click="editMethod()"
+            title="Tryck för att redigera"
+          ></i>
+        </p>
 
-        <button
-          id="edit-button"
-          @click="toggleExport()"
-          title="Tryck för att exportera"
-        >
-          Exportera
-        </button>
+        <p class="icon-click" v-on:click="toggleExport()">
+          <i
+            class="btn fas fa-file-export fa-2x"
+            @click="toggleExport()"
+            title="Tryck för att exportera"
+          ></i>
+        </p>
 
         <div id="export" v-if="exportMenu">
           <p>Välj ett exporteringformat</p>
@@ -188,9 +194,18 @@ div {
   position: relative;
 }
 
-#top > button {
+/* #top > button {
   width: 8vw;
   margin: 2px;
+} */
+
+.btn {
+  margin: 2px;
+  /* width: 20px; */
+}
+
+.icon-click {
+  cursor: pointer;
 }
 
 /* #edit-button {
