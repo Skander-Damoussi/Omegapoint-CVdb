@@ -20,7 +20,7 @@
           <th>{{ i.fName }}</th>
           <th>{{ i.lName }}</th>
           <th>
-            <p class="icon-click" v-on:click="showCV()">
+            <p class="icon-click" v-on:click="showCV(i.index)">
               <i class="fas fa-eye"></i>
             </p>
           </th>
@@ -57,8 +57,8 @@ export default {
     };
   },
   methods: {
-    showCV() {
-      console.log("click");
+    showCV(index) {
+      console.log("click", index);
     },
   },
 };
