@@ -3,6 +3,7 @@
     <div id="main">
       <div id="top">
         <button title="Tryck för att redigera">Redigera</button>
+
         <button
           id="edit-button"
           @click="toggleExport()"
@@ -198,12 +199,12 @@ div {
 #export {
   position: absolute;
   z-index: 1;
-  margin-left: 10vw;
+  background: white;
   display: flex;
   flex-direction: column;
   border: 1px solid grey;
   border-radius: 10px;
-  right: -10vw;
+  right: -12vw;
   text-align: left;
   height: auto;
 }
