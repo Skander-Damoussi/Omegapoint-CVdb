@@ -20,11 +20,9 @@
           <th>{{ i.fName }}</th>
           <th>{{ i.lName }}</th>
           <th>
-            <font-awesome-icon
-              :icon="['fas', 'robot']"
-              class="icon-click"
-              v-on:click="showCV()"
-            />
+            <p class="icon-click" v-on:click="showCV()">
+              <i class="fas fa-eye"></i>
+            </p>
           </th>
         </tr>
       </table>
@@ -59,7 +57,9 @@ export default {
     };
   },
   methods: {
-    showCV() {},
+    showCV() {
+      console.log("click");
+    },
   },
 };
 </script>
