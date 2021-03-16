@@ -13,11 +13,19 @@
           <th>#</th>
           <th>Förnamn</th>
           <th>Efternamn</th>
+          <th></th>
         </tr>
         <tr v-for="(i, index) in test" :key="index">
           <th>{{ i.index }}</th>
           <th>{{ i.fName }}</th>
           <th>{{ i.lName }}</th>
+          <th>
+            <font-awesome-icon
+              :icon="['fas', 'robot']"
+              class="icon-click"
+              v-on:click="showCV()"
+            />
+          </th>
         </tr>
       </table>
     </div>
@@ -50,7 +58,9 @@ export default {
       ],
     };
   },
-  methods: {},
+  methods: {
+    showCV() {},
+  },
 };
 </script>
 
@@ -81,6 +91,10 @@ th {
   text-align: left;
   padding-top: 2vh;
   padding-bottom: 1vh;
+}
+
+.icon-click {
+  cursor: pointer;
 }
 
 .reg-user {
