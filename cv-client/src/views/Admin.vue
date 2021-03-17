@@ -10,8 +10,8 @@
             <i class="fas fa-image fa-10x"></i>
             <p>{{ item.name }}</p>
           </div>
-          <div class="templateDiv">
-            <i class="fas fa-plus-square fa-10x fa-fw fa-pull-left"></i>
+          <div class="templateDiv" @click="showModal">
+            <i class="fas fa-plus-square fa-10x "></i>
             <p>Lägg till ny mall</p>
           </div>
         </div>
@@ -22,29 +22,41 @@
         <RegisterUser />
       </div>
     </div>
+    <EditCv v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
 
 <script>
 import RegisterUser from "../components/RegisterUser";
+import EditCv from "../components/EditCv";
 export default {
   name: "Home",
   data() {
     return {
+      isModalVisible: false,
       cv: [
         {
           name: "Mall 1",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
         },
         {
           name: "Mall 2",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
         }
       ]
     };
   },
   components: {
-    RegisterUser
+    RegisterUser,
+    EditCv
+  },
+  methods: {
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    }
   }
 };
 </script>
@@ -63,17 +75,16 @@ export default {
 }
 .templateDiv:hover {
   cursor: pointer;
-  box-shadow: 0 0px 11px rgba(33,33,33,.2);
-  transition: box-shadow .3s;
+  box-shadow: 0 0px 11px rgba(33, 33, 33, 0.2);
+  transition: box-shadow 0.3s;
 }
 .createTemplateDiv {
   border-radius: 10px;
-  
 }
 .createTemplateDiv:hover {
   cursor: pointer;
-  box-shadow: 0 0 11px rgba(33,33,33,.2);
-  transition: box-shadow .3s;
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+  transition: box-shadow 0.3s;
 }
 .h2Div {
   display: flex;
