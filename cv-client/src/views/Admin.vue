@@ -6,7 +6,7 @@
           <h3>Redigera Mall</h3>
         </div>
         <div class="flex">
-          <div v-for="item in cv" :key="item" class="templateDiv">
+          <div v-for="item in cv" :key="item.index" class="templateDiv">
             <i class="fas fa-image fa-10x"></i>
             <p>{{ item.name }}</p>
           </div>

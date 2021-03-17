@@ -12,17 +12,48 @@
 
       <section class="modal-body">
         <slot name="body">
-          <div class="inputDiv">
-            <span style="text-align: left;">testnr</span>
-            <input type="text" value="Ange telefonnummer" />
+          <div class="a4mall">
+            <div>
+              <p>
+                What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the
+                printing and typesetting industry. Lorem Ipsum has been the
+                industry's standard dummy text ever since the 1500s, when an
+                unknown printer took a galley of type and scrambled it to make a
+                type specimen book. It has survived not only five centuries, but
+                also the leap into electronic typesetting, remaining essentially
+                unchanged. It was popularised in the 1960s with the release of
+                Letraset sheets containing Lorem Ipsum passages, and more
+                recently with desktop publishing software like Aldus PageMaker
+                including versions of Lorem Ipsum.
+              </p>
+            </div>
+            <div class="iconfootnote">
+              <div class="grid1">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+              <div class="grid2">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+              <div class="grid3">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+              <div class="grid4">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+            </div>
+            <div class="footnote">
+              <div class="grid1">
+                <span>footnote 1</span>
+              </div>
+              <div class="grid2"><span>footnote 2</span></div>
+              <div class="grid3"><span>footnote 2</span></div>
+              <div class="grid4"><span>footnote 3</span></div>
+            </div>
           </div>
-          <div class="inputDiv">
-            <span>0729694095 <i class="fas fa-edit"></i></span>
-            <input type="text" value="Ange telefonnummer" />
-          </div>
-
-          <input type="text" value="Ange telefonnummer" />
-          <input type="text" value="Ange telefonnummer" />
         </slot>
       </section>
 
@@ -38,7 +69,7 @@
   </div>
 </template>
 
-<script scoped>
+<script>
 export default {
   name: "EditCv",
   data() {
@@ -53,6 +84,43 @@ export default {
 </script>
 
 <style>
+.flex {
+  display: flex;
+}
+.footnote {
+  border-top: solid black 0.005px;
+  border-right: solid black 0.005px;
+  position: absolute;
+  bottom: 20px;
+  height: 80px;
+  width: 495px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.iconfootnote {
+  position: absolute;
+  bottom: 105px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 96%;
+}
+.grid1 {
+  grid-column: 1;
+}
+.grid2 {
+  grid-column: 2;
+}
+.grid3 {
+  grid-column: 3;
+}
+.grid4 {
+  grid-column: 4;
+}
+.a4mall {
+  border: 0.005px solid black;
+  width: 496px;
+  height: 701.6px;
+}
 .inputDiv {
   border: solid 0.5px black;
   padding: 5px;
