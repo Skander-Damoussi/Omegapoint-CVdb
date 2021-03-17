@@ -66,6 +66,9 @@ export default {
     showCV(index) {
       console.log("click", index);
     },
+    mounted() {
+      this.store.dispatch("getCvList");
+    },
   },
 };
 </script>
