@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="main">
+    <div id="main" >
       <div id="top">
         <p class="icon-click" v-on:click="editMethod()">
           <i
@@ -20,11 +20,11 @@
 
         <div id="export" v-if="exportMenu">
           <p>Välj ett exporteringformat</p>
-          <a href>Exportera PDF</a>
-          <a href>Exportera WORD</a>
+          <a @click="createPdf()">Exportera PDF</a>
+          <a @click="createWord()">Exportera WORD</a>
         </div>
       </div>
-      <div id="wrapper">
+      <div id="wrapper" ref="content">
         <div id="left">
           <h4>Presentation</h4>
 
@@ -143,6 +143,8 @@
 </template>
 
 <script>
+import jspdf from 'jspdf';
+
 export default {
   name: "Consultant",
   props: {},
@@ -154,6 +156,43 @@ export default {
     toggleExport() {
       this.exportMenu = !this.exportMenu;
       console.log("exportMenu=", this.exportMenu);
+    },
+    editMethod() {
+      console.log("Edit Method");
+    },
+    createPdf() {
+      //const { jsPDF } = require("jspdf"); // will automatically load the node version
+
+      //const doc = new jsPDF();
+      // doc.text("Hello world", 15, 15);
+      // doc.save("pdf.pdf");
+
+      const doc = new jspdf();
+      const html = this.$refs.content.innerHTML;
+
+      console.log("print html", JSON.stringify(html));
+
+      //doc.innerHTML(html, 15, 15, { widht: 150 });
+
+      // doc.html(html, 15, 15);
+      // doc.save("output.pdf");
+
+      
+
+      doc.html(html, {
+        callback: function(doc) {
+          doc.save();
+        },
+           x: 15,
+   y: 15
+      });
+
+      // console.log("CreatePdf Method");
+      // this.exportMenu = !this.exportMenu;
+    },
+    createWord() {
+      console.log("CreateWord Method");
+      this.exportMenu = !this.exportMenu;
     },
   },
 };
