@@ -62,24 +62,25 @@
 
           <b>Monitorering</b>
           <p>OP5, kinga, Nagios, TMArt</p>
-          
+
           <b>Dokumentation</b>
           <p>Mediawiki, Confluence</p>
-          
+
           <b>Virtualisering</b>
           <p>VMWare, Virtualbox</p>
-          
+
           <b>Webbserver</b>
           <p>NGINX, IIS, Apache</p>
-          
+
           <b>Cloud Plattformar</b>
           <p>Azure, vCloud Director</p>
         </div>
 
         <div id="right-mid">
           <h4>Roller</h4>
-          <p>Systemutvecklare, Webbutvecklare,
-        Applikationsutvecklare, Integratör</p>
+          <p>
+            Systemutvecklare, Webbutvecklare, Applikationsutvecklare, Integratör
+          </p>
         </div>
 
         <div id="right-bottom">
@@ -93,14 +94,14 @@
 
 <script>
 export default {
-  name: "Consultant",
+  name: "Consultant"
 };
 </script>
 
 <style scoped>
-*{
-    /* all */
-    /* font-size: 12px; */
+* {
+  /* all */
+  /* font-size: 12px; */
 }
 
 div {
@@ -133,47 +134,39 @@ div {
   flex-direction: column;
   width: 20%;
   margin: 10px 10px 10px 10px;
-
 }
 
-#right>div>p{
-      font-size: 8px;
-      margin:0;
+#right > div > p {
+  font-size: 8px;
+  margin: 0;
 }
-#right>div>b{
-    font-size: 8px;
-    margin:0;
-}
-
-#right>div>h4{
-      font-size: 12px;
-      margin-bottom: 0;
+#right > div > b {
+  font-size: 8px;
+  margin: 0;
 }
 
+#right > div > h4 {
+  font-size: 12px;
+  margin-bottom: 0;
+}
 
 #right-top {
-  background:white;
+  background: white;
   margin: 0px 10px 10px 10px;
-
 }
 
 #right-mid {
-
   margin: 10px 10px 10px 10px;
-
 }
 
 #right-bottom {
-
   margin: 10px 10px 10px 10px;
-
 }
 
-H4{
-    color: GREY;
+h4 {
+  color: GREY;
 }
 
 p {
-
 }
 </style>
