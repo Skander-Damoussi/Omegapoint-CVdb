@@ -27,7 +27,16 @@
 
 <script>
 export default {
-  name: "EditUser"
+  name: "EditUser",
+  computed: {
+    //getUser
+  },
+  methods: {
+    mounted() {
+      this.store.dispatch("getUser");
+    }
+  }
+
 };
 </script>
 
