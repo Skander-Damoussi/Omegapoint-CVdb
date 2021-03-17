@@ -33,6 +33,7 @@ export default new Vuex.Store({
       commit("resetState");
     },
     async getCvList({ commit }) {
+      //fetch from api
       const list = [];
       commit("setCvList", list);
     },

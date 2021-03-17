@@ -15,7 +15,7 @@
           <th>Efternamn</th>
           <th></th>
         </tr>
-        <tr v-for="(i, index) in test" :key="index">
+        <tr v-for="(i, index) in cvList" :key="index">
           <th>{{ i.index }}</th>
           <th>{{ i.fName }}</th>
           <th>{{ i.lName }}</th>
@@ -40,21 +40,27 @@ export default {
   components: {
     RegisterUser,
   },
-  data() {
-    return {
-      test: [
-        {
-          index: "0",
-          fName: "Test",
-          lName: "Testsson",
-        },
-        {
-          index: "1",
-          fName: "Test1",
-          lName: "Testsson1",
-        },
-      ],
-    };
+  // data() {
+  //   return {
+  //     test: [
+  //       {
+  //         index: "0",
+  //         fName: "Test",
+  //         lName: "Testsson",
+  //       },
+  //       {
+  //         index: "1",
+  //         fName: "Test1",
+  //         lName: "Testsson1",
+  //       },
+  //     ],
+  //   };
+  // },
+  computed: {
+    cvList() {
+      console.log("computed");
+      return this.$store.getters.getCvList;
+    },
   },
   methods: {
     showCV(index) {
