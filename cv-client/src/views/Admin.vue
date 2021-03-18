@@ -37,11 +37,11 @@ export default {
       cv: [
         {
           name: "Mall 1",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
         },
         {
           name: "Mall 2",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
         }
       ]
     };

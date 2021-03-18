@@ -3,7 +3,7 @@
     <div class="modal">
       <header class="modal-header">
         <slot name="header">
-          This is the default title!
+          Mall för cv
         </slot>
         <button type="button" class="btn-close" @click="close">
           x
@@ -13,8 +13,32 @@
       <section class="modal-body">
         <slot name="body">
           <div class="a4mall">
+            <div class="sidenote">
+              <div class="grid1"><span>sidenote 1</span></div>
+              <div class="grid2"><span>sidenote 2</span></div>
+              <div class="grid3"><span>sidenote 2</span></div>
+              <div class="grid4"><span>sidenote 3</span></div>
+            </div>
+            <div class="iconsidenote">
+              <div class="grid1">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+              <div class="grid2">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+              <div class="grid3">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+              <div class="grid4">
+                <i class="fas fa-edit fa-2x"></i>
+                <i class="fas fa-file-image fa-2x"></i>
+              </div>
+            </div>
             <div>
-              <p>
+              <p style="margin-top: 50px;">
                 What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the
                 printing and typesetting industry. Lorem Ipsum has been the
                 industry's standard dummy text ever since the 1500s, when an
@@ -46,9 +70,7 @@
               </div>
             </div>
             <div class="footnote">
-              <div class="grid1">
-                <span>footnote 1</span>
-              </div>
+              <div class="grid1"><span>footnote 1</span></div>
               <div class="grid2"><span>footnote 2</span></div>
               <div class="grid3"><span>footnote 2</span></div>
               <div class="grid4"><span>footnote 3</span></div>
@@ -58,10 +80,8 @@
       </section>
 
       <footer class="modal-footer">
-        <slot name="footer">
-          This is the default footer!
-        </slot>
-        <button type="button" class="btn-green" @click="close">
+        <slot name="footer"> </slot>
+        <button type="button" class="button" @click="close">
           Close Modal
         </button>
       </footer>
@@ -97,12 +117,34 @@ export default {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
+.button {
+  color: white;
+  background: #2185d0;
+  border: none;
+  text-decoration: none;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  border: 2px solid #2185d0;
+}
+.sidenote {
+  border-bottom: solid black 0.005px;
+  border-right: solid black 0.005px;
+  height: 80px;
+  width: 495px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
 .iconfootnote {
   position: absolute;
   bottom: 105px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 96%;
+}
+.iconsidenote {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
 }
 .grid1 {
   grid-column: 1;
