@@ -21,6 +21,9 @@ export default new Vuex.Store({
     setUser(state) {
       state.loggedIn = true;
     },
+    updateUser(state, updatedUser) {
+      state.user = updatedUser;
+    }
   },
   actions: {
     async login({commit}) {
