@@ -29,6 +29,9 @@ export default new Vuex.Store({
     async logOut({commit}) {
       commit('resetState');
     },
+    async updateUser({commit}) {
+      commit('updateUser');
+    }
   },
   getters: {
     getLoggedIn(state) {
