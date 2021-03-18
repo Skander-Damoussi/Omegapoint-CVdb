@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="main" >
+    <div id="main">
       <div id="top">
         <p class="icon-click" v-on:click="editMethod()">
           <i
@@ -24,7 +24,7 @@
           <a @click="createWord()">Exportera WORD</a>
         </div>
       </div>
-      <div id="wrapper" ref="content">
+      <div id="wrapper">
         <div id="left">
           <h4>Presentation</h4>
 
@@ -139,11 +139,24 @@
         </div>
       </footer>
     </div>
+
+    <div id="test" ref="content">
+      <h2>HiHo</h2>
+      <p>Lets go</p>
+    </div>
   </div>
 </template>
 
+
+
 <script>
-import jspdf from 'jspdf';
+import jspdf from "jspdf";
+
+
+
+
+
+
 
 export default {
   name: "Consultant",
@@ -167,24 +180,28 @@ export default {
       // doc.text("Hello world", 15, 15);
       // doc.save("pdf.pdf");
 
-      const doc = new jspdf();
-      const html = this.$refs.content.innerHTML;
+      const doc = new jspdf({
+        orientation: "portrait",
+        unit: "mm",
+      });
+      // const html = this.$refs.content.innerHTML;
+      const html = this.$refs.content;
 
       console.log("print html", JSON.stringify(html));
+      
+   
 
       //doc.innerHTML(html, 15, 15, { widht: 150 });
 
       // doc.html(html, 15, 15);
       // doc.save("output.pdf");
 
-      
-
       doc.html(html, {
         callback: function(doc) {
           doc.save();
         },
-           x: 15,
-   y: 15
+        x: 0,
+        y: 0,
       });
 
       // console.log("CreatePdf Method");
@@ -207,6 +224,28 @@ export default {
   margin: 0;
 }
 
+#test {
+  background: white;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px;
+  border-color: grey;
+  border-style: solid;
+  width: 210mm;
+  height: 297mm;
+
+
+}
+
+#test > p {
+  font-size: 10px;
+}
+
+#test > h2 {
+  font-size: 10px;
+}
+
 div {
   text-align: left;
 }
@@ -223,6 +262,8 @@ div {
   margin-left: 25%;
   margin-right: 25%;
   margin-bottom: 5%;
+  width: 210mm;
+  height: 297mm;
 }
 
 #top {
@@ -282,7 +323,7 @@ div {
 
 #left {
   background: white;
-  width: 35%;
+  width: 74mm;
   margin: 20px 10px 10px 10px;
   font-size: 12px;
 }
@@ -294,7 +335,7 @@ div {
 #right {
   display: flex;
   flex-direction: column;
-  width: 20%;
+  width: 42mm;
   margin: 20px 10px 10px 10px;
 }
 
