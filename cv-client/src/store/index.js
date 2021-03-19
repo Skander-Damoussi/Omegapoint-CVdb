@@ -7,7 +7,7 @@ const getDefaultState = () => {
   return {
     loggedIn: false,
     user: {},
-    cvList: [],
+    cvList: []
   };
 };
 
@@ -23,7 +23,7 @@ export default new Vuex.Store({
     },
     setCvList(state, list) {
       state.cvList = list;
-    },
+    }
   },
   actions: {
     async login({ commit }) {
@@ -36,7 +36,7 @@ export default new Vuex.Store({
       //fetch from api
       const list = [];
       commit("setCvList", list);
-    },
+    }
   },
   getters: {
     getLoggedIn(state) {
@@ -44,6 +44,6 @@ export default new Vuex.Store({
     },
     getCvList(state) {
       return state.cvList;
-    },
-  },
+    }
+  }
 });
