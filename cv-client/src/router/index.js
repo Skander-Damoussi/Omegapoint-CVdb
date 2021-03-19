@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import ConsultantManager from "../components/ConsultantManager.vue";
 import Consultant from "../components/Consultant";
 import Admin from "../views/Admin";
 import EditUser from "../components/EditUser.vue";
@@ -13,6 +14,11 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home
+  },
+  {
+    path: "/consultantmanager",
+    name: "ConsultantManager",
+    component: ConsultantManager
   },
   {
     path: "/consultant",
