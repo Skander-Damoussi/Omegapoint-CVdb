@@ -24,8 +24,8 @@
           <a @click="createWord()">Exportera WORD</a>
         </div>
       </div>
-      <div id="wrapper" >
-        <div id="left" >
+      <div id="wrapper">
+        <div id="left">
           <h4>Presentation</h4>
 
           <p>
@@ -140,24 +140,19 @@
       </footer>
     </div>
 
-    <div id="test" >
+    <div id="test">
       <h2>HiHo</h2>
       <p>Lets go</p>
     </div>
 
-    <img :src="output">
+    <img :src="output" />
   </div>
 </template>
 
-
-
 <script>
-import jspdf from "jspdf";
-
-
-
-
-
+//import jspdf from "jspdf";
+//import VueHtml2pdf from 'vue-html2pdf'
+import Html2pdf from "html2pdf.js";
 
 export default {
   name: "Consultant",
@@ -186,45 +181,56 @@ export default {
 
       console.log("print html", JSON.stringify(html));
 
+      //Fungerar men blir 30 mb stora
+
+      var opt = {
+        margin: 0,
+        filename: "myfile.pdf",
+        //image:        { type: 'jpg', quality: 1 },
+        image: { type: "jpg", quality: 1 },
+        html2canvas: { scale: 3 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
+
+      var element = document.getElementById("test");
+      Html2pdf(element, opt);
+
+      //this.$refs.content.generatePdf();
+
       //test med html2canvas, start
 
       // const el = this.$refs.content;
       // add option type to get the image version
-      // if not provided the promise will return 
+      // if not provided the promise will return
       // the canvas.
       // const options = {
       //   type: 'dataURL'
       // }
       // let output = this.$html2canvas(el, options);
 
-
       //test med html2canvas, slut
 
-
-      const doc = new jspdf(
-        'p',
-        'px',
-        [793.69,1122.52]
-      );
+      // const doc = new jspdf(
+      //   'p',
+      //   'px',
+      //   [793.69,1122.52]
+      // );
       // doc.in
       // doc.addImage(output, 'PNG', 10,10);
       // doc.save('sample.pdf')
-      
-   
 
       //doc.innerHTML(html, 15, 15, { widht: 150 });
 
       // doc.html(html, 15, 15);
       // doc.save("output.pdf");
-      
 
-            doc.html(html, {
-        callback: function(doc) {
-          doc.save();
-        },
-        x: -224,
-        y: -45,
-      });
+      //       doc.html(html, {
+      //   callback: function(doc) {
+      //     doc.save();
+      //   },
+      //   x: -224,
+      //   y: -45,
+      // });
 
       //Funkar när mått satt till 793.69px x 1122.52 px
       //men inte optimalt
@@ -242,6 +248,10 @@ export default {
     createWord() {
       console.log("CreateWord Method");
       this.exportMenu = !this.exportMenu;
+    },
+    components: {
+      //VueHtml2pdf
+      Html2pdf,
     },
   },
 };
@@ -266,8 +276,6 @@ export default {
   border-style: solid;
   width: 210mm;
   height: 297mm;
-
-
 }
 
 #test > p {
