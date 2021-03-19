@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="main">
+    <div id="main" ref="content">
       <div id="top">
         <p class="icon-click" v-on:click="editMethod()">
           <i
@@ -24,8 +24,8 @@
           <a @click="createWord()">Exportera WORD</a>
         </div>
       </div>
-      <div id="wrapper">
-        <div id="left">
+      <div id="wrapper" >
+        <div id="left" >
           <h4>Presentation</h4>
 
           <p>
@@ -140,10 +140,12 @@
       </footer>
     </div>
 
-    <div id="test" ref="content">
+    <div id="test" >
       <h2>HiHo</h2>
       <p>Lets go</p>
     </div>
+
+    <img :src="output">
   </div>
 </template>
 
@@ -151,7 +153,6 @@
 
 <script>
 import jspdf from "jspdf";
-
 
 
 
@@ -176,18 +177,38 @@ export default {
     createPdf() {
       //const { jsPDF } = require("jspdf"); // will automatically load the node version
 
-      //const doc = new jsPDF();
+      // const doc = new jspdf();
       // doc.text("Hello world", 15, 15);
       // doc.save("pdf.pdf");
 
-      const doc = new jspdf({
-        orientation: "portrait",
-        unit: "mm",
-      });
       // const html = this.$refs.content.innerHTML;
       const html = this.$refs.content;
 
       console.log("print html", JSON.stringify(html));
+
+      //test med html2canvas, start
+
+      // const el = this.$refs.content;
+      // add option type to get the image version
+      // if not provided the promise will return 
+      // the canvas.
+      // const options = {
+      //   type: 'dataURL'
+      // }
+      // let output = this.$html2canvas(el, options);
+
+
+      //test med html2canvas, slut
+
+
+      const doc = new jspdf(
+        'p',
+        'px',
+        [793.69,1122.52]
+      );
+      // doc.in
+      // doc.addImage(output, 'PNG', 10,10);
+      // doc.save('sample.pdf')
       
    
 
@@ -195,14 +216,25 @@ export default {
 
       // doc.html(html, 15, 15);
       // doc.save("output.pdf");
+      
 
-      doc.html(html, {
+            doc.html(html, {
         callback: function(doc) {
           doc.save();
         },
-        x: 0,
-        y: 0,
+        x: -224,
+        y: -45,
       });
+
+      //Funkar när mått satt till 793.69px x 1122.52 px
+      //men inte optimalt
+      // doc.html(html, {
+      //   callback: function(doc) {
+      //     doc.save();
+      //   },
+      //   x: -224,
+      //   y: -45,
+      // });
 
       // console.log("CreatePdf Method");
       // this.exportMenu = !this.exportMenu;

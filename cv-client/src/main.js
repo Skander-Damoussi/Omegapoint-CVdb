@@ -5,6 +5,10 @@ import store from "./store";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 
+//Test för pdf
+import VueHtml2Canvas from 'vue-html2canvas';
+Vue.use(VueHtml2Canvas);
+
 Vue.config.productionTip = false;
 
 new Vue({
