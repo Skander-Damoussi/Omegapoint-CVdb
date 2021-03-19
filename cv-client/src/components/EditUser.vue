@@ -45,8 +45,8 @@ export default {
     updateUser(getUser) {
       console.log("update user");
       this.store.dispatch("updateUser", getUser);
-    },
-  },
+    }
+  }
 };
 </script>
 
