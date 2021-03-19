@@ -8,6 +8,18 @@
       </md-table-row>
     </md-table> -->
     <div class="list-table">
+      <div class="search">
+        <div class="searchBox">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            id="searchInput"
+            class="searchInput"
+            @keyup.enter="search()"
+            placeholder="Sök"
+          />
+        </div>
+      </div>
       <table>
         <tr>
           <th>#</th>
@@ -38,7 +50,7 @@ import RegisterUser from "./RegisterUser.vue";
 export default {
   name: "ConsultantManager",
   components: {
-    RegisterUser,
+    RegisterUser
   },
   // data() {
   //   return {
@@ -60,7 +72,7 @@ export default {
     cvList() {
       console.log("computed");
       return this.$store.getters.getCvList;
-    },
+    }
   },
   methods: {
     showCV(index) {
@@ -69,7 +81,10 @@ export default {
     mounted() {
       this.store.dispatch("getCvList");
     },
-  },
+    search() {
+      console.log("search");
+    }
+  }
 };
 </script>
 
@@ -79,13 +94,36 @@ export default {
 }
 
 .list-table {
-  flex-grow: 0.5;
   padding: 3%;
   border: solid 1px black;
   height: 87vh;
   margin: 1.3% 5%;
   border-radius: 1%;
   width: 50vw;
+}
+
+.search {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.searchBox {
+  display: flex;
+  border: solid 1px black;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  font-size: 20px;
+  padding: 0.5%;
+  outline: 0;
+  -webkit-appearance: none;
+}
+
+.searchInput {
+  width: 100%;
+  border: 0;
+  outline: none;
 }
 
 .list-table > table {
