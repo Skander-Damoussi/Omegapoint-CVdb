@@ -36,14 +36,14 @@ export default {
   computed: {
     getUser() {
       return this.$store.getters.getUser;
-    },
+    }
   },
   methods: {
     mounted() {
       this.store.dispatch("getUser");
     },
     updateUser(getUser) {
-      console.log("update user")
+      console.log("update user");
       this.store.dispatch("updateUser", getUser);
     },
   },
