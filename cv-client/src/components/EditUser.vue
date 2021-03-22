@@ -4,22 +4,27 @@
       <h1>Användaruppgifter</h1>
       <div class="section">
         <label for="fName">Förnamn</label>
-        <input type="text" id="fName" />
+        <input type="text" v-model="getUser" id="fName" />
       </div>
       <div class="section">
         <label for="lName">Efternamn</label>
-        <input type="text" id="lName" />
+        <input type="text" v-model="getUser" id="lName" />
       </div>
       <div class="section">
         <label for="password">Lösenord</label>
-        <input type="text" required id="password" />
+        <input type="text" placeholder="******" required id="password" />
       </div>
       <div class="section">
         <label for="confirmPassword">Bekräfta lösenord</label>
-        <input type="text" required id="confirmPassword" />
+        <input type="text" placeholder="******" required id="confirmPassword" />
       </div>
       <div class="submit">
-        <input type="button" class="bttn" value="Spara" />
+        <input
+          type="button"
+          class="bttn"
+          v-on:click="updateUser(getUser)"
+          value="Spara"
+        />
       </div>
     </div>
   </div>
@@ -27,7 +32,21 @@
 
 <script>
 export default {
-  name: "EditUser"
+  name: "EditUser",
+  computed: {
+    getUser() {
+      return this.$store.getters.getUser;
+    }
+  },
+  methods: {
+    mounted() {
+      this.store.dispatch("getUser");
+    },
+    updateUser(getUser) {
+      console.log("update user");
+      this.store.dispatch("updateUser", getUser);
+    }
+  }
 };
 </script>
 
