@@ -5,5 +5,9 @@
     <RootNamespace>cv_api</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.12.0" />
+  </ItemGroup>
+
 
 </Project>
