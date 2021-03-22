@@ -37,25 +37,43 @@ export default new Vuex.Store({
     async login({ commit }) {
       commit("setUser");
     },
-    async updateUser({ commit }) {
-      commit("updateUser");
+    async updateUser({ commit }, field, findThis, update) {
+      /* string field,string finthis, update */
+
+      const url = `user/${field}/${findThis}/${update}`;
+      await Axios.put(url, field, findThis, update)
+        .then(async (resp) => {
+          this.user = resp;
+        })
+        .catch((err) => console.log(err));
+      commit("setUser", this.user);
+
+      //   await Axios.put("user/"field")
+      //   .then(async resp => {
+      //     this.user = resp;
+      //   })
+      //   .catch(err => console.log(err));
+      // commit("setUser", this.user);
     },
     async logOut({ commit }) {
       commit("resetState");
     },
     async getCvList({ commit }) {
-      //fetch from api
-      const list = [];
-      commit("setCvList", list);
+      await Axios.get("cvlist/")
+        .then(async (resp) => {
+          this.users = resp;
+        })
+        .catch((err) => console.log(err));
+      commit("setCvList", this.cvList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
-        .then(async resp => {
+        .then(async (resp) => {
           this.users = resp;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
       commit("setUsers", this.users);
-    }
+    },
   },
   getters: {
     getLoggedIn(state) {
