@@ -21,6 +21,9 @@ export default new Vuex.Store({
     setUser(state) {
       state.loggedIn = true;
     },
+    updateUser(state, updatedUser) {
+      state.user = updatedUser;
+    },
     setCvList(state, list) {
       state.cvList = list;
     }
@@ -28,6 +31,9 @@ export default new Vuex.Store({
   actions: {
     async login({ commit }) {
       commit("setUser");
+    },
+    async updateUser({ commit }) {
+      commit("updateUser");
     },
     async logOut({ commit }) {
       commit("resetState");
@@ -41,6 +47,9 @@ export default new Vuex.Store({
   getters: {
     getLoggedIn(state) {
       return state.loggedIn;
+    },
+    getUser(state) {
+      return state.user;
     },
     getCvList(state) {
       return state.cvList;
