@@ -37,23 +37,23 @@ export default new Vuex.Store({
     async login({ commit }) {
       commit("setUser");
     },
-    async updateUser({ commit }, field, findThis, update) {
+    async updateUser({ commit }, user) {
       /* string field,string finthis, update */
 
-      const url = `user/${field}/${findThis}/${update}`;
-      await Axios.put(url, field, findThis, update)
-        .then(async (resp) => {
-          this.user = resp;
-        })
-        .catch((err) => console.log(err));
-      commit("setUser", this.user);
-
-      //   await Axios.put("user/"field")
-      //   .then(async resp => {
+      // const url = `user/${field}/${findThis}/${update}`;
+      // await Axios.put(url, field, findThis, update)
+      //   .then(async (resp) => {
       //     this.user = resp;
       //   })
-      //   .catch(err => console.log(err));
+      //   .catch((err) => console.log(err));
       // commit("setUser", this.user);
+
+        await Axios.put(`user/${user}`)
+        .then(async resp => {
+          this.user = resp;
+        })
+        .catch(err => console.log(err));
+      commit("setUser", this.user);
     },
     async logOut({ commit }) {
       commit("resetState");
