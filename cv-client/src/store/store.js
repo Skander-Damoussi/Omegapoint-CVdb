@@ -55,6 +55,13 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUsers", this.users);
+    },
+    async registerUser(userinput) {
+      await Axios.post("user/", userinput)
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
     }
   },
   getters: {

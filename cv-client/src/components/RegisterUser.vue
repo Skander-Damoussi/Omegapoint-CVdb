@@ -4,21 +4,46 @@
     <div class="formDiv">
       <form>
         <label for="fname">Förnamn</label><br />
-        <input type="text" id="fname" name="fname" class="input" /><br /><br />
+        <input
+          type="text"
+          id="fname"
+          name="fname"
+          v-model="user.FirstName"
+        /><br /><br />
         <label for="lname">Efternamn</label><br />
-        <input type="text" id="lname" name="lname" /><br /><br />
+        <input
+          type="text"
+          id="lname"
+          name="lname"
+          v-model="user.LastName"
+        /><br /><br />
         <label for="lname">E-post</label><br />
-        <input type="text" id="email" name="email" /><br /><br />
+        <input
+          type="text"
+          id="email"
+          name="email"
+          v-model="user.Email"
+        /><br /><br />
         <label for="lname">Roll</label><br />
-        <select id="animal-select">
+        <select id="animal-select" v-model="user.Role">
           <option value="Konsult" selected>Konsult</option>
           <option value="Admin">Admin</option>
           <option value="Konsultchef">Konsultchef</option>
         </select>
         <br /><br /><label for="lname">Lösenord</label><br />
-        <input type="text" id="email" name="email" /><br /><br />
+        <input
+          type="text"
+          id="email"
+          name="email"
+          v-model="user.Password"
+        /><br /><br />
         <div class="buttonDiv">
-          <input type="submit" value="Registrera" class="button" />
+          <input
+            type="button"
+            value="Registrera"
+            class="button"
+            @click="register"
+          />
         </div>
       </form>
     </div>
@@ -31,7 +56,24 @@
 
 <script>
 export default {
-  name: "RegisterUser"
+  name: "RegisterUser",
+  data() {
+    return {
+      user: [{
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Role: "",
+        Password: ""
+      }]
+    };
+  },
+  methods: {
+    async register() {
+      console.log(this.user);
+      await this.$store.dispatch("registerUser", this.user);
+    }
+  }
 };
 </script>
 
