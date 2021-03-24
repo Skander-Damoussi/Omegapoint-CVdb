@@ -9,7 +9,7 @@ const getDefaultState = () => {
     loggedIn: false,
     user: {},
     users: [],
-    consultantList: [],
+    consultantList: []
   };
 };
 
@@ -31,7 +31,7 @@ export default new Vuex.Store({
     },
     setConsultantList(state, list) {
       state.consultantList = list;
-    },
+    }
   },
   actions: {
     async login({ commit }) {
@@ -48,19 +48,19 @@ export default new Vuex.Store({
       //   .catch((err) => console.log(err));
       // commit("setUser", this.user);
 
-        await Axios.put(`user/${user}`)
+      await Axios.put(`user/${user.Email}`, user)
         .then(async resp => {
           this.user = resp;
         })
         .catch(err => console.log(err));
-      commit("setUser", this.user);
+      commit("updateUser", this.user);
     },
     async logOut({ commit }) {
       commit("resetState");
     },
     async getConsultantList({ commit }) {
       await Axios.get("consultantList/")
-        .then(async (resp) => {
+        .then(async resp => {
           this.users = resp;
         })
         .catch((err) => console.log(err));
@@ -73,7 +73,7 @@ export default new Vuex.Store({
         })
         .catch((err) => console.log(err));
       commit("setUsers", this.users);
-    },
+    }
   },
   getters: {
     getLoggedIn(state) {
@@ -84,6 +84,6 @@ export default new Vuex.Store({
     },
     getConsultantList(state) {
       return state.consultantList;
-    },
-  },
+    }
+  }
 });
