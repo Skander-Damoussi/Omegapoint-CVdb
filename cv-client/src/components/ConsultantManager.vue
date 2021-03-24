@@ -27,7 +27,7 @@
           <th>Efternamn</th>
           <th></th>
         </tr>
-        <tr v-for="(i, index) in cvList" :key="index">
+        <tr v-for="(i, index) in consultantList" :key="index">
           <th>{{ i.index }}</th>
           <th>{{ i.fName }}</th>
           <th>{{ i.lName }}</th>
@@ -69,9 +69,9 @@ export default {
   //   };
   // },
   computed: {
-    cvList() {
+    consultantList() {
       console.log("computed");
-      return this.$store.getters.getCvList;
+      return this.$store.getters.getConsultantList;
     }
   },
   methods: {
@@ -79,7 +79,7 @@ export default {
       console.log("click", index);
     },
     mounted() {
-      this.store.dispatch("getCvList");
+      this.store.dispatch("getConsultantList");
     },
     search() {
       console.log("search");

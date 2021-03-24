@@ -9,7 +9,7 @@ const getDefaultState = () => {
     loggedIn: false,
     user: {},
     users: [],
-    cvList: [],
+    consultantList: [],
   };
 };
 
@@ -29,8 +29,8 @@ export default new Vuex.Store({
     updateUser(state, updatedUser) {
       state.user = updatedUser;
     },
-    setCvList(state, list) {
-      state.cvList = list;
+    setConsultantList(state, list) {
+      state.consultantList = list;
     },
   },
   actions: {
@@ -58,13 +58,13 @@ export default new Vuex.Store({
     async logOut({ commit }) {
       commit("resetState");
     },
-    async getCvList({ commit }) {
-      await Axios.get("cvlist/")
+    async getConsultantList({ commit }) {
+      await Axios.get("consultantList/")
         .then(async (resp) => {
           this.users = resp;
         })
         .catch((err) => console.log(err));
-      commit("setCvList", this.cvList);
+      commit("setConsultantList", this.consultantList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
@@ -82,8 +82,8 @@ export default new Vuex.Store({
     getUser(state) {
       return state.user;
     },
-    getCvList(state) {
-      return state.cvList;
+    getConsultantList(state) {
+      return state.consultantList;
     },
   },
 });
