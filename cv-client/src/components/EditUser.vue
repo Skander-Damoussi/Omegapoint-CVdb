@@ -3,12 +3,12 @@
     <div class="user-form">
       <h1>Användaruppgifter</h1>
       <div class="section">
-        <label for="fName">Förnamn</label>
-        <input type="text" v-model="getUser" id="fName" />
+        <label for="firstName">Förnamn</label>
+        <input type="text" v-model="getUser" id="firstName" />
       </div>
       <div class="section">
-        <label for="lName">Efternamn</label>
-        <input type="text" v-model="getUser" id="lName" />
+        <label for="lastName">Efternamn</label>
+        <input type="text" v-model="getUser" id="lastName" />
       </div>
       <div class="section">
         <label for="password">Lösenord</label>
@@ -44,6 +44,7 @@ export default {
     },
     updateUser(getUser) {
       console.log("update user");
+      /*string field,string finthis, update */
       this.store.dispatch("updateUser", getUser);
     }
   }

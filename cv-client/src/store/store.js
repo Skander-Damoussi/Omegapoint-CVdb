@@ -9,7 +9,7 @@ const getDefaultState = () => {
     loggedIn: false,
     user: {},
     users: [],
-    cvList: [],
+    consultantList: []
   };
 };
 
@@ -29,31 +29,49 @@ export default new Vuex.Store({
     updateUser(state, updatedUser) {
       state.user = updatedUser;
     },
-    setCvList(state, list) {
-      state.cvList = list;
-    },
+    setConsultantList(state, list) {
+      state.consultantList = list;
+    }
   },
   actions: {
     async login({ commit }) {
       commit("setUser");
     },
-    async updateUser({ commit }) {
-      commit("updateUser");
+    async updateUser({ commit }, user) {
+      /* string field,string finthis, update */
+
+      // const url = `user/${field}/${findThis}/${update}`;
+      // await Axios.put(url, field, findThis, update)
+      //   .then(async (resp) => {
+      //     this.user = resp;
+      //   })
+      //   .catch((err) => console.log(err));
+      // commit("setUser", this.user);
+
+      await Axios.put(`user/${user.Email}`, user)
+        .then(async resp => {
+          this.user = resp;
+        })
+        .catch(err => console.log(err));
+      commit("updateUser", this.user);
     },
     async logOut({ commit }) {
       commit("resetState");
     },
-    async getCvList({ commit }) {
-      //fetch from api
-      const list = [];
-      commit("setCvList", list);
+    async getConsultantList({ commit }) {
+      await Axios.get(`user/consultant`)
+        .then(async resp => {
+          this.consultantList = resp;
+        })
+        .catch(err => console.log(err));
+      commit("setConsultantList", this.consultantList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
-        .then(async resp => {
+        .then(async (resp) => {
           this.users = resp;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
       commit("setUsers", this.users);
     }
   },
@@ -64,8 +82,8 @@ export default new Vuex.Store({
     getUser(state) {
       return state.user;
     },
-    getCvList(state) {
-      return state.cvList;
-    },
-  },
+    getConsultantList(state) {
+      return state.consultantList;
+    }
+  }
 });
