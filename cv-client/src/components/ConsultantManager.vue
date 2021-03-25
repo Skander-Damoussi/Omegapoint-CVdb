@@ -15,6 +15,7 @@
             type="text"
             id="searchInput"
             class="searchInput"
+            v-model="searchString"
             @keyup.enter="search()"
             placeholder="Sök"
           />
@@ -52,22 +53,23 @@ export default {
   components: {
     RegisterUser
   },
-  // data() {
-  //   return {
-  //     test: [
-  //       {
-  //         index: "0",
-  //         fName: "Test",
-  //         lName: "Testsson",
-  //       },
-  //       {
-  //         index: "1",
-  //         fName: "Test1",
-  //         lName: "Testsson1",
-  //       },
-  //     ],
-  //   };
-  // },
+  data() {
+    return {
+      searchString: ""
+      //     test: [
+      //       {
+      //         index: "0",
+      //         fName: "Test",
+      //         lName: "Testsson",
+      //       },
+      //       {
+      //         index: "1",
+      //         fName: "Test1",
+      //         lName: "Testsson1",
+      //       },
+      //     ],
+    };
+  },
   computed: {
     consultantList() {
       console.log("computed");
@@ -83,6 +85,8 @@ export default {
     },
     search() {
       console.log("search");
+      console.log(this.searchString);
+      this.store.dispatch("search", this.searchString);
     }
   }
 };

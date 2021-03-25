@@ -49,10 +49,10 @@ export default new Vuex.Store({
       // commit("setUser", this.user);
 
       await Axios.put(`user/${user.Email}`, user)
-        .then(async resp => {
+        .then(async (resp) => {
           this.user = resp;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
       commit("updateUser", this.user);
     },
     async logOut({ commit }) {
@@ -60,10 +60,10 @@ export default new Vuex.Store({
     },
     async getConsultantList({ commit }) {
       await Axios.get(`user/consultant`)
-        .then(async resp => {
+        .then(async (resp) => {
           this.consultantList = resp;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
       commit("setConsultantList", this.consultantList);
     },
     async getUsers({ commit }) {
@@ -73,6 +73,14 @@ export default new Vuex.Store({
         })
         .catch((err) => console.log(err));
       commit("setUsers", this.users);
+    },
+    async search({ commit }, searchString) {
+      await Axios.get("user/", searchString)
+        .then(async (resp) => {
+          this.consultantList = resp;
+        })
+        .catch((err) => console.log(err));
+      commit("setConsultantList", this.consultantList);
     }
   },
   getters: {
