@@ -8,24 +8,24 @@
           type="text"
           id="fname"
           name="fname"
-          v-model="user.FirstName"
+          v-model="newUser.FirstName"
         /><br /><br />
         <label for="lname">Efternamn</label><br />
         <input
           type="text"
           id="lname"
           name="lname"
-          v-model="user.LastName"
+          v-model="newUser.LastName"
         /><br /><br />
         <label for="lname">E-post</label><br />
         <input
           type="text"
           id="email"
           name="email"
-          v-model="user.Email"
+          v-model="newUser.Email"
         /><br /><br />
         <label for="lname">Roll</label><br />
-        <select id="animal-select" v-model="user.Role">
+        <select id="animal-select" v-model="newUser.Role">
           <option value="Konsult" selected>Konsult</option>
           <option value="Admin">Admin</option>
           <option value="Konsultchef">Konsultchef</option>
@@ -35,7 +35,7 @@
           type="text"
           id="email"
           name="email"
-          v-model="user.Password"
+          v-model="newUser.Password"
         /><br /><br />
         <div class="buttonDiv">
           <input
@@ -59,19 +59,28 @@ export default {
   name: "RegisterUser",
   data() {
     return {
-      user: [{
+      newUser: {
         FirstName: "",
         LastName: "",
-        Email: "",
+        UserName: "skanne",
+        Password: "",
         Role: "",
-        Password: ""
-      }]
+        Email: "",
+        PhoneNo: "0424242"
+      }
     };
   },
   methods: {
     async register() {
-      console.log(this.user);
-      await this.$store.dispatch("registerUser", this.user);
+      await this.$store.dispatch("registerUser", {
+        FirstName: this.newUser.FirstName,
+        LastName: this.newUser.LastName,
+        UserName: this.newUser.UserName,
+        Password: this.newUser.Password,
+        Role: this.newUser.Role,
+        Email: this.newUser.Email,
+        PhoneNo: this.newUser.PhoneNo
+      });
     }
   }
 };

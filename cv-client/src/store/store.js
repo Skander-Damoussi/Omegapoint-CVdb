@@ -9,7 +9,7 @@ const getDefaultState = () => {
     loggedIn: false,
     user: {},
     users: [],
-    cvList: [],
+    cvList: []
   };
 };
 
@@ -56,12 +56,18 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
       commit("setUsers", this.users);
     },
-    async registerUser(userinput) {
-      await Axios.post("user/", userinput)
+    async registerUser({ commit }, input) {
+      console.log(input);
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      await Axios.post("user", input, { headers: headers })
         .then(async resp => {
           console.log(resp);
         })
         .catch(err => console.log(err));
+      commit("setUsers", this.users);
     }
   },
   getters: {
