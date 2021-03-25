@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace cv_api.Repository
 {
-    public class Document
+    public abstract class Document : IDocument
     {
         public ObjectId Id { get; set; }
 
