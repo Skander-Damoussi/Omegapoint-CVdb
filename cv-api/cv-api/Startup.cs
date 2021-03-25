@@ -1,3 +1,4 @@
+using cv_api.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,18 @@ namespace cv_api
 {
     public class Startup
     {
+        public interface IMongoDbSettings
+        {
+            string DatabaseName { get; set; }
+            string ConnectionString { get; set; }
+        }
+
+        public class MongoDbSettings : IMongoDbSettings
+        {
+            public string DatabaseName { get; set; }
+            public string ConnectionString { get; set; }
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,6 +50,14 @@ namespace cv_api
                                         .AllowAnyOrigin();
                 });
             });
+
+            services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
+
+            services.AddSingleton<IMongoDbSettings>(serviceProvider =>
+                serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+
+            services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+
             services.AddControllers();
         }
 
