@@ -30,8 +30,8 @@
         </tr>
         <tr v-for="(i, index) in consultantList" :key="index">
           <th>{{ i.index }}</th>
-          <th>{{ i.fName }}</th>
-          <th>{{ i.lName }}</th>
+          <th>{{ i.firstName }}</th>
+          <th>{{ i.lastName }}</th>
           <th>
             <p class="icon-click" v-on:click="showCV(i.index)">
               <i class="fas fa-eye"></i>
