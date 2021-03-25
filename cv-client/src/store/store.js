@@ -59,11 +59,11 @@ export default new Vuex.Store({
       commit("resetState");
     },
     async getConsultantList({ commit }) {
-      await Axios.get("consultantList/")
+      await Axios.get(`user/consultant`)
         .then(async resp => {
-          this.users = resp;
+          this.consultantList = resp;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setConsultantList", this.consultantList);
     },
     async getUsers({ commit }) {
