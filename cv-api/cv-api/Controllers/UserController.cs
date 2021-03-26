@@ -8,6 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using cv_api.Models;
 using MongoDB.Bson.Serialization;
+using cv_api.Repository;
 
 namespace cv_api.Controllers
 {
@@ -16,43 +17,54 @@ namespace cv_api.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
+        private readonly IMongoRepository<User> _userRepository;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(ILogger<UserController> logger, IMongoRepository<User> userRepository)
         {
             _logger = logger;
+            _userRepository = userRepository;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("getUsers")]
+        public IEnumerable<string> GetUsers() //TODO: Kommer vi behöver hämta alla users?
         {
-            repository Users = new repository();
-            List<BsonDocument> list = Users.Get("user").ToList();
+            var people = _userRepository.FilterBy(
+                filter => filter.FirstName != "Horse",
+                projection => projection.FirstName
+            );
+            return people;
+        }
 
-            List<User> result = new List<User>();
-
-            foreach(BsonDocument user in list)
+        [HttpPost("registerUser")]
+        public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
+        {
+            try
             {
-               result.Add(BsonSerializer.Deserialize<User>(user));
+                await _userRepository.InsertOneAsync(newUser);
+                return Ok();
+            }
+            catch
+            {
+                // Conflict with the current state of the target resource StatusCode(409);
+                return Conflict();
             }
 
-            return Ok(result);
+            //repository Users = new repository();
+            //Users.Post("user", newUser);
+            //return Ok();
         }
 
-        [HttpPost]
-        public IActionResult Post(User newUser)
-        {
-            repository Users = new repository();
-            Users.Post("user", newUser);
-            return Ok();
-        }
+        ////https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
+        //[HttpPut("updateUser")]
+        //public async Task<User> Put(User user)
+        //{
+        //    //repository Users = new repository();
+        //    //Users.Update("user", new BsonDocument(field, findThis), field, update);
+        //    //return Ok(user);
 
-        //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
-        [HttpPut]
-        public IActionResult Put(string field, string findThis, string update)
-        {
-            repository Users = new repository();
-            Users.Update("user", new BsonDocument(field, findThis), field, update);
-            return Ok();
-        }
+        //    await _userRepository.
+
+        //}
+
     }
 }
