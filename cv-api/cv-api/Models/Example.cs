@@ -12,5 +12,6 @@ namespace cv_api.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
+        public List<string> Foo {get; set; }
     }
 }
