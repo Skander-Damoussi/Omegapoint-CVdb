@@ -8,6 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using cv_api.Models;
 using MongoDB.Bson.Serialization;
+using cv_api.Repository;
 
 namespace cv_api.Controllers
 {
@@ -16,34 +17,28 @@ namespace cv_api.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
+        private readonly IMongoRepository<User> _userRepository;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(ILogger<UserController> logger, IMongoRepository<User> userRepository)
         {
             _logger = logger;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IEnumerable<string> Get()
         {
-            repository Users = new repository();
-            List<BsonDocument> list = Users.Get("user").ToList();
+            var users = _userRepository.FilterBy(
+                filter => filter.FirstName != "",
+                projection => projection.FirstName);
 
-            List<User> result = new List<User>();
-
-            foreach(BsonDocument user in list)
-            {
-               result.Add(BsonSerializer.Deserialize<User>(user));
-            }
-
-            return Ok(result);
+            return users;
         }
 
         [HttpPost]
-        public IActionResult Post(User newUser)
+        public async Task Post(User newUser)
         {
-            repository Users = new repository();
-            Users.Post("user", newUser);
-            return Ok();
+            await _userRepository.InsertOneAsync(newUser);
         }
 
         //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
