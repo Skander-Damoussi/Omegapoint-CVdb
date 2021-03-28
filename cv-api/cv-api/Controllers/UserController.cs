@@ -6,6 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using cv_api.Models;
 using cv_api.Repository;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace cv_api.Controllers
 {
@@ -15,11 +20,13 @@ namespace cv_api.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IMongoRepository<User> _userRepository;
+        private readonly IConfiguration _configuration;
 
-        public UserController(ILogger<UserController> logger, IMongoRepository<User> userRepository)
+        public UserController(ILogger<UserController> logger, IMongoRepository<User> userRepository, IConfiguration configuration)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -45,6 +52,37 @@ namespace cv_api.Controllers
             //repository Users = new repository();
             //Users.Update("user", new BsonDocument(field, findThis), field, update);
             return Ok();
+        }
+
+        public string Authenticate(string email, string password)
+        {
+            var user = _userRepository.FindOne(
+                filter => filter.Email == email && filter.Password == password);
+
+            if (user == null)
+                return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]{
+                    new Claim(ClaimTypes.Email, email)
+                }),
+
+                Expires = DateTime.UtcNow.AddHours(1),
+
+                SigningCredentials = new SigningCredentials(
+                    tokenKey,
+                    SecurityAlgorithms.HmacSha256Signature
+                    )
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }
