@@ -54,6 +54,17 @@ namespace cv_api.Controllers
             return Ok();
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(Login user)
+        {
+            var token = Authenticate(user.Email, user.Password);
+
+            if (token == null)
+                return Unauthorized();
+
+            return Ok(token);
+        }
+
         public string Authenticate(string email, string password)
         {
             var user = _userRepository.FindOne(
