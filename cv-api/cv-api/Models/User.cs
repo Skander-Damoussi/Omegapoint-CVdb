@@ -8,7 +8,7 @@ using cv_api.Repository;
 
 namespace cv_api.Models
 {
-    [BsonCollection("user")]
+    [BsonCollection("Users")]
     public class User : Document
     {
         [Required]
@@ -30,5 +30,6 @@ namespace cv_api.Models
         public string Email { get; set; }
 
         public string PhoneNo { get; set; }
+
     }
 }

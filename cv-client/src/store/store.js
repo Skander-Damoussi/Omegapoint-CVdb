@@ -34,7 +34,12 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async login({ commit }) {
+    async login({ commit }, user) {
+      await Axios.post("user/login", user)
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
       commit("setUser");
     },
     async updateUser({ commit }, user) {
@@ -73,6 +78,19 @@ export default new Vuex.Store({
           this.users = resp;
         })
         .catch((err) => console.log(err));
+      commit("setUsers", this.users);
+    },
+    async registerUser({ commit }, input) {
+      console.log(input);
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      await Axios.post("user", input, { headers: headers })
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
       commit("setUsers", this.users);
     }
   },

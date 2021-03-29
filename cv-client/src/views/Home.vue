@@ -7,7 +7,7 @@
       <form @submit.prevent="login" id="loginForm">
         <label for="email">Användarnamn</label>
         <input
-          v-model="email"
+          v-model="user.Email"
           type="text"
           placeholder="demo@omegapoint.se"
           name="email"
@@ -16,7 +16,7 @@
 
         <label for="password">Lösenord</label>
         <input
-          v-model="password"
+          v-model="user.Password"
           type="password"
           placeholder="*********"
           name="password"
@@ -24,7 +24,12 @@
         />
 
         <div class="formRow">
-          <input id="loginButton" type="submit" value="Logga in" />
+          <input
+            id="loginButton"
+            type="submit"
+            value="Logga in"
+            @click="login"
+          />
         </div>
       </form>
     </div>
@@ -34,11 +39,19 @@
 <script>
 export default {
   name: "Home",
+  data() {
+    return {
+      user: {
+        Email: "",
+        Password: ""
+      }
+    };
+  },
   components: {},
   methods: {
     async login() {
-      await this.$store.dispatch("login");
-      this.$router.push("/about");
+      await this.$store.dispatch("login", this.user);
+      //this.$router.push("/about");
     }
   }
 };
