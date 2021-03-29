@@ -22,7 +22,7 @@ namespace cv_api.Controllers
             _searchRepository = searchRepository;
         }
 
-        [HttpGet("getSearchResult")]
+        [HttpGet("getSearchResult/search")]
         public IEnumerable<User> GetSearchResult(string search) 
         {
             //var people = _searchRepository.FilterBy(
@@ -31,7 +31,7 @@ namespace cv_api.Controllers
             //);
             //return people.ToList<User>();
             var result = _searchRepository.FilterBy(
-                filter => filter.Role == "Consultant");
+                filter => filter.Role == "Admin" && filter.FirstName == search);
 
             return result;
         }
