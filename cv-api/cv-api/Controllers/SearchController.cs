@@ -21,9 +21,20 @@ namespace cv_api.Controllers
             _logger = logger;
             _searchRepository = searchRepository;
         }
-        public IActionResult Index()
+
+        [HttpGet("getSearchResult")]
+        public IEnumerable<string> GetSearchResult() 
         {
-            return Ok();
+            //var people = _searchRepository.FilterBy(
+            //    filter => filter.Role == "Consultant",
+            //    projection => projection.Role
+            //);
+            //return people.ToList<User>();
+            var result = _searchRepository.FilterBy(
+                filter => filter.Role == "Consultant",
+                projection => projection.Role);
+
+            return result;
         }
     }
 }
