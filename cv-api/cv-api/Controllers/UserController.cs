@@ -53,7 +53,13 @@ namespace cv_api.Controllers
             //repository Users = new repository();
             //Users.Update("user", new BsonDocument(field, findThis), field, update);
             return Ok();
-        }
+
+        //            public virtual async Task ReplaceOneAsync(TDocument document)
+        //{
+        //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+        //    await _collection.FindOneAndReplaceAsync(filter, document);
+        //}
+    }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login (Login user)
