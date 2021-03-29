@@ -34,7 +34,12 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async login({ commit }) {
+    async login({ commit }, user) {
+      await Axios.post("user/login", user)
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
       commit("setUser");
     },
     async updateUser({ commit }, user) {
