@@ -45,7 +45,12 @@ export default {
   },
   methods: {
     async register() {
-      await this.$store.dispatch("registerUser", this.newUser)
+      console.log(this.$store.getters.getUserToken);
+      await this.$store.dispatch(
+        "registerUser",
+        this.$store.getters.getUserToken,
+        this.newUser
+      );
     }
   }
 };

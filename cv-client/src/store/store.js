@@ -9,7 +9,8 @@ const getDefaultState = () => {
     loggedIn: false,
     user: {},
     users: [],
-    consultantList: []
+    consultantList: [],
+    token: null
   };
 };
 
@@ -31,6 +32,9 @@ export default new Vuex.Store({
     },
     setConsultantList(state, list) {
       state.consultantList = list;
+    },
+    setToken(state, token) {
+      state.token = token;
     }
   },
   actions: {
@@ -38,9 +42,9 @@ export default new Vuex.Store({
       await Axios.post("user/login", user)
         .then(async resp => {
           console.log(resp);
+          commit("setToken", resp.data);
         })
         .catch(err => console.log(err));
-      commit("setUser");
     },
     async updateUser({ commit }, user) {
       /* string field,string finthis, update */
@@ -80,13 +84,15 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setUsers", this.users);
     },
-    async registerUser({ commit }, input) {
+    async registerUser({ commit }, token, input) {
       console.log(input);
-      const headers = {
-        "Content-Type": "application/json"
-      };
 
-      await Axios.post("user", input, { headers: headers })
+      await Axios.post("user", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
         .then(async resp => {
           console.log(resp);
         })
@@ -103,6 +109,9 @@ export default new Vuex.Store({
     },
     getConsultantList(state) {
       return state.consultantList;
+    },
+    getUserToken(state) {
+      return state.token;
     }
   }
 });
