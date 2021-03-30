@@ -12,6 +12,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace cv_api.Controllers
 {
@@ -49,11 +51,12 @@ namespace cv_api.Controllers
             return result;
         }
 
-        //[HttpPost]
-        //public async Task Post(User newUser)
-        //{
-        //    await _userRepository.InsertOneAsync(newUser);
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task Post(User newUser)
+        {
+            await _userRepository.InsertOneAsync(newUser);
+        }
 
         //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
         [HttpPut]
@@ -83,6 +86,7 @@ namespace cv_api.Controllers
 
         public string Authenticate(string email, string password)
         {
+
             var user = _userRepository.FindOne(
                 filter => filter.Email == email && filter.Password == password);
 
@@ -91,20 +95,21 @@ namespace cv_api.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]);
 
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.Email, email)
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
 
                 Expires = DateTime.UtcNow.AddHours(1),
 
                 SigningCredentials = new SigningCredentials(
-                    tokenKey,
+                    new SymmetricSecurityKey(tokenKey),
                     SecurityAlgorithms.HmacSha256Signature
-                    )
+                    ),
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -113,24 +118,24 @@ namespace cv_api.Controllers
         }
 
 
-        [HttpPost("registerUser")]
-        public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
-        {
-            try
-            {
-                await _userRepository.InsertOneAsync(newUser);
-                return Ok();
-            }
-            catch
-            {
-                // Conflict with the current state of the target resource StatusCode(409);
-                return Conflict();
-            }
+        //[HttpPost("registerUser")]
+        //public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
+        //{
+        //    try
+        //    {
+        //        await _userRepository.InsertOneAsync(newUser);
+        //        return Ok();
+        //    }
+        //    catch
+        //    {
+        //        // Conflict with the current state of the target resource StatusCode(409);
+        //        return Conflict();
+        //    }
 
             //repository Users = new repository();
             //Users.Post("user", newUser);
             //return Ok();
-        }
+        //}
 
         ////https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
         //[HttpPut("updateUser")]

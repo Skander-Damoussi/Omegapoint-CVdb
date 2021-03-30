@@ -51,7 +51,7 @@ import RegisterUser from "./RegisterUser.vue";
 export default {
   name: "ConsultantManager",
   components: {
-    RegisterUser,
+    RegisterUser
   },
   data() {
     return {
@@ -74,7 +74,7 @@ export default {
     consultantList() {
       console.log("computed");
       return this.$store.getters.getConsultantList;
-    },
+    }
   },
   methods: {
     showCV(index) {
