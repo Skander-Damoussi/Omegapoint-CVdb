@@ -84,13 +84,11 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setUsers", this.users);
     },
-    async registerUser({ commit }, token, input) {
-      console.log(input);
-
+    async registerUser({ commit }, { token, input }) {
       await Axios.post("user", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: "Bearer " + token
         }
       })
         .then(async resp => {
