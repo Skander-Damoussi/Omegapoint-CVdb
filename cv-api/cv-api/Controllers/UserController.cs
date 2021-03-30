@@ -40,6 +40,15 @@ namespace cv_api.Controllers
             return users;
         }
 
+        [HttpGet("getConsultantList")]
+        public IEnumerable<User> GetSearchResult(string search)
+        {
+            var result = _userRepository.FilterBy(
+                filter => filter.Role == "Consultant");
+
+            return result;
+        }
+
         //[HttpPost]
         //public async Task Post(User newUser)
         //{
