@@ -29,9 +29,9 @@
           <th></th>
         </tr>
         <tr v-for="(i, index) in consultantList" :key="index">
-          <th>{{ i.index }}</th>
-          <th>{{ i.fName }}</th>
-          <th>{{ i.lName }}</th>
+          <th>{{ index }}</th>
+          <th>{{ i.firstName }}</th>
+          <th>{{ i.lastName }}</th>
           <th>
             <p class="icon-click" v-on:click="showCV(i.index)">
               <i class="fas fa-eye"></i>
@@ -72,7 +72,6 @@ export default {
   },
   computed: {
     consultantList() {
-      console.log("computed");
       return this.$store.getters.getConsultantList;
     }
   },
@@ -80,12 +79,12 @@ export default {
     showCV(index) {
       console.log("click", index);
     },
-    mounted() {
-      this.store.dispatch("getConsultantList");
-    },
     search() {
       console.log("search");
     }
+  },
+  mounted() {
+    this.$store.dispatch("getConsultantList");
   }
 };
 </script>
