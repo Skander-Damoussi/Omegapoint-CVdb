@@ -41,7 +41,7 @@ namespace cv_api.Controllers
         }
 
         [HttpGet("getConsultantList")]
-        public IEnumerable<User> GetSearchResult(string search)
+        public IEnumerable<User> GetConsultantList()
         {
             var result = _userRepository.FilterBy(
                 filter => filter.Role == "Consultant");
