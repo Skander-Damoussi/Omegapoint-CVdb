@@ -46,7 +46,7 @@ namespace cv_api.Controllers
         public IEnumerable<User> GetConsultantList()
         {
             var result = _userRepository.FilterBy(
-                filter => filter.Role == "Consultant");
+                filter => filter.Role == "Konsult" || filter.Role == "Consultant");
 
             return result;
         }

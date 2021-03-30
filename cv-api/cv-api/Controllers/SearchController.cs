@@ -31,7 +31,7 @@ namespace cv_api.Controllers
             //);
             //return people.ToList<User>();
             var result = _searchRepository.FilterBy(
-                filter => filter.Role == "Consultant" && filter.FirstName == search);
+                filter => filter.Role == "Consultant" || filter.Role == "Konsult" && filter.FirstName == search);
 
             return result;
         }
