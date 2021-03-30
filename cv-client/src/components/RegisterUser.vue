@@ -4,11 +4,27 @@
     <div class="formDiv">
       <form>
         <label for="fname">Förnamn</label><br />
-        <input type="text" id="fname" name="fname" class="input" v-model="newUser.FirstName"/><br /><br />
+        <input
+          type="text"
+          id="fname"
+          name="fname"
+          class="input"
+          v-model="newUser.FirstName"
+        /><br /><br />
         <label for="lname">Efternamn</label><br />
-        <input type="text" id="lname" name="lname" v-model="newUser.LastName"/><br /><br />
+        <input
+          type="text"
+          id="lname"
+          name="lname"
+          v-model="newUser.LastName"
+        /><br /><br />
         <label for="lname">E-post</label><br />
-        <input type="text" id="email" name="email" v-model="newUser.Email"/><br /><br />
+        <input
+          type="text"
+          id="email"
+          name="email"
+          v-model="newUser.Email"
+        /><br /><br />
         <label for="lname">Roll</label><br />
         <select id="animal-select" v-model="newUser.Role">
           <option value="Konsult" selected>Konsult</option>
@@ -16,9 +32,19 @@
           <option value="Konsultchef">Konsultchef</option>
         </select>
         <br /><br /><label for="lname">Lösenord</label><br />
-        <input type="text" id="email" name="email" v-model="newUser.Password"/><br /><br />
+        <input
+          type="text"
+          id="email"
+          name="email"
+          v-model="newUser.Password"
+        /><br /><br />
         <div class="buttonDiv">
-          <input type="button" value="Registrera" class="button" @click="register"/>
+          <input
+            type="button"
+            value="Registrera"
+            class="button"
+            @click="register"
+          />
         </div>
       </form>
     </div>
@@ -45,7 +71,10 @@ export default {
   },
   methods: {
     async register() {
-      await this.$store.dispatch("registerUser", this.newUser)
+      await this.$store.dispatch("registerUser", {
+        token: this.$store.getters.getUserToken,
+        input: this.newUser
+      });
     }
   }
 };
