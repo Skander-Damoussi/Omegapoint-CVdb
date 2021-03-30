@@ -15,6 +15,7 @@
             type="text"
             id="searchInput"
             class="searchInput"
+            v-model="searchString"
             @keyup.enter="search()"
             placeholder="Sök"
           />
@@ -50,29 +51,30 @@ import RegisterUser from "./RegisterUser.vue";
 export default {
   name: "ConsultantManager",
   components: {
-    RegisterUser
+    RegisterUser,
   },
-  // data() {
-  //   return {
-  //     test: [
-  //       {
-  //         index: "0",
-  //         fName: "Test",
-  //         lName: "Testsson",
-  //       },
-  //       {
-  //         index: "1",
-  //         fName: "Test1",
-  //         lName: "Testsson1",
-  //       },
-  //     ],
-  //   };
-  // },
+  data() {
+    return {
+      searchString: ""
+      //     test: [
+      //       {
+      //         index: "0",
+      //         fName: "Test",
+      //         lName: "Testsson",
+      //       },
+      //       {
+      //         index: "1",
+      //         fName: "Test1",
+      //         lName: "Testsson1",
+      //       },
+      //     ],
+    };
+  },
   computed: {
     consultantList() {
       console.log("computed");
       return this.$store.getters.getConsultantList;
-    }
+    },
   },
   methods: {
     showCV(index) {
