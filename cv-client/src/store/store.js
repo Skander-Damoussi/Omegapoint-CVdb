@@ -76,6 +76,14 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
       commit("setConsultantList", this.consultantList);
     },
+    async searchConsultant({ commit }) {
+      await Axios.get("search/")
+        .then(async resp => {
+          this.consultantList = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setConsultantList", this.consultantList);
+    },
     async getUsers({ commit }) {
       await Axios.get("user/")
         .then(async (resp) => {
