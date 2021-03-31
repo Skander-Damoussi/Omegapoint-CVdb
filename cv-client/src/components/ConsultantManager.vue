@@ -81,6 +81,7 @@ export default {
     },
     search() {
       console.log("search");
+      this.$store.dispatch("searchConsultant", this.searchString);
     }
   },
   mounted() {
