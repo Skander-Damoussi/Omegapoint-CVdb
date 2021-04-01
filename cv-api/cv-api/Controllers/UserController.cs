@@ -57,6 +57,16 @@ namespace cv_api.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        public async Task UpdateUser(User user)
+        {
+            //var filter = _userRepository.FilterBy(
+            //   filter => filter.Email == user.Email);
+            //_userRepository.ReplaceOneAsync(filter, user);
+
+            await _userRepository.ReplaceOneAsync(user);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(Login user)
         {
