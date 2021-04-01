@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cv_api.Models;
+using MongoDB.Bson.Serialization;
 using cv_api.Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -41,6 +42,15 @@ namespace cv_api.Controllers
             return users;
         }
 
+        [HttpGet("getConsultantList")]
+        public IEnumerable<User> GetConsultantList()
+        {
+            var result = _userRepository.FilterBy(
+                filter => filter.Role == "Konsult" || filter.Role == "Consultant");
+
+            return result;
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task Post(User newUser)
@@ -55,10 +65,16 @@ namespace cv_api.Controllers
             //repository Users = new repository();
             //Users.Update("user", new BsonDocument(field, findThis), field, update);
             return Ok();
-        }
+
+        //            public virtual async Task ReplaceOneAsync(TDocument document)
+        //{
+        //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+        //    await _collection.FindOneAndReplaceAsync(filter, document);
+        //}
+    }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(Login user)
+        public async Task<IActionResult> Login (Login user)
         {
             var token = Authenticate(user.Email, user.Password);
 
@@ -100,5 +116,38 @@ namespace cv_api.Controllers
 
             return tokenHandler.WriteToken(token);
         }
+
+
+        //[HttpPost("registerUser")]
+        //public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
+        //{
+        //    try
+        //    {
+        //        await _userRepository.InsertOneAsync(newUser);
+        //        return Ok();
+        //    }
+        //    catch
+        //    {
+        //        // Conflict with the current state of the target resource StatusCode(409);
+        //        return Conflict();
+        //    }
+
+            //repository Users = new repository();
+            //Users.Post("user", newUser);
+            //return Ok();
+        //}
+
+        ////https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
+        //[HttpPut("updateUser")]
+        //public async Task<User> Put(User user)
+        //{
+        //    //repository Users = new repository();
+        //    //Users.Update("user", new BsonDocument(field, findThis), field, update);
+        //    //return Ok(user);
+
+        //    await _userRepository.
+
+        //}
+
     }
 }

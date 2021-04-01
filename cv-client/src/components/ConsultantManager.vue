@@ -15,6 +15,7 @@
             type="text"
             id="searchInput"
             class="searchInput"
+            v-model="searchString"
             @keyup.enter="search()"
             placeholder="Sök"
           />
@@ -28,9 +29,9 @@
           <th></th>
         </tr>
         <tr v-for="(i, index) in consultantList" :key="index">
-          <th>{{ i.index }}</th>
-          <th>{{ i.fName }}</th>
-          <th>{{ i.lName }}</th>
+          <th>{{ index }}</th>
+          <th>{{ i.firstName }}</th>
+          <th>{{ i.lastName }}</th>
           <th>
             <p class="icon-click" v-on:click="showCV(i.index)">
               <i class="fas fa-eye"></i>
@@ -52,25 +53,25 @@ export default {
   components: {
     RegisterUser
   },
-  // data() {
-  //   return {
-  //     test: [
-  //       {
-  //         index: "0",
-  //         fName: "Test",
-  //         lName: "Testsson",
-  //       },
-  //       {
-  //         index: "1",
-  //         fName: "Test1",
-  //         lName: "Testsson1",
-  //       },
-  //     ],
-  //   };
-  // },
+  data() {
+    return {
+      searchString: ""
+      //     test: [
+      //       {
+      //         index: "0",
+      //         fName: "Test",
+      //         lName: "Testsson",
+      //       },
+      //       {
+      //         index: "1",
+      //         fName: "Test1",
+      //         lName: "Testsson1",
+      //       },
+      //     ],
+    };
+  },
   computed: {
     consultantList() {
-      console.log("computed");
       return this.$store.getters.getConsultantList;
     }
   },
@@ -78,12 +79,13 @@ export default {
     showCV(index) {
       console.log("click", index);
     },
-    mounted() {
-      this.store.dispatch("getConsultantList");
-    },
     search() {
       console.log("search");
+      this.$store.dispatch("searchConsultant", this.searchString);
     }
+  },
+  mounted() {
+    this.$store.dispatch("getConsultantList");
   }
 };
 </script>
