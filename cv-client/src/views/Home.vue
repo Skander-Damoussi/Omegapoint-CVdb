@@ -28,7 +28,7 @@
             id="loginButton"
             type="submit"
             value="Logga in"
-            @click="login"
+            @click.prevent="login"
           />
         </div>
       </form>
@@ -51,11 +51,11 @@ export default {
   methods: {
     async login() {
       await this.$store.dispatch("login", this.user);
-
-      console.log(this.$store.getters.getUserRole)
-      if (this.$store.getters.getUserRole == null) {
-        alert("Wrong username or password");
-      }
+      var sUser = this.$store.getters.getLoggedInUser;
+      console.log(sUser.firstName);
+      // if (this.$store.getters.getUserRole == null) {
+      //   alert("Wrong username or password");
+      // }
       //this.$router.push("/about");
     }
   }

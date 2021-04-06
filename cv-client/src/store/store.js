@@ -8,6 +8,7 @@ const getDefaultState = () => {
   return {
     loggedIn: false,
     user: {},
+    loggedInUser: {},
     users: [],
     consultantList: [],
     token: null,
@@ -39,15 +40,23 @@ export default new Vuex.Store({
     },
     setToken(state, token) {
       state.token = token;
+    },
+    setLoggedInUser(state, token) {
+      state.loggedInUser = token;
     }
   },
   actions: {
     async login({ commit }, user) {
       await Axios.post("user/login", user)
         .then(async resp => {
-          await console.log(resp);
+          var respUser = {
+            id: resp.data.userId,
+            firstName: resp.data.firstName,
+            lastName: resp.data.lastName,
+            role: resp.data.role
+          }
           await commit("setToken", resp.data.token);
-          await commit("setRole", resp.data.role);
+          await commit("setLoggedInUser", respUser);
         })
         .catch(err => console.log(err));
     },
@@ -124,8 +133,8 @@ export default new Vuex.Store({
     getUserToken(state) {
       return state.token;
     },
-    getUserRole(state) {
-      return state.role;
+    getLoggedInUser(state) {
+      return state.loggedInUser;
     }
   }
 });

@@ -108,7 +108,10 @@ namespace cv_api.Controllers
             return Ok(new
             {
                 Token = tokenHandler.WriteToken(token),
-                role = user.Role
+                role = user.Role,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                userId = user.Id.ToString()
             });
         }
 
