@@ -83,25 +83,16 @@ namespace cv_api.Controllers
             await _userRepository.ReplaceOneAsync(user);
         }
 
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login (Login user)
-        {
-            var token = Authenticate(user.Email, user.Password);
-
-            if (token == null)
-                return Unauthorized();
-
-            return Ok(token);
-        }
-
-        public string Authenticate(string email, string password)
+        public async Task<IActionResult> Authenticate(Login userInput)
         {
 
             var user = _userRepository.FindOne(
-                filter => filter.Email == email && filter.Password == password);
+                filter => filter.Email == userInput.Email && filter.Password == userInput.Password);
 
             if (user == null)
-                return null;
+                return Unauthorized();
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -110,7 +101,7 @@ namespace cv_api.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
 
@@ -124,7 +115,14 @@ namespace cv_api.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return Ok(new
+            {
+                Token = tokenHandler.WriteToken(token),
+                role = user.Role,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                userId = user.Id.ToString()
+            });
         }
 
 
