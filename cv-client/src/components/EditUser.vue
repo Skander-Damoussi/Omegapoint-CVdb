@@ -18,27 +18,22 @@
         <label for="confirmPassword">Bekräfta lösenord</label>
         <input type="text" required id="confirmPassword" />
       </div> -->
-      <div>
+      <div class="section">
         <label for="password">Lösenord</label>
         <input
           type="password"
           id="password"
-          v-model="user.password"
-          v-validate="'required|min:6|max:35|confirmed'"
+          v-model="password"
           name="password"
           ref="password"
         />
       </div>
-      <div>
-        <span>{{ errors.first("password") }}</span>
-      </div>
-      <div>
+      <div class="section">
         <label for="confirmPassword">Bekräfta lösenord</label>
         <input
           type="password"
           id="confirmPassword"
           v-model="confirmation"
-          v-validate="'required|confirmed:password'"
           name="confirmPassword"
         />
         <!-- </div>
@@ -68,16 +63,17 @@ export default {
   name: "EditUser",
   data() {
     return {
+      password: "",
       confirmation: ""
     };
   },
   computed: {
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.getters.getLoggedInUser;
     }
   },
   mounted() {
-    this.$store.dispatch("getUser");
+    //this.$store.dispatch("getLoggedInUser");
     console.log("user", this.user.firstName);
   },
   methods: {
