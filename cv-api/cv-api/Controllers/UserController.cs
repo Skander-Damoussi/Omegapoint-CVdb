@@ -66,14 +66,14 @@ namespace cv_api.Controllers
             //Users.Update("user", new BsonDocument(field, findThis), field, update);
             return Ok();
 
-        //            public virtual async Task ReplaceOneAsync(TDocument document)
-        //{
-        //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-        //    await _collection.FindOneAndReplaceAsync(filter, document);
-        //}
-    }
+            //            public virtual async Task ReplaceOneAsync(TDocument document)
+            //{
+            //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+            //    await _collection.FindOneAndReplaceAsync(filter, document);
+            //}
+        }
 
-        [HttpPut]
+        [HttpPut("updateUser/{user}")]
         public async Task UpdateUser(User user)
         {
             //var filter = _userRepository.FilterBy(

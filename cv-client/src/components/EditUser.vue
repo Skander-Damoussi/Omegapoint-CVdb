@@ -4,25 +4,58 @@
       <h1>Användaruppgifter</h1>
       <div class="section">
         <label for="firstName">Förnamn</label>
-        <input type="text" v-model="getUser" id="firstName" />
+        <input type="text" v-model="user.firstName" id="firstName" />
       </div>
       <div class="section">
         <label for="lastName">Efternamn</label>
-        <input type="text" v-model="getUser" id="lastName" />
+        <input type="text" v-model="user.lastName" id="lastName" />
       </div>
-      <div class="section">
+      <!-- <div class="section">
         <label for="password">Lösenord</label>
-        <input type="text" placeholder="******" required id="password" />
+        <input type="text" v-model="user.password" required id="password" />
       </div>
       <div class="section">
         <label for="confirmPassword">Bekräfta lösenord</label>
-        <input type="text" placeholder="******" required id="confirmPassword" />
+        <input type="text" required id="confirmPassword" />
+      </div> -->
+      <div>
+        <label for="password">Lösenord</label>
+        <input
+          type="password"
+          id="password"
+          v-model="user.password"
+          v-validate="'required|min:6|max:35|confirmed'"
+          name="password"
+          ref="password"
+        />
+      </div>
+      <div>
+        <span>{{ errors.first("password") }}</span>
+      </div>
+      <div>
+        <label for="confirmPassword">Bekräfta lösenord</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          v-model="confirmation"
+          v-validate="'required|confirmed:password'"
+          name="confirmPassword"
+        />
+        <!-- </div>
+      ERRORS
+      <div class="alert alert-danger" v-show="errors.any()">
+        <div v-if="errors.has('password')">
+          {{ errors.first("password") }}
+        </div>
+        <div v-if="errors.has('confirmPassword')">
+          {{ errors.first("confirmPassword") }}
+        </div> -->
       </div>
       <div class="submit">
         <input
           type="button"
           class="bttn"
-          v-on:click="updateUser(getUser)"
+          v-on:click="updateUser(user)"
           value="Spara"
         />
       </div>
@@ -33,19 +66,25 @@
 <script>
 export default {
   name: "EditUser",
+  data() {
+    return {
+      confirmation: ""
+    };
+  },
   computed: {
-    getUser() {
+    user() {
       return this.$store.getters.getUser;
     }
   },
+  mounted() {
+    this.$store.dispatch("getUser");
+    console.log("user", this.user.firstName);
+  },
   methods: {
-    mounted() {
-      this.store.dispatch("getUser");
-    },
-    updateUser(getUser) {
+    updateUser(user) {
       console.log("update user");
       /*string field,string finthis, update */
-      this.store.dispatch("updateUser", getUser);
+      this.$store.dispatch("updateUser", user);
     }
   }
 };

@@ -57,7 +57,8 @@ export default new Vuex.Store({
       //   .catch((err) => console.log(err));
       // commit("setUser", this.user);
 
-      await Axios.put(`user/${user.Email}`, user)
+      await Axios.put(`user/${user}`, user)
+        // await Axios.put(`user/${user.Email}`, user)
         .then(async resp => {
           this.user = resp;
         })
