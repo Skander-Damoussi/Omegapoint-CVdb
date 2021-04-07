@@ -73,14 +73,26 @@ namespace cv_api.Controllers
             //}
         }
 
-        [HttpPut("updateUser/{user}")]
-        public async Task UpdateUser(User user)
+        //[HttpPut("updateUser")]
+        //public async Task UpdateUser(User user)
+        //{
+        //    //var filter = _userRepository.FilterBy(
+        //    //   filter => filter.Email == user.Email);
+        //    //_userRepository.ReplaceOneAsync(filter, user);
+
+        //    await _userRepository.ReplaceOneAsync(user);
+        //}
+
+
+        [HttpPatch("updateUser")]
+        public ActionResult UpdateUser(string firstName, string lastName, string password)
         {
             //var filter = _userRepository.FilterBy(
             //   filter => filter.Email == user.Email);
             //_userRepository.ReplaceOneAsync(filter, user);
 
-            await _userRepository.ReplaceOneAsync(user);
+            //await _userRepository.ReplaceOneAsync(user);
+            return Ok();
         }
 
 
