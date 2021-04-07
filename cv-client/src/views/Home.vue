@@ -52,7 +52,6 @@ export default {
     async login() {
       await this.$store.dispatch("login", this.user);
       var sUser = this.$store.getters.getLoggedInUser;
-      console.log(sUser.firstName);
       if (this.$store.getters.getLoggedInUser == null) {
         alert("Wrong username or password");
       } else {
