@@ -26,9 +26,6 @@ export default new Vuex.Store({
     setUser(state) {
       state.loggedIn = true;
     },
-    setRole(state) {
-      state.role = state;
-    },
     setUsers(state) {
       state.users = state;
     },
@@ -43,6 +40,9 @@ export default new Vuex.Store({
     },
     setLoggedInUser(state, token) {
       state.loggedInUser = token;
+    },
+    setLoggedIn(state, token) {
+      state.loggedIn = token;
     }
   },
   actions: {
@@ -57,6 +57,8 @@ export default new Vuex.Store({
           }
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
+          await commit("setLoggedIn", true);
+          console.log(this.loggedIn);
         })
         .catch(err => console.log(err));
     },

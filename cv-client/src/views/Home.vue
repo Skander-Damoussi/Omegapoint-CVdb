@@ -53,10 +53,22 @@ export default {
       await this.$store.dispatch("login", this.user);
       var sUser = this.$store.getters.getLoggedInUser;
       console.log(sUser.firstName);
-      // if (this.$store.getters.getUserRole == null) {
-      //   alert("Wrong username or password");
-      // }
-      //this.$router.push("/about");
+      if (this.$store.getters.getLoggedInUser == null) {
+        alert("Wrong username or password");
+      } else {
+        switch (sUser.role) {
+          case "Admin":
+            this.$router.push("/admin");
+            break;
+          case "Konsultchef":
+            this.$router.push("/consultantmanager");
+            break;
+          case "Konsult":
+            this.$router.push("/consultant");
+            break;
+          default:
+        }
+      }
     }
   }
 };

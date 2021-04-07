@@ -2,13 +2,13 @@
   <div v-if="loggedIn" id="nav">
     <div class="row">
       <div class="left">
-        <h2>Consultant</h2>
+        <h2>{{ user.role }}</h2>
         <!-- This becomes a store binding @ user.role -->
       </div>
       <div class="right">
         <div class="box">
           <div class="row">
-            <h2>Hej! Sven</h2>
+            <h2>Hej! {{ user.firstName }}</h2>
             <!-- This "Sven" becomes a store binding @ user.name -->
             <button id="logout" v-on:click="signOut">Logout</button>
             <!-- Needs icon instead, works for now -->
@@ -35,6 +35,9 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.getters.getLoggedIn;
+    },
+    user() {
+      return this.$store.getters.getLoggedInUser;
     }
   }
 };
