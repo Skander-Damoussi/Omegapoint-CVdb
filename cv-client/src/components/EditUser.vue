@@ -19,7 +19,7 @@
         <input type="text" required id="confirmPassword" />
       </div> -->
       <div class="section">
-        <label for="password">Lösenord</label>
+        <label for="password">Nytt lösenord</label>
         <input
           type="password"
           id="password"
@@ -36,15 +36,6 @@
           v-model="confirmation"
           name="confirmPassword"
         />
-        <!-- </div>
-      ERRORS
-      <div class="alert alert-danger" v-show="errors.any()">
-        <div v-if="errors.has('password')">
-          {{ errors.first("password") }}
-        </div>
-        <div v-if="errors.has('confirmPassword')">
-          {{ errors.first("confirmPassword") }}
-        </div> -->
       </div>
       <div class="submit">
         <input
@@ -78,9 +69,14 @@ export default {
   },
   methods: {
     updateUser(user) {
-      console.log("update user");
+      console.log("update", user);
       /*string field,string finthis, update */
-      this.$store.dispatch("updateUser", user);
+      if (this.password != this.confirmation) {
+        alert("Lösenordsfälten matchar inte, försök igen.");
+      } else {
+        user.password = this.password;
+        this.$store.dispatch("updateUser", user);
+      }
     }
   }
 };

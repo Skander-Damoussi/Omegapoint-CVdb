@@ -70,14 +70,19 @@ export default new Vuex.Store({
       //   })
       //   .catch((err) => console.log(err));
       // commit("setUser", this.user);
-
-      await Axios.put(`user/${user}`, user)
+      console.log("store", user.id)
+      await Axios.patch(
+        `user/updateUser/${user.id}`,
+        user.firstName,
+        user.lastName,
+        user.password
+      )
         // await Axios.put(`user/${user.Email}`, user)
         .then(async resp => {
           this.user = resp;
         })
         .catch(err => console.log(err));
-      commit("updateUser", this.user);
+      commit("setLoggedInUser", this.user);
     },
     async logOut({ commit }) {
       commit("resetState");
