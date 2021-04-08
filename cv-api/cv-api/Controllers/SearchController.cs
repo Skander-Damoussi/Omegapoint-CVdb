@@ -25,13 +25,8 @@ namespace cv_api.Controllers
         [HttpGet("getSearchResult/{search}")]
         public IEnumerable<User> GetSearchResult(string search) 
         {
-            //var people = _searchRepository.FilterBy(
-            //    filter => filter.Role == "Consultant",
-            //    projection => projection.Role
-            //);
-            //return people.ToList<User>();
             var result = _searchRepository.FilterBy(
-                filter => filter.Role == "Consultant" || filter.Role == "Konsult" && filter.FirstName == search);
+                filter => (filter.Role == "Consultant" || filter.Role == "Konsult") && filter.FirstName.Contains(search));
 
             return result;
         }
