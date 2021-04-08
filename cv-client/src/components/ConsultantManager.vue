@@ -9,7 +9,7 @@
             id="searchInput"
             class="searchInput"
             v-model="searchString"
-            @change="search()"
+            v-on:input="search()"
             @keyup.enter="search()"
             placeholder="Sök"
           />
