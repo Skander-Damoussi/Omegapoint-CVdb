@@ -42,6 +42,7 @@ namespace cv_api.Controllers
             return users;
         }
 
+        [Authorize(Roles = "Admin,Konsultchef")]
         [HttpGet("getConsultantList")]
         public IEnumerable<User> GetConsultantList()
         {
