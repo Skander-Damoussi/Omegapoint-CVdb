@@ -1,12 +1,5 @@
 <template>
   <div class="cons-manager">
-    <!-- <md-table md-fixed-header class="md-scrollbar">
-      <md-table-row v-for="(i, index) in test" :key="index">
-        <md-table-cell md-label="#"> {{ i.index }}</md-table-cell>
-        <md-table-cell md-label="Förnamn">{{ i.fName }}</md-table-cell>
-        <md-table-cell md-label="Efternamn">{{ i.lName }}</md-table-cell>
-      </md-table-row>
-    </md-table> -->
     <div class="list-table">
       <div class="search">
         <div class="searchBox">
@@ -16,9 +9,11 @@
             id="searchInput"
             class="searchInput"
             v-model="searchString"
+            v-on:input="search()"
             @keyup.enter="search()"
             placeholder="Sök"
           />
+          <p v-on:click="resetSearch()"><i class="fas fa-times"></i></p>
         </div>
       </div>
       <table>
@@ -56,18 +51,6 @@ export default {
   data() {
     return {
       searchString: ""
-      //     test: [
-      //       {
-      //         index: "0",
-      //         fName: "Test",
-      //         lName: "Testsson",
-      //       },
-      //       {
-      //         index: "1",
-      //         fName: "Test1",
-      //         lName: "Testsson1",
-      //       },
-      //     ],
     };
   },
   computed: {
@@ -80,8 +63,15 @@ export default {
       console.log("click", index);
     },
     search() {
-      console.log("search");
-      this.$store.dispatch("searchConsultant", this.searchString);
+      if (this.searchString.length < 1) {
+        this.$store.dispatch("getConsultantList");
+      } else {
+        this.$store.dispatch("searchConsultant", this.searchString);
+      }
+    },
+    resetSearch() {
+      this.searchString = "";
+      this.$store.dispatch("getConsultantList");
     }
   },
   mounted() {
@@ -149,5 +139,9 @@ th {
 .reg-user {
   width: 25vw;
   margin: 0;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: inset 0 0 0px 9999px white;
 }
 </style>
