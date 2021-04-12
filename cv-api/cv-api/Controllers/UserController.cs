@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace cv_api.Controllers
 {
@@ -42,6 +43,7 @@ namespace cv_api.Controllers
             return users;
         }
 
+        [Authorize(Roles = "Admin,Konsultchef")]
         [HttpGet("getConsultantList")]
         public IEnumerable<User> GetConsultantList()
         {
@@ -53,9 +55,25 @@ namespace cv_api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task Post(User newUser)
+        public async Task<ActionResult> Post(User newUser)
         {
-            await _userRepository.InsertOneAsync(newUser);
+            try
+            {
+                var user = _userRepository.FindOne(
+                filter => filter.Email == newUser.Email);
+
+                if (user != null)
+                    return StatusCode(409, $"User {newUser.Email} already exist.");
+                
+
+                else
+                    await _userRepository.InsertOneAsync(newUser);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "");
+            }
+            return BadRequest();
         }
 
         //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
