@@ -4,7 +4,9 @@ import router from "./router";
 import store from "./store/store";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
+import Vuelidate from "vuelidate";
 
+Vue.use(Vuelidate);
 Vue.config.productionTip = false;
 
 new Vue({

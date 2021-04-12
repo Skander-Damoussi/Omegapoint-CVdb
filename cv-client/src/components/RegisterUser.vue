@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import { required, sameAs, minLength } from "vuelidate/lib/validators";
+
 export default {
   name: "RegisterUser",
   data() {
@@ -66,8 +68,18 @@ export default {
         Password: "",
         Role: "",
         Email: ""
-      }
+      },
+      repeatPassword: ""
     };
+  },
+  validations: {
+    password: {
+      required,
+      minLength: minLength(6)
+    },
+    repeatPassword: {
+      sameAsPassword: sameAs("Password")
+    }
   },
   methods: {
     async register() {
