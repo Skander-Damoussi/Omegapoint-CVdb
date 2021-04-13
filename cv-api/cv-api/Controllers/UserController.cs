@@ -44,7 +44,7 @@ namespace cv_api.Controllers
             return users;
         }
 
-        [Authorize(Roles = "Admin,Konsultchef")]
+        //[Authorize(Roles = "Admin,Konsultchef")]
         [HttpGet("getConsultantList")]
         public IEnumerable<User> GetConsultantList()
         {
@@ -85,15 +85,15 @@ namespace cv_api.Controllers
 
             //CheckIfNull(updatedUser);
 
-            if(updatedUser.FirstName != "")
+            if(updatedUser.FirstName != "" || user.FirstName != updatedUser.FirstName)
             {
                user.FirstName = updatedUser.FirstName;
             }
-            if(updatedUser.LastName != "")
+            if(updatedUser.LastName != "" || user.LastName != updatedUser.LastName)
             {
                 user.LastName = updatedUser.LastName;
             }
-            if(updatedUser.Password != "")
+            if(updatedUser.Password != "" || user.Password != updatedUser.Password)
             {
                 user.Password = updatedUser.Password;
             }
