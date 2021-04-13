@@ -41,20 +41,17 @@ namespace cv_api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var users = _userRepository.FilterBy(
-                filter => filter.FirstName != "",
-                projection => projection.FirstName);
+            var result = await userManager.GetUsersInRoleAsync("Konsult");
 
-            return Ok(users);
+            return Ok(result);
         }
 
         [HttpGet("getConsultantList")]
-        public IEnumerable<User> GetConsultantList()
+        public async Task<IActionResult> GetConsultantList()
         {
-            var result = _userRepository.FilterBy(
-                filter => filter.Role == "Konsult" || filter.Role == "Consultant");
+            var result = await userManager.GetUsersInRoleAsync("Konsult");
 
-            return result;
+            return Ok(result);
         }
 
         [Authorize(Roles = "Admin")]
