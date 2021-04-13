@@ -17,7 +17,7 @@ namespace cv_api.Models
         [Required]
         public string LastName { get; set; }
 
-        [Required]
+
         public string UserName { get; set; }
 
         [Required]
