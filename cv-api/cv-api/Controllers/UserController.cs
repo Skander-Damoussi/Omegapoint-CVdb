@@ -69,6 +69,7 @@ namespace cv_api.Controllers
 
                 else
                     await _userRepository.InsertOneAsync(newUser);
+                return StatusCode(200, "User har been created");
             }
             catch (Exception)
             {
