@@ -78,6 +78,7 @@ export default new Vuex.Store({
             role: resp.data.role
           };
           await commit("setLoggedInUser", respUser);
+          console.log(this.loggedInUser);
         })
         .catch(err => console.log(err));
       // commit("setLoggedInUser", this.respUser);
