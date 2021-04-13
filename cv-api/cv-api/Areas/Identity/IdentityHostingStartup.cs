@@ -1,4 +1,5 @@
 ﻿using System;
+using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using cv_api.Areas.Identity.Data;
 using cv_api.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -16,12 +17,26 @@ namespace cv_api.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                services.AddDbContext<Context>(options =>
-                    options.UseSqlServer(
-                        context.Configuration.GetConnectionString("ContextConnection")));
 
-                services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<Context>();
+				services.AddIdentity<ApplicationUser, ApplicationRole>()
+				.AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
+				(
+					"mongodb+srv://Admin:Test123@cvdb.wonwu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+					"MongoDbTests"
+				)
+				.AddDefaultTokenProviders();
+                
+                services.Configure<IdentityOptions>(options =>
+                {
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequiredUniqueChars = 0;
+
+                    options.User.RequireUniqueEmail = false;
+                });
+
             });
         }
     }

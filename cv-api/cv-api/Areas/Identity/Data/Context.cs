@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cv_api.Data
 {
-    public class Context : IdentityDbContext<ApplicationUser>
+    public class Context : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public Context(DbContextOptions<Context> options)
             : base(options)

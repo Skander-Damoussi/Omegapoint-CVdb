@@ -14,6 +14,8 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using cv_api.Areas.Identity.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace cv_api.Controllers
 {
@@ -24,22 +26,26 @@ namespace cv_api.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IMongoRepository<User> _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly RoleManager<ApplicationRole> roleManager;
 
-        public UserController(ILogger<UserController> logger, IMongoRepository<User> userRepository, IConfiguration configuration)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ILogger<UserController> logger, IMongoRepository<User> userRepository, IConfiguration configuration)
         {
             _logger = logger;
             _userRepository = userRepository;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
             _configuration = configuration;
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
             var users = _userRepository.FilterBy(
                 filter => filter.FirstName != "",
                 projection => projection.FirstName);
 
-            return users;
+            return Ok(users);
         }
 
         [HttpGet("getConsultantList")]
@@ -53,9 +59,38 @@ namespace cv_api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task Post(User newUser)
+        public async Task<IActionResult> Post(User newUser)
         {
-            await _userRepository.InsertOneAsync(newUser);
+            var userExists = await userManager.FindByNameAsync(newUser.Email);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = newUser.Email,
+                Email = newUser.Email,
+                PhoneNumber = newUser.PhoneNo,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName
+            };
+            var result = await userManager.CreateAsync(user, newUser.Password);
+
+            if (!await roleManager.RoleExistsAsync(newUser.Role))
+                await roleManager.CreateAsync(new ApplicationRole(newUser.Role));
+
+            if (await roleManager.RoleExistsAsync(newUser.Role))
+                await userManager.AddToRoleAsync(user, newUser.Role);
+
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            var returnUserId = await userManager.FindByNameAsync(newUser.Email);
+
+            return Ok(new
+            {
+                userId = returnUserId.Id
+            });
         }
 
         //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
@@ -77,38 +112,40 @@ namespace cv_api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate(Login userInput)
         {
+            var user = await userManager.FindByNameAsync(userInput.Email);
 
-            var user = _userRepository.FindOne(
-                filter => filter.Email == userInput.Email && filter.Password == userInput.Password);
-
-            if (user == null)
+            if (user == null || await userManager.CheckPasswordAsync(user, userInput.Password) == false)
                 return Unauthorized();
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]);
+            var userRoles = await userManager.GetRolesAsync(user);
 
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new Claim[]{
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 }),
 
                 Expires = DateTime.UtcNow.AddHours(1),
 
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(tokenKey),
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
                     SecurityAlgorithms.HmacSha256Signature
                     ),
             };
 
+            foreach (var userRole in userRoles)
+            {
+                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return Ok(new
             {
                 Token = tokenHandler.WriteToken(token),
-                role = user.Role,
+                role = userRoles[0],
                 firstName = user.FirstName,
                 lastName = user.LastName,
                 userId = user.Id.ToString()
