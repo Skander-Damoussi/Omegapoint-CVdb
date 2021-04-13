@@ -23,7 +23,7 @@
         <input
           type="password"
           id="password"
-          v-model="password"
+          v-model="user.password"
           name="password"
           ref="password"
         />
@@ -54,7 +54,7 @@ export default {
   name: "EditUser",
   data() {
     return {
-      password: "",
+      // password: "",
       confirmation: ""
     };
   },
@@ -69,13 +69,14 @@ export default {
   },
   methods: {
     updateUser(user) {
-      console.log("update", user);
       /*string field,string finthis, update */
-      if (this.password != this.confirmation) {
+      if (this.user.password != this.confirmation) {
         alert("Lösenordsfälten matchar inte, försök igen.");
       } else {
-        user.password = this.password;
-        this.$store.dispatch("updateUser", user);
+        // this.user.password = this.password;
+        console.log("update", user);
+        console.log("update.this", this.user);
+        this.$store.dispatch("updateUser", this.user);
       }
     }
   }
