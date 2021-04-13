@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection;
 
 namespace cv_api.Controllers
 {
@@ -58,20 +59,20 @@ namespace cv_api.Controllers
             await _userRepository.InsertOneAsync(newUser);
         }
 
-        //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
-        [HttpPut]
-        public IActionResult Put(string field, string findThis, string update)
-        {
-            //repository Users = new repository();
-            //Users.Update("user", new BsonDocument(field, findThis), field, update);
-            return Ok();
+        ////https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
+        //[HttpPut]
+        //public IActionResult Put(string field, string findThis, string update)
+        //{
+        //    //repository Users = new repository();
+        //    //Users.Update("user", new BsonDocument(field, findThis), field, update);
+        //    return Ok();
 
-            //            public virtual async Task ReplaceOneAsync(TDocument document)
-            //{
-            //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            //    await _collection.FindOneAndReplaceAsync(filter, document);
-            //}
-        }
+        //    //            public virtual async Task ReplaceOneAsync(TDocument document)
+        //    //{
+        //    //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+        //    //    await _collection.FindOneAndReplaceAsync(filter, document);
+        //    //}
+        //}
 
         //[HttpPut("updateUser")]
         //public async Task UpdateUser(User user)
@@ -83,17 +84,48 @@ namespace cv_api.Controllers
         //    await _userRepository.ReplaceOneAsync(user);
         //}
 
-
-        [HttpPatch("updateUser")]
-        public ActionResult UpdateUser(string firstName, string lastName, string password)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUser updatedUser)
         {
-            //var filter = _userRepository.FilterBy(
-            //   filter => filter.Email == user.Email);
-            //_userRepository.ReplaceOneAsync(filter, user);
+            var user = _userRepository.FindById(updatedUser.Id);
 
-            //await _userRepository.ReplaceOneAsync(user);
-            return Ok();
+            //CheckIfNull(updatedUser);
+
+            if(updatedUser.FirstName != "")
+            {
+               user.FirstName = updatedUser.FirstName;
+            }
+            if(updatedUser.LastName != "")
+            {
+                user.LastName = updatedUser.LastName;
+            }
+            if(updatedUser.Password != "")
+            {
+                user.Password = updatedUser.Password;
+            }
+            await _userRepository.ReplaceOneAsync(user);
+
+            return Ok(user);
+
         }
+
+        //public UpdateUser CheckIfNull (UpdateUser updatedUser)
+        //{
+        //    var user = _userRepository.FindById(updatedUser.Id);
+        //    foreach (PropertyInfo prop in updatedUser.GetType().GetProperties())
+        //    {
+        //        var res = prop.GetValue(updatedUser, null);
+        //        if (res != "")
+        //        {
+        //            var property = prop.Name;
+        //            user.property = res;
+                    
+        //        }
+        //        Console.WriteLine($"{prop.Name}: {prop.GetValue(updatedUser, null)}");
+                
+        //    }
+        //    return updatedUser;
+        //}
 
 
         [HttpPost("login")]
