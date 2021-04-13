@@ -63,27 +63,11 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
     },
     async updateUser({ commit }, user) {
-      /* string field,string finthis, update */
-
-      // const url = `user/${field}/${findThis}/${update}`;
-      // await Axios.put(url, field, findThis, update)
-      //   .then(async (resp) => {
-      //     this.user = resp;
-      //   })
-      //   .catch((err) => console.log(err));
-      // commit("setUser", this.user);
       console.log("store", user);
       console.log("store", user.id);
       console.log("store", user.firstName);
       console.log("store", user.lastName);
       console.log("store", user.password);
-
-      // user = {
-      //    id: user.id,
-      //    firstName: user.firstName,
-      //    lastName: user.lastName,
-      //    password: user.password
-      // }
 
       await Axios.put("user/", user)
         .then(async resp => {
@@ -92,7 +76,7 @@ export default new Vuex.Store({
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
             role: resp.data.role
-          }
+          };
           await commit("setLoggedInUser", respUser);
         })
         .catch(err => console.log(err));

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
 
 namespace cv_api.Controllers
 {
@@ -43,6 +44,7 @@ namespace cv_api.Controllers
             return users;
         }
 
+        [Authorize(Roles = "Admin,Konsultchef")]
         [HttpGet("getConsultantList")]
         public IEnumerable<User> GetConsultantList()
         {
@@ -54,35 +56,26 @@ namespace cv_api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task Post(User newUser)
+        public async Task<ActionResult> Post(User newUser)
         {
-            await _userRepository.InsertOneAsync(newUser);
+            try
+            {
+                var user = _userRepository.FindOne(
+                filter => filter.Email == newUser.Email);
+
+                if (user != null)
+                    return StatusCode(409, $"User {newUser.Email} already exist.");
+                
+
+                else
+                    await _userRepository.InsertOneAsync(newUser);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "");
+            }
+            return BadRequest();
         }
-
-        ////https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
-        //[HttpPut]
-        //public IActionResult Put(string field, string findThis, string update)
-        //{
-        //    //repository Users = new repository();
-        //    //Users.Update("user", new BsonDocument(field, findThis), field, update);
-        //    return Ok();
-
-        //    //            public virtual async Task ReplaceOneAsync(TDocument document)
-        //    //{
-        //    //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-        //    //    await _collection.FindOneAndReplaceAsync(filter, document);
-        //    //}
-        //}
-
-        //[HttpPut("updateUser")]
-        //public async Task UpdateUser(User user)
-        //{
-        //    //var filter = _userRepository.FilterBy(
-        //    //   filter => filter.Email == user.Email);
-        //    //_userRepository.ReplaceOneAsync(filter, user);
-
-        //    await _userRepository.ReplaceOneAsync(user);
-        //}
 
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUser updatedUser)
