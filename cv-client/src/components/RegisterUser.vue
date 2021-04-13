@@ -186,6 +186,7 @@ export default {
           Role: this.role,
           Email: this.email
         };
+        console.log(newUser);
         await this.$store.dispatch("registerUser", {
           token: this.$store.getters.getUserToken,
           input: newUser
