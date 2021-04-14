@@ -46,7 +46,7 @@ namespace cv_api.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin,Konsultchef")]
+        [Authorize(Roles = "Konsultchef")]
         [HttpGet("getConsultantList")]
         public async Task<IActionResult> GetConsultantList()
         {

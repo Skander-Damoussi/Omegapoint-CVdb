@@ -30,7 +30,7 @@
 import RegisterUser from "../components/RegisterUser";
 import EditCv from "../components/EditCv";
 export default {
-  name: "Home",
+  name: "Admin",
   data() {
     return {
       isModalVisible: false,
