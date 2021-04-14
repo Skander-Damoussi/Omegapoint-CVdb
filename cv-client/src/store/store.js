@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 import Axios from "@/axios.config.js";
 
 Vue.use(Vuex);
@@ -17,6 +18,7 @@ const getDefaultState = () => {
 };
 
 export default new Vuex.Store({
+  plugins: [createPersistedState()],
   state: getDefaultState(),
   mutations: {
     resetState(state) {
@@ -84,7 +86,6 @@ export default new Vuex.Store({
       commit("resetState");
     },
     async getConsultantList({ commit }) {
-      console.log("getConsultantList");
       await Axios.get("user/getConsultantList")
         .then(async resp => {
           this.consultantList = resp.data;

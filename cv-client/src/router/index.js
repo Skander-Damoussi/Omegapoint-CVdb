@@ -30,7 +30,7 @@ const routes = [
   },
   {
     path: "/consultantExperience",
-    name: "Consultant",
+    name: "ConsultantExperience",
     component: ConsultantExperience,
     meta: { reqAuth: true, consultAuth: true }
   },
@@ -82,8 +82,9 @@ router.beforeEach((to, from, next) => {
       }
       next();
       return;
+    } else {
+      next("/");
     }
-    next("/");
   } else {
     next();
   }
