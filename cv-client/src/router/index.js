@@ -43,7 +43,8 @@ const routes = [
   {
     path: "/edituser",
     name: "EditUser",
-    component: EditUser
+    component: EditUser,
+    meta: { reqAuth: true, consultAuth: true }
   }
 ];
 
