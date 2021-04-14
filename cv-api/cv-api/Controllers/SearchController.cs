@@ -1,5 +1,7 @@
-﻿using cv_api.Models;
+﻿using cv_api.Areas.Identity.Data;
+using cv_api.Models;
 using cv_api.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,20 +17,23 @@ namespace cv_api.Controllers
     {
         private readonly ILogger<SearchController> _logger;
         private readonly IMongoRepository<User> _searchRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public SearchController(ILogger<SearchController> logger, IMongoRepository<User> searchRepository)
+        public SearchController(ILogger<SearchController> logger, IMongoRepository<User> searchRepository, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _searchRepository = searchRepository;
+            this.userManager = userManager;
         }
 
         [HttpGet("getSearchResult/{search}")]
-        public IEnumerable<User> GetSearchResult(string search) 
+        public async Task<IActionResult> GetSearchResult(string search) 
         {
-            var result = _searchRepository.FilterBy(
-                filter => (filter.Role == "Consultant" || filter.Role == "Konsult") && filter.FirstName.Contains(search));
+            var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
+            var result = userSearch.Where(x => x.FirstName.Contains(search)
+                        || x.LastName.Contains(search));
 
-            return result;
+            return Ok(result);
         }
     }
 }
