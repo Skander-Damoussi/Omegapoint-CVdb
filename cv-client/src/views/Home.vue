@@ -23,6 +23,10 @@
           required
         />
 
+        <div class="error" v-if="wrongLogin">
+          Email och lösenord felaktigt.
+        </div>
+
         <div class="formRow">
           <input
             id="loginButton"
@@ -44,7 +48,8 @@ export default {
       user: {
         Email: "",
         Password: ""
-      }
+      },
+      wrongLogin: false
     };
   },
   components: {},
@@ -52,9 +57,10 @@ export default {
     async login() {
       await this.$store.dispatch("login", this.user);
       var sUser = this.$store.getters.getLoggedInUser;
-      if (this.$store.getters.getLoggedInUser == null) {
-        alert("Wrong username or password");
+      if (sUser == null) {
+        this.wrongLogin = true;
       } else {
+        this.wrongLogin = false;
         switch (sUser.role) {
           case "Admin":
             this.$router.push("/admin");
@@ -133,7 +139,7 @@ input {
 }
 input[type="text"],
 input[type="password"] {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 input[type="submit"],
 input[type="reset"] {
