@@ -7,21 +7,27 @@
       <form @submit.prevent="login" id="loginForm">
         <label for="email">Användarnamn</label>
         <input
-          v-model="user.Email"
+          v-model.trim="$v.email.$model"
           type="text"
           placeholder="demo@omegapoint.se"
           name="email"
           required
         />
+        <div class="error" v-if="!emailField">
+          Fyll i email fält.
+        </div>
 
         <label for="password">Lösenord</label>
         <input
-          v-model="user.Password"
+          v-model.trim="$v.password.$model"
           type="password"
           placeholder="*********"
           name="password"
           required
         />
+        <div class="error" v-if="!passwordField">
+          Fyll i lösenord fält.
+        </div>
 
         <div class="error" v-if="wrongLogin">
           Email och lösenord felaktigt.
@@ -41,39 +47,64 @@
 </template>
 
 <script>
+import { required } from "vuelidate/lib/validators";
+
 export default {
   name: "Home",
   data() {
     return {
-      user: {
-        Email: "",
-        Password: ""
-      },
-      wrongLogin: false
+      password: "",
+      email: "",
+      wrongLogin: false,
+      emailField: true,
+      passwordField: true,
     };
   },
   components: {},
+  validations: {
+    password: {
+      required
+    },
+    email: {
+      required
+    }
+  },
   methods: {
     async login() {
-      await this.$store.dispatch("login", this.user);
-      var sUser = this.$store.getters.getLoggedInUser;
-      if (sUser == null) {
-        this.wrongLogin = true;
-      } else {
-        this.wrongLogin = false;
-        switch (sUser.role) {
-          case "Admin":
-            this.$router.push("/admin");
-            break;
-          case "Konsultchef":
-            this.$router.push("/consultantmanager");
-            break;
-          case "Konsult":
-            this.$router.push("/consultant");
-            break;
-          default:
+      this.wrongLogin = false;
+      this.$v.$touch();
+      this.checkForm();
+
+      var userInput = {
+        Email: this.email,
+        Password: this.password
+      };
+
+      if (!this.$v.$invalid) {
+        await this.$store.dispatch("login", userInput);
+        var sUser = this.$store.getters.getLoggedInUser;
+        if (sUser == null) {
+          this.wrongLogin = true;
+        } else {
+          this.wrongLogin = false;
+          switch (sUser.role) {
+            case "Admin":
+              this.$router.push("/admin");
+              break;
+            case "Konsultchef":
+              this.$router.push("/consultantmanager");
+              break;
+            case "Konsult":
+              this.$router.push("/consultant");
+              break;
+            default:
+          }
         }
       }
+    },
+    checkForm() {
+      this.emailField = this.$v.email.required;
+      this.passwordField = this.$v.password.required;
     }
   }
 };
@@ -139,13 +170,14 @@ input {
 }
 input[type="text"],
 input[type="password"] {
-  margin-bottom: 1em;
+  /* margin-bottom: 1em; */
 }
 input[type="submit"],
 input[type="reset"] {
   width: 6em;
   flex: 1 0 auto;
   cursor: pointer;
+  margin-top: 1em;
 }
 h2 {
   margin: 0;
