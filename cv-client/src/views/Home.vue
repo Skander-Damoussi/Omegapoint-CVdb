@@ -71,7 +71,6 @@ export default {
   },
   methods: {
     async login() {
-      this.wrongLogin = false;
       this.$v.$touch();
       this.checkForm();
 
@@ -86,6 +85,7 @@ export default {
         if (sUser == null) {
           this.wrongLogin = true;
         } else {
+          console.log("test")
           this.wrongLogin = false;
           switch (sUser.role) {
             case "Admin":
@@ -100,6 +100,8 @@ export default {
             default:
           }
         }
+      } else {
+        this.wrongLogin = false;
       }
     },
     checkForm() {
