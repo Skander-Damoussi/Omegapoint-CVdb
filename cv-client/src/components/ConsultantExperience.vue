@@ -1,56 +1,63 @@
 <template>
-<div>
-  <div class="box">
-    <div class="tasks">
-      <div class="row">
-        <p id="nomargin">Administrations Software</p>
-      </div>
-      <div class="tablewrapper">
-      <table style="width:100%">
-        <tr>
-          <th>Microsoft Office</th>
-          <th>Delete</th>
-        </tr>
-        <tr>
-          <th>Azure</th>
-          <th>Delete</th>
-        </tr>
-        <tr>
-          <th>Foo</th>
-          <th>Delete</th>
-        </tr>
-      </table>
-      <div class="row">
-        <input type="text" id="addSoftware" name="addSoftware" placeholder="....">
-        <button id="addButton">Lägg till</button>
-      </div>
-      </div>
-    </div>
-    <div class="tasks as">
-      <div class="row">
-        <p id="nomargin">Uppdrag</p>
-        <button id="addButton">Lägg till nytt</button>
-      </div>
-      <div class="wrapper" v-for="col in collection" :key="col.title">
-        <div class="title" @click="col.show = !col.show">
-          <p>{{ col.title }}</p>
+  <div>
+    <div class="box">
+      <div class="tasks">
+        <div class="row">
+          <p id="nomargin">Administrations Software</p>
         </div>
-        <div class="container" id="container" v-if="col.show">
-          <p>
-            {{ col.text }}
-          </p>
+        <div class="tablewrapper">
+          <table style="width:100%">
+            <tr>
+              <th>Microsoft Office</th>
+              <th>Delete</th>
+            </tr>
+            <tr>
+              <th>Azure</th>
+              <th>Delete</th>
+            </tr>
+            <tr>
+              <th>Foo</th>
+              <th>Delete</th>
+            </tr>
+          </table>
+
+          <div class="row">
+            <input
+              type="text"
+              id="addSoftware"
+              name="addSoftware"
+              placeholder="...."
+            />
+            <button id="addButton">Lägg till</button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="tasks as stickright">
-      <div class="row">
-        <p id="nomargin">Presentation</p>
-        <button id="addButton">Lägg till</button>
+      <div class="tasks as">
+        <div class="row">
+          <p id="nomargin">Uppdrag</p>
+          <button id="addButton">Lägg till nytt</button>
+        </div>
+        <div class="wrapper" v-for="col in collection" :key="col.title">
+          <div class="title" @click="col.show = !col.show">
+            <p>{{ col.title }}</p>
+          </div>
+          <div class="container" id="container" v-if="col.show">
+            <p>
+              {{ col.text }}
+            </p>
+          </div>
+        </div>
       </div>
-      <textarea></textarea>
+      <div class="tasks as stickright">
+        <div class="row">
+          <p id="nomargin">Presentation</p>
+          <button id="addButton">Lägg till</button>
+        </div>
+        <textarea></textarea>
+      </div>
     </div>
+    <button @click="CVClick()">Tillbaka till CV</button>
   </div>
-</div>
 </template>
 
 <script>
@@ -80,6 +87,11 @@ export default {
       ],
     };
   },
+  methods: {
+    CVClick() {
+      this.$router.push({ name: 'Consultant' })
+    }
+  }
 };
 </script>
 
@@ -102,7 +114,7 @@ export default {
   margin: 30px;
 }
 
-.tablewrapper{
+.tablewrapper {
   padding: 30px;
   border: 1px solid #f7f7f7;
 }
@@ -153,7 +165,8 @@ export default {
   display: flex;
 }
 
-input[type=text], select {
+input[type="text"],
+select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -163,7 +176,7 @@ input[type=text], select {
   box-sizing: border-box;
 }
 
-input[type=text]:focus {
+input[type="text"]:focus {
   border: 1px solid #555;
 }
 
@@ -190,5 +203,23 @@ textarea {
 
 .stickright {
   margin-left: auto;
+}
+
+button {
+  color: white;
+  background: #2185d0;
+  border: none;
+  text-decoration: none;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  border: 2px solid #2185d0;
+  margin-bottom: 1em;
+  padding: 10px;
+}
+
+button:hover {
+  background-color: white; /* Green */
+  color: black;
+  border: 2px solid #2185d0;
 }
 </style>

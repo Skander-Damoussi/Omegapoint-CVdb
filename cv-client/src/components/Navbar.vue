@@ -8,7 +8,7 @@
         <div class="box">
           <div class="row">
             <h2>Hej! {{ user.firstName }}</h2>
-            <a @click="signOut" id="logout"
+            <a @click="signOut" id="logout" title="Logga ut"
               ><i class="fas fa-sign-out-alt"></i
             ></a>
           </div>
