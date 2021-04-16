@@ -79,7 +79,7 @@ export default {
     async login() {
       this.$v.$touch();
       this.checkForm();
-      if (this.$v.$invalid) {
+      if (this.$v.$invalid && !this.$store.getters.getLoggedIn) {
         return;
       }
       await this.$store.dispatch("login", {
@@ -113,7 +113,7 @@ export default {
     if (this.$store.getters.getLoggedIn) {
       this.login();
     }
-  },
+  }
 };
 </script>
 
