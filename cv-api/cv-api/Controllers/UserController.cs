@@ -95,29 +95,40 @@ namespace cv_api.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUser updatedUser)
         {
-            var user = _userRepository.FindById(updatedUser.Id);
-
-            //CheckIfNull(updatedUser);
-
-            if(updatedUser.FirstName != "" || user.FirstName != updatedUser.FirstName)
+            try
             {
-               user.FirstName = updatedUser.FirstName;
-            }
-            if(updatedUser.LastName != "" || user.LastName != updatedUser.LastName)
-            {
-                user.LastName = updatedUser.LastName;
-            }
-            if(updatedUser.Password != "" || user.Password != updatedUser.Password)
-            {
-                user.Password = updatedUser.Password;
-            }
-            await _userRepository.ReplaceOneAsync(user);
+                var identityUser = await userManager.FindByIdAsync(updatedUser.Id);
 
-            return Ok(user);
+                if (updatedUser.FirstName != "" && identityUser.FirstName != updatedUser.FirstName)
+                {
+                    identityUser.FirstName = updatedUser.FirstName;
+                }
+                if(updatedUser.LastName != "" && identityUser.LastName != updatedUser.LastName)
+                {
+                    identityUser.LastName = updatedUser.LastName;
+                }
+                if (updatedUser.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedUser.NewPassword) == false)
+                {
+                    var res = await userManager.ChangePasswordAsync(identityUser, updatedUser.CurrentPassword, updatedUser.NewPassword);
+                }
+                var result = await userManager.UpdateAsync(identityUser);
+
+                return Ok(new
+                {
+                    role = identityUser.Roles[0],
+                    firstName = identityUser.FirstName,
+                    lastName = identityUser.LastName,
+                    userId = identityUser.Id.ToString()
+                });
+            }
+            catch
+            {
+                return BadRequest(updatedUser);
+            }
 
         }
 
-        //public UpdateUser CheckIfNull (UpdateUser updatedUser)
+        //public UpdateUser CheckIfNull(UpdateUser updatedUser)
         //{
         //    var user = _userRepository.FindById(updatedUser.Id);
         //    foreach (PropertyInfo prop in updatedUser.GetType().GetProperties())
@@ -126,11 +137,11 @@ namespace cv_api.Controllers
         //        if (res != "")
         //        {
         //            var property = prop.Name;
-        //            user.property = res;
-                    
+                   
+
         //        }
         //        Console.WriteLine($"{prop.Name}: {prop.GetValue(updatedUser, null)}");
-                
+
         //    }
         //    return updatedUser;
         //}
