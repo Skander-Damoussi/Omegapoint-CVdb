@@ -69,6 +69,11 @@ export default {
         }
       }
     }
+  },
+  created() {
+    if (this.$store.getters.getLoggedIn) {
+      this.login();
+    }
   }
 };
 </script>
