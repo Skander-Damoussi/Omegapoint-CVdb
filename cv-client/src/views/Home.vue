@@ -5,24 +5,36 @@
     </div>
     <div class="login">
       <form @submit.prevent="login" id="loginForm">
-        <label for="email">Användarnamn</label>
-        <input
-          v-model="user.Email"
-          type="text"
-          placeholder="demo@omegapoint.se"
-          name="email"
-          required
-        />
+        <div class="chunk">
+          <label for="email">Användarnamn</label>
+          <input
+            v-model.trim="$v.email.$model"
+            type="text"
+            placeholder="demo@omegapoint.se"
+            name="email"
+            required
+          />
+          <span class="error" v-if="!emailField">
+            Ange Email
+          </span>
+          <span class="error" v-if="!$v.email.email">
+            Ange en gilltigt email
+          </span>
+        </div>
+        <div class="chunk">
+          <label for="password">Lösenord</label>
 
-        <label for="password">Lösenord</label>
-        <input
-          v-model="user.Password"
-          type="password"
-          placeholder="*********"
-          name="password"
-          required
-        />
-
+          <input
+            v-model.trim="$v.password.$model"
+            type="password"
+            placeholder="*********"
+            name="password"
+            required
+          />
+          <span class="error" v-if="!passwordField">
+            Ange lösenord
+          </span>
+        </div>
         <div class="formRow">
           <input
             id="loginButton"
@@ -31,30 +43,53 @@
             @click.prevent="login"
           />
         </div>
+        <span class="error" v-if="errorLogin">
+          Fel email/lösenord
+        </span>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import { required, email } from "vuelidate/lib/validators";
+
 export default {
   name: "Home",
   data() {
     return {
-      user: {
-        Email: "",
-        Password: ""
-      }
+      email: "",
+      password: "",
+      emailField: true,
+      passwordField: true,
+      errorLogin: false
     };
+  },
+  validations: {
+    email: {
+      email,
+      required,
+    },
+    password: {
+      required,
+    },
   },
   components: {},
   methods: {
     async login() {
-      await this.$store.dispatch("login", this.user);
-      var sUser = this.$store.getters.getLoggedInUser;
-      if (this.$store.getters.getLoggedInUser == null) {
-        alert("Wrong username or password");
+      this.$v.$touch();
+      this.checkForm();
+      if (this.$v.$invalid && !this.$store.getters.getLoggedIn) {
+        return;
+      }
+      await this.$store.dispatch("login", {
+        email: this.email,
+        password: this.password
+      });
+      if (this.$store.getters.getLoggedIn == false) {
+        this.errorLogin = true;
       } else {
+        var sUser = this.$store.getters.getLoggedInUser;
         switch (sUser.role) {
           case "Admin":
             this.$router.push("/admin");
@@ -68,6 +103,15 @@ export default {
           default:
         }
       }
+    },
+    checkForm() {
+      this.emailField = this.$v.email.required;
+      this.passwordField = this.$v.password.required;
+    }
+  },
+  created() {
+    if (this.$store.getters.getLoggedIn) {
+      this.login();
     }
   }
 };
@@ -131,9 +175,8 @@ form {
 input {
   padding: 0.5em 1em;
 }
-input[type="text"],
-input[type="password"] {
-  margin-bottom: 2em;
+.chunk {
+  margin-bottom: 1em;
 }
 input[type="submit"],
 input[type="reset"] {
@@ -153,6 +196,7 @@ h2 {
   border-radius: 4px;
   transition-duration: 0.4s;
   border: 2px solid #2185d0;
+  margin-bottom: 1em;
 }
 
 #loginButton:hover {
@@ -160,4 +204,9 @@ h2 {
   color: black;
   border: 2px solid #2185d0;
 }
+
+.error {
+  font-size: 12px;
+}
+
 </style>

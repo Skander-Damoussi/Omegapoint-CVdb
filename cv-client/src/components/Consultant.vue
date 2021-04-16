@@ -155,6 +155,9 @@ export default {
       this.exportMenu = !this.exportMenu;
       console.log("exportMenu=", this.exportMenu);
     },
+    editMethod() {
+      this.$router.push("ConsultantExperience/");
+    }
   },
 };
 </script>
