@@ -63,12 +63,6 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
     },
     async updateUser({ commit }, user) {
-      console.log("store", user);
-      console.log("store", user.id);
-      console.log("store", user.firstName);
-      console.log("store", user.lastName);
-      console.log("store", user.password);
-
       await Axios.put("user/", user)
         .then(async resp => {
           var respUser = {
@@ -81,7 +75,6 @@ export default new Vuex.Store({
           console.log(this.loggedInUser);
         })
         .catch(err => console.log(err));
-      // commit("setLoggedInUser", this.respUser);
     },
     async logOut({ commit }) {
       commit("resetState");

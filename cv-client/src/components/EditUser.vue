@@ -10,26 +10,28 @@
         <label for="lastName">Efternamn</label>
         <input type="text" v-model="user.lastName" id="lastName" />
       </div>
-      <!-- <div class="section">
-        <label for="password">Lösenord</label>
-        <input type="text" v-model="user.password" required id="password" />
-      </div>
       <div class="section">
-        <label for="confirmPassword">Bekräfta lösenord</label>
-        <input type="text" required id="confirmPassword" />
-      </div> -->
+        <label for="currentPassword">Nuvarande lösenord</label>
+        <input
+          type="currentPassword"
+          id="currentPassword"
+          v-model="user.currentPassword"
+          name="currentPassword"
+          ref="currentPassword"
+        />
+      </div>
       <div class="section">
         <label for="password">Nytt lösenord</label>
         <input
           type="password"
           id="password"
-          v-model="user.password"
+          v-model="user.newPassword"
           name="password"
           ref="password"
         />
       </div>
       <div class="section">
-        <label for="confirmPassword">Bekräfta lösenord</label>
+        <label for="confirmPassword">Bekräfta nytt lösenord</label>
         <input
           type="password"
           id="confirmPassword"
@@ -54,7 +56,6 @@ export default {
   name: "EditUser",
   data() {
     return {
-      // password: "",
       confirmation: ""
     };
   },
@@ -69,12 +70,9 @@ export default {
   },
   methods: {
     updateUser(user) {
-      /*string field,string finthis, update */
-      if (this.user.password != this.confirmation) {
+      if (user.newPassword != this.confirmation) {
         alert("Lösenordsfälten matchar inte, försök igen.");
       } else {
-        // this.user.password = this.password;
-        console.log("update", user);
         console.log("update.this", this.user);
         this.$store.dispatch("updateUser", this.user);
       }

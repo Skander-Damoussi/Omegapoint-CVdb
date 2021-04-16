@@ -9,6 +9,7 @@
         <div class="box">
           <div class="row">
             <h2>Hej! {{ user.firstName }}</h2>
+            <button id="editUser" v-on:click="editUser">Ändra uppgifter</button>
             <!-- This "Sven" becomes a store binding @ user.name -->
             <button id="logout" v-on:click="signOut">Logout</button>
             <!-- Needs icon instead, works for now -->
@@ -30,6 +31,9 @@ export default {
         this.$router.currentRoute.path !== "/"
       )
         this.$router.push("/");
+    },
+    editUser() {
+      this.$router.push("/editUser");
     }
   },
   computed: {
@@ -86,6 +90,10 @@ export default {
 }
 
 #logout {
+  margin-left: 35px;
+}
+
+#editUser {
   margin-left: 35px;
 }
 
