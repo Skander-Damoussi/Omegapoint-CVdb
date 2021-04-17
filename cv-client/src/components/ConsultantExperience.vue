@@ -24,7 +24,7 @@
       </div>
       <div
         class="wrapper"
-        v-for="(col, index) in collection"
+        v-for="(col, index) in getExperienceList"
         :key="col.startDate"
       >
         <div class="title" @click="col.show = !col.show">
@@ -73,88 +73,14 @@ export default {
   data: function() {
     return {
       sortTitle: false,
-      sortDate: false,
-      collection: [
-        {
-          show: false,
-          title: "Trainee",
-          language: ["C#", "CSS", "Javascript"],
-          software: ["MongoDB Compass"],
-          assignments: [
-            "Create application to CRUD emssployee experience. Logins with different roles. blablabla.",
-            "Create application to CRUD employee experience. Logins with different roles. blablabla.",
-          ],
-          role: ["Trainee system developer"],
-          startDate: "2018-02-05",
-          endDate: "2021-01-02",
-        },
-        {
-          show: false,
-          title: "Web developer",
-          language: ["C#", "CSS", "Javascript"],
-          software: ["MongoDB Compass"],
-          assignments: [
-            "Create application to CRUD employesse experience. Logins with different roles. blablabla.",
-            "Create application to CRUD employee experience. Logins with different roles. blablabla.",
-          ],
-          role: ["Web developer"],
-          startDate: "2010-02-05",
-          endDate: "2021-01-02",
-        },
-        {
-          show: false,
-          title: "School",
-          language: ["C#", "CSS", "Javascript"],
-          software: ["MongoDB Compass"],
-          assignments: [
-            "Create application to CRUD emplssoyee experience. Logins with different roles. blablabla.",
-            "Create application to CRUD employee experience. Logins with different roles. blablabla.",
-          ],
-          role: ["Web developer"],
-          startDate: "2000-02-05",
-          endDate: "2021-01-02",
-        },
-        {
-          show: false,
-          title: "Hobby",
-          language: ["C#", "CSS", "Javascript"],
-          software: ["MongoDB Compass"],
-          assignments: [
-            "Create application to CRUD employssee experience. Logins with different roles. blablabla.",
-            "Create application to CRUD employee experience. Logins with different roles. blablabla.",
-          ],
-          role: ["Web developer"],
-          startDate: "2016-02-05",
-          endDate: "2021-01-02",
-        },
-        {
-          show: false,
-          title: "Game app",
-          language: ["C#", "CSS", "Javascript"],
-          software: ["MongoDB Compass"],
-          assignments: [
-            "Create application to CRUD emplossyee experience. Logins with different roles. blablabla.",
-            "Create application to CRUD employee experience. Logins with different roles. blablabla.",
-          ],
-          role: ["Web developer"],
-          startDate: "2014-02-05",
-          endDate: "2021-01-02",
-        },
-        {
-          show: false,
-          title: "Funny",
-          language: ["C#", "CSS", "Javascript"],
-          software: ["MongoDB Compass"],
-          assignments: [
-            "Create application to CRUD employssee experience. Logins with different roles. blablabla.",
-            "Create application to CRUD employee experience. Logins with different roles. blablabla.",
-          ],
-          role: ["Web developer"],
-          startDate: "2012-02-05",
-          endDate: "2021-01-02",
-        },
-      ],
+      sortDate: false
     };
+  },
+  computed: {
+    getExperienceList() {
+      let userExperience = this.$store.getters.getLoggedInUser;
+      return userExperience.experiences;
+    },
   },
   methods: {
     CVClick() {
@@ -163,7 +89,7 @@ export default {
     EditClick(index) {
       this.$router.push({
         name: "ConsultantExperienceEdit",
-        params: this.collection[index]
+        params: this.collection[index],
       });
     },
     AddClick() {

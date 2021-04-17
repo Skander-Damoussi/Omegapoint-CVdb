@@ -55,6 +55,39 @@ namespace cv_api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Konsult")]
+        [HttpPost("postExperience")]
+        public async Task<IActionResult> postExperience(ExperienceDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+
+            if (input.newExperience)
+            {
+                if(user.Experiences == null)
+                {
+                    user.Experiences = new List<Experience>();
+                }
+                user.Experiences.Add(new Experience
+                {
+                    Title = input.title,
+                    Assignments = input.Assignments,
+                    Language = input.Language,
+                    Role = input.Role,
+                    StartDate = input.endDate,
+                    EndDate = input.endDate,
+                    Software = input.Software
+                });
+            }
+            else
+            {
+                // find the experience to update
+            }
+
+            await userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post(User newUser)
@@ -151,7 +184,8 @@ namespace cv_api.Controllers
                 role = userRoles[0],
                 firstName = user.FirstName,
                 lastName = user.LastName,
-                userId = user.Id.ToString()
+                userId = user.Id.ToString(),
+                experiences = user.Experiences
             });
         }
 

@@ -34,6 +34,9 @@ export default new Vuex.Store({
     updateUser(state, updatedUser) {
       state.user = updatedUser;
     },
+    setExperience(state, updatedExperiences) {
+      state.loggedInUser.experiences = updatedExperiences;
+    },
     setConsultantList(state, list) {
       state.consultantList = list;
     },
@@ -55,7 +58,8 @@ export default new Vuex.Store({
             id: resp.data.userId,
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
-            role: resp.data.role
+            role: resp.data.role,
+            experiences: resp.data.experiences
           }
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
@@ -121,6 +125,20 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUsers", this.users);
+    },
+    async updateExperience({ commit }, { token, input }) {
+      console.log(input);
+      await Axios.post("user/postexperience/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
+      commit("setExperience", this.experiences);
     }
   },
   getters: {

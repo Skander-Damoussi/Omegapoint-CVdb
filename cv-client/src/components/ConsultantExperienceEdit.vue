@@ -7,15 +7,20 @@
         <div class="editTitle" @click="editTitle = !editTitle">
           <i class="fas fa-edit"></i>
         </div>
-        <button @click="SaveClick()" id="addButton">Spara erfarenhet</button>
+        <button v-if="this.newEntry" @click="SaveClick()" id="addButton">
+          Spara erfarenhet
+        </button>
+        <button v-else @click="SaveClick()" id="addButton">
+          Uppdatera erfarenhet
+        </button>
       </div>
       <div v-if="editTitle">
         <h4>Titel</h4>
         <div class="rownomargin">
           <input type="text" class="titleInput" v-model="title" />
           <div class="editTitle" @click="editTitle = !editTitle">
-          <i class="fas fa-arrow-up"></i>
-        </div>
+            <i class="fas fa-arrow-up"></i>
+          </div>
         </div>
       </div>
       <div class="wrapper" v-for="col in collection" :key="col.startDate">
@@ -118,9 +123,24 @@ export default {
         entry.listInput = "";
       });
     },
-    SaveClick() {
-      if(this.newEntry) {
-        console.log("new entry");
+    async SaveClick() {
+      let userID = this.$store.getters.getLoggedInUser;
+      console.log(userID);
+      if (this.newEntry) {
+        await this.$store.dispatch("updateExperience", {
+          token: this.$store.getters.getUserToken,
+          input: {
+            title: this.title,
+            startDate: null,
+            endDate: null,
+            Language: this.collection[0].list,
+            Software: this.collection[1].list,
+            Assignments: this.collection[2].list,
+            Role: this.collection[3].list,
+            userID: userID.id,
+            newExperience: this.newEntry
+          },
+        });
       } else {
         console.log("update entry");
       }
@@ -323,7 +343,7 @@ h2 {
   color: #2185d0;
 }
 
-.editTitle:hover{
+.editTitle:hover {
   color: black;
   cursor: pointer;
 }
