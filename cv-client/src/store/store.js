@@ -12,6 +12,7 @@ const getDefaultState = () => {
     loggedInUser: {},
     users: [],
     consultantList: [],
+    userExperience: [],
     token: null,
     role: null
   };
@@ -48,6 +49,9 @@ export default new Vuex.Store({
     },
     setLoggedIn(state, token) {
       state.loggedIn = token;
+    },
+    setUserExperience(state, token) {
+      state.userExperience = token;
     }
   },
   actions: {
@@ -139,7 +143,16 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setExperience", this.experiences);
-    }
+    },
+    async getUserExperience({ commit }, userId) {
+      console.log(userId)
+      await Axios.get("user/getConsultantExperienceList", userId)
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserExperience", this.userExperience);
+    },
   },
   getters: {
     getLoggedIn(state) {
@@ -156,6 +169,9 @@ export default new Vuex.Store({
     },
     getLoggedInUser(state) {
       return state.loggedInUser;
+    },
+    getUserExperience(state){
+      return state.userExperience;
     }
   }
 });

@@ -55,6 +55,15 @@ namespace cv_api.Controllers
             return Ok(result);
         }
 
+        //[Authorize(Roles = "Konsult")]
+        [HttpGet("getConsultantExperienceList")]
+        public async Task<IActionResult> getConsultantExperienceList(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            
+            return Ok(user.Experiences);
+        }
+
         [Authorize(Roles = "Konsult")]
         [HttpPost("postExperience")]
         public async Task<IActionResult> postExperience(ExperienceDTO input)

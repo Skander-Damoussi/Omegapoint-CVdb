@@ -24,7 +24,7 @@
       </div>
       <div
         class="wrapper"
-        v-for="(col, index) in getExperienceList"
+        v-for="(col, index) in experienceList"
         :key="col.startDate"
       >
         <div class="title" @click="col.show = !col.show">
@@ -73,20 +73,21 @@ export default {
   data: function() {
     return {
       sortTitle: false,
-      sortDate: false
+      sortDate: false,
+      experienceList: {},
     };
   },
-  computed: {
-    getExperienceList() {
-      let userExperience = this.$store.getters.getLoggedInUser;
-      return userExperience.experiences;
-    },
+  mounted() {
+    let user = this.$store.getters.getLoggedInUser;
+    console.log(user);
+    this.$store.dispatch("getUserExperience", {userId: user.id});
   },
   methods: {
     CVClick() {
       this.$router.push({ name: "Consultant" });
     },
     EditClick(index) {
+      console.log(index);
       this.$router.push({
         name: "ConsultantExperienceEdit",
         params: this.collection[index],
