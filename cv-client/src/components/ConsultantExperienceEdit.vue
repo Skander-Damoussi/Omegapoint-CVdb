@@ -1,0 +1,330 @@
+<template>
+  <div>
+    <div class="tasks">
+      <div class="row">
+        <button @click="BackClick()">Tillbaka till erfarenheter</button>
+        <h2 id="addButton">{{ this.title }}</h2>
+        <div class="editTitle" @click="editTitle = !editTitle">
+          <i class="fas fa-edit"></i>
+        </div>
+        <button @click="SaveClick()" id="addButton">Spara erfarenhet</button>
+      </div>
+      <div v-if="editTitle">
+        <h4>Titel</h4>
+        <div class="rownomargin">
+          <input type="text" class="titleInput" v-model="title" />
+          <div class="editTitle" @click="editTitle = !editTitle">
+          <i class="fas fa-arrow-up"></i>
+        </div>
+        </div>
+      </div>
+      <div class="wrapper" v-for="col in collection" :key="col.startDate">
+        <div class="title" @click="col.show = !col.show">
+          <div class="rownomargin">
+            <p>
+              {{ col.title }}
+            </p>
+            <p class="stickright"></p>
+          </div>
+        </div>
+        <div class="container" id="container" v-if="col.show">
+          <li id="inboxText" v-for="(list, index) in col.list" :key="index">
+            <button @click="RemoveClick(col.title, index)" id="listDelete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            {{ list }}
+          </li>
+          <div class="rownomargin">
+            <input type="text" v-model="col.listInput" class="listInput" />
+            <button @click="AddClick(col.title)" id="listAdd">
+              <i class="fas fa-plus-square"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "EditUser",
+  data: function() {
+    return {
+      title: "",
+      startDate: "",
+      endDate: "",
+      newEntry: null,
+      editTitle: false,
+      collection: [
+        {
+          show: true,
+          title: "Programmeringsspårk",
+          list: [],
+          listInput: "",
+        },
+        {
+          show: false,
+          title: "Software",
+          list: [],
+          listInput: "",
+        },
+        {
+          show: false,
+          title: "Assignments",
+          list: [],
+          listInput: "",
+        },
+        {
+          show: false,
+          title: "Role",
+          list: [],
+          listInput: "",
+        },
+      ],
+    };
+  },
+  created() {
+    if (this.$route.params.title === undefined) {
+      this.title = "Ny erfarenhet";
+      this.newEntry = true;
+      this.editTitle = true;
+    } else {
+      this.title = this.$route.params.title;
+      this.startDate = this.$route.params.startDate;
+      this.endDate = this.$route.params.endDate;
+      this.collection[0].list = this.$route.params.language;
+      this.collection[1].list = this.$route.params.software;
+      this.collection[2].list = this.$route.params.assignments;
+      this.collection[3].list = this.$route.params.role;
+    }
+  },
+  methods: {
+    BackClick() {
+      this.$router.push({ name: "ConsultantExperience" });
+    },
+    RemoveClick(title, index) {
+      this.collection.forEach(function(entry) {
+        if (entry.title == title) {
+          entry.list.splice(index, 1);
+        }
+      });
+    },
+    AddClick(title) {
+      this.collection.forEach(function(entry) {
+        if (entry.title == title && entry.listInput != "") {
+          entry.list.push(entry.listInput);
+        }
+        entry.listInput = "";
+      });
+    },
+    SaveClick() {
+      if(this.newEntry) {
+        console.log("new entry");
+      } else {
+        console.log("update entry");
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.wrapper {
+  border-radius: 2px;
+  border: 2px solid #f7f7f7;
+  max-width: 60vw;
+  margin: auto;
+}
+
+.tasks {
+  text-align: left;
+  margin: auto;
+  max-width: 60vw;
+  margin-top: 20px;
+}
+
+.tablewrapper {
+  padding: 30px;
+  border: 1px solid #f7f7f7;
+}
+
+.title {
+  background: #f7f7f7;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #cecece;
+  transition-duration: 0.5s;
+}
+
+.title:hover {
+  background: #f7f7f7;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #006166;
+  cursor: pointer;
+}
+
+#addButton {
+  margin-left: auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rownomargin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+li {
+  list-style-type: none;
+}
+
+.box {
+  background-color: white;
+  margin: 50px;
+  display: flex;
+}
+
+input[type="text"],
+select {
+  padding: 6px 10px;
+  margin: 2px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  max-width: 15vw;
+}
+
+input[type="text"]:focus {
+  border: 1px solid #555;
+}
+
+th {
+  font-size: 15px;
+  font-weight: normal;
+}
+
+textarea {
+  height: 230px;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 10px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none;
+}
+
+.as {
+  width: 30vw;
+}
+
+.stickright {
+  margin-left: auto;
+}
+
+button {
+  color: white;
+  background: #2185d0;
+  border: none;
+  text-decoration: none;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  border: 2px solid #2185d0;
+  margin-bottom: 1em;
+  padding: 10px;
+}
+
+button:hover {
+  background-color: white; /* Green */
+  color: black;
+  border: 2px solid #2185d0;
+  cursor: pointer;
+}
+
+#inboxText {
+  font-size: 12px;
+}
+
+h3 {
+  margin-bottom: 5px;
+}
+
+#h3space {
+  margin-top: 25px;
+}
+
+h2 {
+}
+
+.container {
+  padding: 15px;
+}
+
+.sort {
+  margin-bottom: 5px;
+}
+
+.sort:hover {
+  cursor: pointer;
+  color: #2185d0;
+}
+
+.sortdate {
+  margin-right: 5vw;
+}
+
+.sorttitle {
+  margin-left: 5vw;
+}
+
+.experienceedit:hover {
+  cursor: pointer;
+  color: #2185d0;
+}
+
+#listAdd {
+  margin-left: 10px;
+  padding: 5px;
+  margin: 2px;
+}
+
+#listDelete {
+  margin-left: 10px;
+  padding: 0px;
+  margin: 1px;
+  margin-right: 5px;
+}
+
+#listDelete:hover {
+  background-color: white; /* Green */
+  color: red;
+  border: 2px solid red;
+  cursor: pointer;
+}
+
+.editTitle {
+  margin-left: 10px;
+  color: #2185d0;
+}
+
+.editTitle:hover{
+  color: black;
+  cursor: pointer;
+}
+</style>

@@ -72,6 +72,11 @@ namespace cv_api.Controllers
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName
             };
+            if(newUser.Role == "Konsult")
+            {
+                user.Experiences = new List<Experience>();
+            }
+
             var result = await userManager.CreateAsync(user, newUser.Password);
 
             if (!await roleManager.RoleExistsAsync(newUser.Role))
