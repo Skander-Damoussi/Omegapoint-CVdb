@@ -81,7 +81,7 @@ namespace cv_api.Controllers
                     Assignments = input.Assignments,
                     Language = input.Language,
                     Role = input.Role,
-                    StartDate = input.endDate,
+                    StartDate = input.startDate,
                     EndDate = input.endDate,
                     Software = input.Software,
                     id = input.id
@@ -111,7 +111,7 @@ namespace cv_api.Controllers
                     user.Experiences[i].Assignments = input.Assignments;
                     user.Experiences[i].Language = input.Language;
                     user.Experiences[i].Role = input.Role;
-                    user.Experiences[i].StartDate = input.endDate;
+                    user.Experiences[i].StartDate = input.startDate;
                     user.Experiences[i].EndDate = input.endDate;
                     user.Experiences[i].Software = input.Software;
                     await userManager.UpdateAsync(user);

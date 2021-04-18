@@ -47,11 +47,26 @@
             {{ list }}
           </li>
           <div class="rownomargin">
-            <input type="text" v-model="col.listInput" class="listInput" />
+            <input type="text" v-model="col.listInput" class="listInput" @keyup.enter="AddClick(col.title)"/>
             <button @click="AddClick(col.title)" id="listAdd">
               <i class="fas fa-plus-square"></i>
             </button>
           </div>
+        </div>
+      </div>
+      <div class="date rownomargin">
+        <div class="date">
+          <p>Start datum</p>
+          <input type="date" id="startDate" name="startDate" />
+        </div>
+        <div class="date">
+          <div class="rownomargin centertext">
+            <p>Slut datum</p>
+            <div @click="resetEndDate()" class="clickNull" title="Pågående">
+              <i class="fas fa-times-circle"></i>
+            </div>
+          </div>
+          <input type="date" id="endDate" name="endDate" />
         </div>
       </div>
     </div>
@@ -113,9 +128,28 @@ export default {
       this.collection[1].list = this.$route.params.software;
       this.collection[2].list = this.$route.params.assignments;
       this.collection[3].list = this.$route.params.role;
+      this.collection[0].show = true;
+      this.collection[1].show = true;
+      this.collection[2].show = true;
+      this.collection[3].show = true;
+    }
+  },
+  mounted() {
+    if (this.startDate === "") {
+      document.getElementById("startDate").value = this.getTodayDate();
+    } else {
+      document.getElementById("startDate").value = this.startDate;
+      document.getElementById("endDate").value = this.endDate;
     }
   },
   methods: {
+    getTodayDate() {
+      const today = new Date()
+        .toJSON()
+        .slice(0, 10)
+        .replace(/-/g, "-");
+      return today;
+    },
     BackClick() {
       this.$router.push({ name: "ConsultantExperience" });
     },
@@ -133,6 +167,8 @@ export default {
       this.collection[1].list = temp.software;
       this.collection[2].list = temp.assignments;
       this.collection[3].list = temp.role;
+      document.getElementById("startDate").value = temp.startDate;
+      document.getElementById("endDate").value = temp.endDate;
     },
     AddClick(title) {
       this.collection.forEach(function(entry) {
@@ -149,8 +185,8 @@ export default {
           token: this.$store.getters.getUserToken,
           input: {
             title: this.title,
-            startDate: null,
-            endDate: null,
+            startDate: this.cutDate(document.getElementById("startDate").value),
+            endDate: this.cutDate(document.getElementById("endDate").value),
             Language: this.collection[0].list,
             Software: this.collection[1].list,
             Assignments: this.collection[2].list,
@@ -165,18 +201,19 @@ export default {
           token: this.$store.getters.getUserToken,
           input: {
             title: this.title,
-            startDate: null,
-            endDate: null,
+            startDate: this.cutDate(document.getElementById("startDate").value),
+            endDate: this.cutDate(document.getElementById("endDate").value),
             Language: this.collection[0].list,
             Software: this.collection[1].list,
             Assignments: this.collection[2].list,
             Role: this.collection[3].list,
             userID: userID.id,
             id: this.id,
-            newExperience: this.false
+            newExperience: this.false,
           },
         });
       }
+      this.$router.push({ name: "ConsultantExperience" });
     },
     MakeId(length) {
       var result = [];
@@ -190,6 +227,12 @@ export default {
       }
       return result.join("");
     },
+    resetEndDate() {
+      document.getElementById("endDate").value = "";
+    },
+    cutDate(date){
+      return date;
+    }
   },
 };
 </script>
@@ -389,6 +432,23 @@ h2 {
 }
 
 .editTitle:hover {
+  color: black;
+  cursor: pointer;
+}
+
+.date {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+
+.clickNull {
+  margin-left: 8px;
+  margin-left: 10px;
+  color: #2185d0;
+}
+
+.clickNull:hover {
   color: black;
   cursor: pointer;
 }

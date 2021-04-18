@@ -25,17 +25,18 @@
       <div v-else>
         <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
       </div>
-      <div
-        class="wrapper"
-        v-for="(col, index) in experienceList"
-        :key="col.startDate"
-      >
+      <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
         <div class="title" @click="col.show = !col.show">
           <div class="rownomargin">
             <p>
               {{ col.title }}
             </p>
-            <p class="stickright">{{ col.startDate }} - {{ col.endDate }}</p>
+            <p v-if="col.endDate === ''" class="stickright">
+              {{ col.startDate }} - Pågående
+            </p>
+            <p v-else class="stickright">
+              {{ col.startDate }} - {{ col.endDate }}
+            </p>
           </div>
         </div>
         <div class="container" id="container" v-if="col.show">
@@ -121,8 +122,8 @@ export default {
           Role: null,
           userID: user.id,
           newExperience: false,
-          id: this.experienceList[index].id
-        }
+          id: this.experienceList[index].id,
+        },
       });
       this.experienceList.splice(index, 1);
     },

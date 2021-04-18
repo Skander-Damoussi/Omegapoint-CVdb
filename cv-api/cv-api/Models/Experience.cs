@@ -17,8 +17,8 @@ namespace cv_api.Models
         public List<string>? Assignments { get; set; }
         // Systemutvecklare
         public List<string>? Role { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public bool Show { get; set; }
         public string id { get; set; }
     }
@@ -34,8 +34,8 @@ namespace cv_api.Models
         public List<string>? Assignments { get; set; }
         // Systemutvecklare
         public List<string>? Role { get; set; }
-        public DateTime? startDate { get; set; }
-        public DateTime? endDate { get; set; }
+        public string startDate { get; set; }
+        public string endDate { get; set; }
 
         public string userID { get; set; }
 

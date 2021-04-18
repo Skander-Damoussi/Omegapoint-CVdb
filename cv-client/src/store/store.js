@@ -170,7 +170,6 @@ export default new Vuex.Store({
       commit("setExperience", this.experiences);
     },
     async getUserExperience({ commit }, userId) {
-      console.log(userId)
       await Axios.get(`user/getConsultantExperienceList/${userId}`)
         .then(async resp => {
           this.userExperience = resp.data;
