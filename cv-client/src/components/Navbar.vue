@@ -3,15 +3,14 @@
     <div class="row">
       <div class="left">
         <h2>{{ user.role }}</h2>
-        <!-- This becomes a store binding @ user.role -->
       </div>
       <div class="right">
         <div class="box">
           <div class="row">
             <h2>Hej! {{ user.firstName }}</h2>
-            <!-- This "Sven" becomes a store binding @ user.name -->
-            <button id="logout" v-on:click="signOut">Logout</button>
-            <!-- Needs icon instead, works for now -->
+            <a @click="signOut" id="logout" title="Logga ut"
+              ><i class="fas fa-sign-out-alt"></i
+            ></a>
           </div>
         </div>
       </div>
@@ -54,7 +53,9 @@ export default {
 #nav a {
   font-weight: bold;
   color: #f4f5f7;
-  padding: 15px;
+  padding: 0px;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 #nav a.router-link-exact-active {
