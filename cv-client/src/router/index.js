@@ -6,6 +6,7 @@ import Consultant from "../components/Consultant";
 import Admin from "../views/Admin";
 import EditUser from "../components/EditUser.vue";
 import ConsultantExperience from "../components/ConsultantExperience.vue";
+import ConsultantExperienceEdit from "../components/ConsultantExperienceEdit.vue";
 import store from "../store/store.js";
 
 Vue.use(VueRouter);
@@ -33,6 +34,12 @@ const routes = [
     path: "/consultantExperience",
     name: "ConsultantExperience",
     component: ConsultantExperience,
+    meta: { reqAuth: true, consultAuth: true }
+  },
+  {
+    path: "/consultantExperienceEdit",
+    name: "ConsultantExperienceEdit",
+    component: ConsultantExperienceEdit,
     meta: { reqAuth: true, consultAuth: true }
   },
   {

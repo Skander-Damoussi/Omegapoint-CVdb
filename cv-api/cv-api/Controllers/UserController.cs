@@ -55,6 +55,89 @@ namespace cv_api.Controllers
             return Ok(result);
         }
 
+        //[Authorize(Roles = "Konsult")]
+        [HttpGet("getConsultantExperienceList/{userId}")]
+        public async Task<IActionResult> getConsultantExperienceList(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return Ok(user.Experiences);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("postExperience")]
+        public async Task<IActionResult> postExperience(ExperienceDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+
+            if (input.newExperience)
+            {
+                if(user.Experiences == null)
+                {
+                    user.Experiences = new List<Experience>();
+                }
+                user.Experiences.Add(new Experience
+                {
+                    Title = input.title,
+                    Assignments = input.Assignments,
+                    Language = input.Language,
+                    Role = input.Role,
+                    StartDate = input.startDate,
+                    EndDate = input.endDate,
+                    Software = input.Software,
+                    id = input.id
+                });
+            }
+            else
+            {
+                for(int i = 0; i < user.Experiences.Count; i++)
+                {
+                    
+                }
+            }
+            await userManager.UpdateAsync(user);
+            return Ok(user.Experiences);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updateExperience")]
+        public async Task<IActionResult> updateExperience(ExperienceDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for(int i = 0; i < user.Experiences.Count; i++)
+            {
+                if(user.Experiences[i].id == input.id)
+                {
+                    user.Experiences[i].Title = input.title;
+                    user.Experiences[i].Assignments = input.Assignments;
+                    user.Experiences[i].Language = input.Language;
+                    user.Experiences[i].Role = input.Role;
+                    user.Experiences[i].StartDate = input.startDate;
+                    user.Experiences[i].EndDate = input.endDate;
+                    user.Experiences[i].Software = input.Software;
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Experiences);
+                }
+            }
+            return BadRequest();
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("removeExperience")]
+        public async Task<IActionResult> removeExperience(ExperienceDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Experiences.Count; i++)
+            {
+                if (user.Experiences[i].id == input.id)
+                {
+                    user.Experiences.RemoveAt(i);
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Experiences);
+                }
+            }
+            return BadRequest();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post(User newUser)
@@ -72,6 +155,11 @@ namespace cv_api.Controllers
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName
             };
+            if(newUser.Role == "Konsult")
+            {
+                user.Experiences = new List<Experience>();
+            }
+
             var result = await userManager.CreateAsync(user, newUser.Password);
 
             if (!await roleManager.RoleExistsAsync(newUser.Role))
@@ -146,7 +234,8 @@ namespace cv_api.Controllers
                 role = userRoles[0],
                 firstName = user.FirstName,
                 lastName = user.LastName,
-                userId = user.Id.ToString()
+                userId = user.Id.ToString(),
+                experiences = user.Experiences
             });
         }
 

@@ -12,6 +12,7 @@ const getDefaultState = () => {
     loggedInUser: {},
     users: [],
     consultantList: [],
+    userExperience: [],
     token: null,
     role: null
   };
@@ -34,6 +35,9 @@ export default new Vuex.Store({
     updateUser(state, updatedUser) {
       state.user = updatedUser;
     },
+    setExperience(state, updatedExperiences) {
+      state.loggedInUser.experiences = updatedExperiences;
+    },
     setConsultantList(state, list) {
       state.consultantList = list;
     },
@@ -45,6 +49,9 @@ export default new Vuex.Store({
     },
     setLoggedIn(state, token) {
       state.loggedIn = token;
+    },
+    setUserExperience(state, token) {
+      state.userExperience = token;
     }
   },
   actions: {
@@ -55,7 +62,8 @@ export default new Vuex.Store({
             id: resp.data.userId,
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
-            role: resp.data.role
+            role: resp.data.role,
+            experiences: resp.data.experiences
           }
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
@@ -121,7 +129,54 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUsers", this.users);
-    }
+    },
+    async addExperience({ commit }, { token, input }) {
+      await Axios.post("user/postexperience/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setExperience", this.experiences);
+    },
+    async updateExperience({ commit }, { token, input }) {
+      await Axios.post("user/updateexperience/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setExperience", this.experiences);
+    },
+    async removeExperience({ commit }, { token, input }) {
+      await Axios.post("user/removeexperience/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setExperience", this.experiences);
+    },
+    async getUserExperience({ commit }, userId) {
+      await Axios.get(`user/getConsultantExperienceList/${userId}`)
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserExperience", this.userExperience);
+    },
   },
   getters: {
     getLoggedIn(state) {
@@ -138,6 +193,9 @@ export default new Vuex.Store({
     },
     getLoggedInUser(state) {
       return state.loggedInUser;
+    },
+    getUserExperience(state) {
+      return state.userExperience;
     }
   }
 });
