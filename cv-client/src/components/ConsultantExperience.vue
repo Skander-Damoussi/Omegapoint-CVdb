@@ -2,17 +2,29 @@
   <div>
     <div class="tasks">
       <div class="row">
-        <button @click="CVClick()">Tillbaka till CV</button>
+        <button @click="CVClick()">
+          <i class="fas fa-chevron-circle-left"></i> Tillbaka
+        </button>
         <h2 id="addButton">Erfarenheter</h2>
-        <button @click="AddClick()" id="addButton">Lägg till erfarenhet</button>
+        <button @click="AddClick()" id="addButton">
+          Lägg till <i class="fas fa-plus"></i>
+        </button>
       </div>
       <div class="rownomargin" v-if="experienceList.length > 0">
         <div
-          class="sort sorttitle"
+          class="sort stickleft sorttitle"
           title="Sort by title"
           @click="sortListTitle()"
         >
           <i class="fas fa-sort"></i>
+        </div>
+        <div class="center">
+          <input
+            type="text"
+            v-model="searchText"
+            v-on:input="search()"
+            @keyup.enter="search()"
+          />
         </div>
         <div
           class="sort stickright sortdate"
@@ -87,6 +99,7 @@ export default {
     return {
       sortTitle: false,
       sortDate: false,
+      searchText: "",
       experienceList: {},
     };
   },
@@ -105,10 +118,30 @@ export default {
         params: this.experienceList[index],
       });
     },
+    search() {
+      var elements = document.getElementsByClassName("wrapper");
+
+      var i;
+      for (i = 0; i < elements.length; i++) {
+        var title =
+          elements[i].childNodes[0].childNodes[0].children[0].innerText;
+        var date =
+          elements[i].childNodes[0].childNodes[0].children[1].innerText;
+
+        if (title.includes(this.searchText) || date.includes(this.searchText)) {
+          elements[i].style.display = "block";
+        } else {
+          elements[i].style.display = "none";
+        }
+      }
+    },
     AddClick() {
       this.$router.push({ name: "ConsultantExperienceEdit" });
     },
     async RemoveClick(index) {
+      if (!confirm("Are you sure?")) {
+        return;
+      }
       let user = await this.$store.getters.getLoggedInUser;
       await this.$store.dispatch("removeExperience", {
         token: this.$store.getters.getUserToken,
@@ -222,13 +255,19 @@ export default {
 
 input[type="text"],
 select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
+  padding: 6px 10px;
+  margin-left: auto;
+  margin-right: auto;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+  max-width: 15vw;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 input[type="text"]:focus {
@@ -260,6 +299,10 @@ textarea {
   margin-left: auto;
 }
 
+.stickleft {
+  margin-right: auto;
+}
+
 button {
   color: white;
   background: #2185d0;
@@ -289,9 +332,6 @@ h3 {
 
 #h3space {
   margin-top: 25px;
-}
-
-h2 {
 }
 
 .container {

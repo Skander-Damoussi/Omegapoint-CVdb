@@ -2,7 +2,9 @@
   <div>
     <div class="tasks">
       <div class="row">
-        <button @click="BackClick()">Tillbaka till erfarenheter</button>
+        <button @click="BackClick()">
+          <i class="fas fa-chevron-circle-left"></i> Tillbaka
+        </button>
         <h2 id="addButton">{{ this.title }}</h2>
         <div
           class="editTitle"
@@ -18,7 +20,7 @@
           Spara erfarenhet
         </button>
         <button v-else @click="SaveClick()" id="addButton">
-          Uppdatera erfarenhet
+          Uppdatera erfarenhet <i class="fas fa-check"></i>
         </button>
       </div>
       <div v-if="editTitle">
@@ -47,7 +49,12 @@
             {{ list }}
           </li>
           <div class="rownomargin">
-            <input type="text" v-model="col.listInput" class="listInput" @keyup.enter="AddClick(col.title)"/>
+            <input
+              type="text"
+              v-model="col.listInput"
+              class="listInput"
+              @keyup.enter="AddClick(col.title)"
+            />
             <button @click="AddClick(col.title)" id="listAdd">
               <i class="fas fa-plus-square"></i>
             </button>
