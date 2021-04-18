@@ -68,10 +68,10 @@ export default {
   validations: {
     email: {
       email,
-      required,
+      required
     },
     password: {
-      required,
+      required
     },
   },
   components: {},

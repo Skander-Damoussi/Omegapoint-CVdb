@@ -11,7 +11,7 @@
             <p>{{ item.name }}</p>
           </div>
           <div class="templateDiv" @click="showModal">
-            <i class="fas fa-plus-square fa-10x "></i>
+            <i class="fas fa-plus-square fa-10x"></i>
             <p>Lägg till ny mall</p>
           </div>
         </div>
@@ -46,9 +46,27 @@ export default {
       ]
     };
   },
+  async mounted () {
+     var timeout
+async function refresh(){
+  console.log("timeout started")
+  clearTimeout(timeout)
+  timeout = setTimeout(() => {
+    console.log("you were logged out")
+    this.$store.dispatch("logOut");
+    var sUser = this.$store.getters.getLoggedInUser;
+     console.log(sUser);
+  }, 1 * 60 * 1000)
+}
+refresh()
+document.addEventListener('click', refresh)
+  },
   components: {
     RegisterUser,
     EditCv
+  },
+  created() {
+   
   },
   methods: {
     showModal() {
@@ -56,8 +74,8 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
