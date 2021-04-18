@@ -56,15 +56,14 @@ namespace cv_api.Controllers
         }
 
         //[Authorize(Roles = "Konsult")]
-        [HttpGet("getConsultantExperienceList")]
+        [HttpGet("getConsultantExperienceList/{userId}")]
         public async Task<IActionResult> getConsultantExperienceList(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
-            
             return Ok(user.Experiences);
         }
 
-        [Authorize(Roles = "Konsult")]
+        //[Authorize(Roles = "Konsult")]
         [HttpPost("postExperience")]
         public async Task<IActionResult> postExperience(ExperienceDTO input)
         {
@@ -84,17 +83,59 @@ namespace cv_api.Controllers
                     Role = input.Role,
                     StartDate = input.endDate,
                     EndDate = input.endDate,
-                    Software = input.Software
+                    Software = input.Software,
+                    id = input.id
                 });
             }
             else
             {
-                // find the experience to update
+                for(int i = 0; i < user.Experiences.Count; i++)
+                {
+                    
+                }
             }
-
             await userManager.UpdateAsync(user);
+            return Ok(user.Experiences);
+        }
 
-            return Ok();
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updateExperience")]
+        public async Task<IActionResult> updateExperience(ExperienceDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for(int i = 0; i < user.Experiences.Count; i++)
+            {
+                if(user.Experiences[i].id == input.id)
+                {
+                    user.Experiences[i].Title = input.title;
+                    user.Experiences[i].Assignments = input.Assignments;
+                    user.Experiences[i].Language = input.Language;
+                    user.Experiences[i].Role = input.Role;
+                    user.Experiences[i].StartDate = input.endDate;
+                    user.Experiences[i].EndDate = input.endDate;
+                    user.Experiences[i].Software = input.Software;
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Experiences);
+                }
+            }
+            return BadRequest();
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("removeExperience")]
+        public async Task<IActionResult> removeExperience(ExperienceDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Experiences.Count; i++)
+            {
+                if (user.Experiences[i].id == input.id)
+                {
+                    user.Experiences.RemoveAt(i);
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Experiences);
+                }
+            }
+            return BadRequest();
         }
 
         [Authorize(Roles = "Admin")]

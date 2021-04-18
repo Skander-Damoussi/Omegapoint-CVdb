@@ -130,8 +130,7 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
       commit("setUsers", this.users);
     },
-    async updateExperience({ commit }, { token, input }) {
-      console.log(input);
+    async addExperience({ commit }, { token, input }) {
       await Axios.post("user/postexperience/", input, {
         headers: {
           "Content-Type": "application/json",
@@ -139,14 +138,40 @@ export default new Vuex.Store({
         }
       })
         .then(async resp => {
-          console.log(resp);
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setExperience", this.experiences);
+    },
+    async updateExperience({ commit }, { token, input }) {
+      await Axios.post("user/updateexperience/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setExperience", this.experiences);
+    },
+    async removeExperience({ commit }, { token, input }) {
+      await Axios.post("user/removeexperience/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
         })
         .catch(err => console.log(err));
       commit("setExperience", this.experiences);
     },
     async getUserExperience({ commit }, userId) {
       console.log(userId)
-      await Axios.get("user/getConsultantExperienceList", userId)
+      await Axios.get(`user/getConsultantExperienceList/${userId}`)
         .then(async resp => {
           this.userExperience = resp.data;
         })
@@ -170,7 +195,7 @@ export default new Vuex.Store({
     getLoggedInUser(state) {
       return state.loggedInUser;
     },
-    getUserExperience(state){
+    getUserExperience(state) {
       return state.userExperience;
     }
   }

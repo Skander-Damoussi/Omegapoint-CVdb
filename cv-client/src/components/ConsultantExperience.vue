@@ -6,7 +6,7 @@
         <h2 id="addButton">Erfarenheter</h2>
         <button @click="AddClick()" id="addButton">Lägg till erfarenhet</button>
       </div>
-      <div class="rownomargin">
+      <div class="rownomargin" v-if="experienceList.length > 0">
         <div
           class="sort sorttitle"
           title="Sort by title"
@@ -21,6 +21,9 @@
         >
           <i class="fas fa-sort"></i>
         </div>
+      </div>
+      <div v-else>
+        <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
       </div>
       <div
         class="wrapper"
@@ -37,25 +40,34 @@
         </div>
         <div class="container" id="container" v-if="col.show">
           <div class="rownomargin">
-            <h3>Assignments</h3>
-            <div
-              class="stickright experienceedit"
-              title="Edit experience"
-              @click="EditClick(index)"
-            >
-              <i class="fas fa-edit"></i>
+            <h3>Programming languages</h3>
+            <div class="stickright">
+              <div
+                class="stickright experienceedit"
+                title="Edit experience"
+                @click="EditClick(index)"
+              >
+                <i class="fas fa-edit"></i>
+              </div>
+              <div
+                class="stickright experienceremove"
+                title="Remove experience"
+                @click="RemoveClick(index)"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </div>
             </div>
           </div>
-          <li id="inboxText" v-for="assign in col.assignments" :key="assign">
-            {{ assign }}
-          </li>
-          <h3 id="h3space">Programming languages</h3>
           <li id="inboxText" v-for="language in col.language" :key="language">
             {{ language }}
           </li>
           <h3 id="h3space">Software</h3>
           <li id="inboxText" v-for="software in col.software" :key="software">
             {{ software }}
+          </li>
+          <h3 id="h3space">Assignments</h3>
+          <li id="inboxText" v-for="assign in col.assignments" :key="assign">
+            {{ assign }}
           </li>
           <h3 id="h3space">Roles</h3>
           <li id="inboxText" v-for="role in col.role" :key="role">
@@ -77,32 +89,50 @@ export default {
       experienceList: {},
     };
   },
-  mounted() {
-    let user = this.$store.getters.getLoggedInUser;
-    console.log(user);
-    this.$store.dispatch("getUserExperience", {userId: user.id});
+  async mounted() {
+    let user = await this.$store.getters.getLoggedInUser;
+    await this.$store.dispatch("getUserExperience", user.id);
+    this.experienceList = this.$store.getters.getUserExperience;
   },
   methods: {
     CVClick() {
       this.$router.push({ name: "Consultant" });
     },
     EditClick(index) {
-      console.log(index);
       this.$router.push({
         name: "ConsultantExperienceEdit",
-        params: this.collection[index],
+        params: this.experienceList[index],
       });
     },
     AddClick() {
       this.$router.push({ name: "ConsultantExperienceEdit" });
     },
+    async RemoveClick(index) {
+      let user = await this.$store.getters.getLoggedInUser;
+      await this.$store.dispatch("removeExperience", {
+        token: this.$store.getters.getUserToken,
+        input: {
+          title: this.experienceList[index].title,
+          startDate: null,
+          endDate: null,
+          Language: null,
+          Software: null,
+          Assignments: null,
+          Role: null,
+          userID: user.id,
+          newExperience: false,
+          id: this.experienceList[index].id
+        }
+      });
+      this.experienceList.splice(index, 1);
+    },
     sortListTitle() {
       if (this.sortTitle) {
-        this.collection = this.collection.sort((a, b) =>
+        this.experienceList = this.experienceList.sort((a, b) =>
           a.title > b.title ? 1 : -1
         );
       } else {
-        this.collection = this.collection.sort((b, a) =>
+        this.experienceList = this.experienceList.sort((b, a) =>
           a.title > b.title ? 1 : -1
         );
       }
@@ -110,11 +140,11 @@ export default {
     },
     sortListDate() {
       if (this.sortDate) {
-        this.collection = this.collection.sort((a, b) =>
+        this.experienceList = this.experienceList.sort((a, b) =>
           a.startDate > b.startDate ? 1 : -1
         );
       } else {
-        this.collection = this.collection.sort((b, a) =>
+        this.experienceList = this.experienceList.sort((b, a) =>
           a.startDate > b.startDate ? 1 : -1
         );
       }
@@ -287,5 +317,15 @@ h2 {
 .experienceedit:hover {
   cursor: pointer;
   color: #2185d0;
+}
+
+.experienceremove:hover {
+  cursor: pointer;
+  color: #2185d0;
+}
+
+#textcenter {
+  margin-top: 30vh;
+  text-align: center;
 }
 </style>

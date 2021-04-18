@@ -4,8 +4,15 @@
       <div class="row">
         <button @click="BackClick()">Tillbaka till erfarenheter</button>
         <h2 id="addButton">{{ this.title }}</h2>
-        <div class="editTitle" @click="editTitle = !editTitle">
+        <div
+          class="editTitle"
+          @click="editTitle = !editTitle"
+          title="Redigera titel"
+        >
           <i class="fas fa-edit"></i>
+        </div>
+        <div class="editTitle" @click="Restart()" title="Återställ värden">
+          <i class="fas fa-redo"></i>
         </div>
         <button v-if="this.newEntry" @click="SaveClick()" id="addButton">
           Spara erfarenhet
@@ -59,8 +66,10 @@ export default {
       title: "",
       startDate: "",
       endDate: "",
+      id: "",
       newEntry: null,
       editTitle: false,
+      oldList: {},
       collection: [
         {
           show: true,
@@ -95,9 +104,11 @@ export default {
       this.newEntry = true;
       this.editTitle = true;
     } else {
+      this.oldList = JSON.parse(JSON.stringify(this.$route.params));
       this.title = this.$route.params.title;
       this.startDate = this.$route.params.startDate;
       this.endDate = this.$route.params.endDate;
+      this.id = this.$route.params.id;
       this.collection[0].list = this.$route.params.language;
       this.collection[1].list = this.$route.params.software;
       this.collection[2].list = this.$route.params.assignments;
@@ -115,6 +126,14 @@ export default {
         }
       });
     },
+    async Restart() {
+      let temp = JSON.parse(JSON.stringify(this.oldList));
+      this.title = temp.title;
+      this.collection[0].list = temp.language;
+      this.collection[1].list = temp.software;
+      this.collection[2].list = temp.assignments;
+      this.collection[3].list = temp.role;
+    },
     AddClick(title) {
       this.collection.forEach(function(entry) {
         if (entry.title == title && entry.listInput != "") {
@@ -125,8 +144,23 @@ export default {
     },
     async SaveClick() {
       let userID = this.$store.getters.getLoggedInUser;
-      console.log(userID);
       if (this.newEntry) {
+        await this.$store.dispatch("addExperience", {
+          token: this.$store.getters.getUserToken,
+          input: {
+            title: this.title,
+            startDate: null,
+            endDate: null,
+            Language: this.collection[0].list,
+            Software: this.collection[1].list,
+            Assignments: this.collection[2].list,
+            Role: this.collection[3].list,
+            userID: userID.id,
+            newExperience: this.newEntry,
+            id: this.MakeId(8),
+          },
+        });
+      } else {
         await this.$store.dispatch("updateExperience", {
           token: this.$store.getters.getUserToken,
           input: {
@@ -138,12 +172,23 @@ export default {
             Assignments: this.collection[2].list,
             Role: this.collection[3].list,
             userID: userID.id,
-            newExperience: this.newEntry
+            id: this.id,
+            newExperience: this.false
           },
         });
-      } else {
-        console.log("update entry");
       }
+    },
+    MakeId(length) {
+      var result = [];
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result.push(
+          characters.charAt(Math.floor(Math.random() * charactersLength))
+        );
+      }
+      return result.join("");
     },
   },
 };

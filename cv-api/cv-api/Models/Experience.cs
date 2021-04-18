@@ -20,6 +20,7 @@ namespace cv_api.Models
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool Show { get; set; }
+        public string id { get; set; }
     }
 
     public class ExperienceDTO
@@ -41,5 +42,7 @@ namespace cv_api.Models
         public bool newExperience { get; set; }
 
         public bool show { get; set; }
+
+        public string id { get; set; }
     }
 }
