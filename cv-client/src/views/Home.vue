@@ -68,21 +68,13 @@ export default {
   validations: {
     email: {
       email,
-      required,
-    },
-    password: {
-      required,
-    },
-  },
-  components: {},
-  validations: {
-    password: {
       required
     },
-    email: {
+    password: {
       required
     }
   },
+  components: {},
   methods: {
     async login() {
       this.$v.$touch();
@@ -110,8 +102,6 @@ export default {
             break;
           default:
         }
-      } else {
-        this.wrongLogin = false;
       }
     },
     checkForm() {
@@ -219,5 +209,4 @@ h2 {
 .error {
   font-size: 12px;
 }
-
 </style>
