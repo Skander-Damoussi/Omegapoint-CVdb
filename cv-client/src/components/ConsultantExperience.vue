@@ -128,7 +128,13 @@ export default {
         var date =
           elements[i].childNodes[0].childNodes[0].children[1].innerText;
 
-        if (title.includes(this.searchText) || date.includes(this.searchText)) {
+        if (
+          title.includes(this.searchText) ||
+          date.includes(this.searchText) ||
+          this.experienceList[i].language.includes(this.searchText) ||
+          this.experienceList[i].role.includes(this.searchText) ||
+          this.experienceList[i].software.includes(this.searchText)
+        ) {
           elements[i].style.display = "block";
         } else {
           elements[i].style.display = "none";
