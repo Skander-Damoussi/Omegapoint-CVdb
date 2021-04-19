@@ -52,7 +52,12 @@ const routes = [
     path: "/edituser",
     name: "EditUser",
     component: EditUser,
-    meta: { reqAuth: true, consultAuth: true }
+    meta: {
+      reqAuth: true,
+      consultAuth: true,
+      adminAuth: true,
+      consultantManagerAuth: true
+    }
   }
 ];
 
