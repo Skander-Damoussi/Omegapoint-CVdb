@@ -202,9 +202,11 @@ namespace cv_api.Controllers
                 }
                 var result = await userManager.UpdateAsync(identityUser);
 
+                var roles = await userManager.GetRolesAsync(identityUser);
+
                 return Ok(new
                 {
-                    role = identityUser.Roles[0],
+                    role = roles[0],
                     firstName = identityUser.FirstName,
                     lastName = identityUser.LastName,
                     userId = identityUser.Id.ToString()
