@@ -9,7 +9,9 @@
         <div class="box">
           <div class="row">
             <h2>Hej! {{ user.firstName }}</h2>
-            <button id="editUser" v-on:click="editUser">Ändra uppgifter</button>
+            <button id="editUser" v-on:click="editUser">
+              <i class="far fa-edit"></i>
+            </button>
             <!-- This "Sven" becomes a store binding @ user.name -->
             <button id="logout" v-on:click="signOut">Logout</button>
             <!-- Needs icon instead, works for now -->
