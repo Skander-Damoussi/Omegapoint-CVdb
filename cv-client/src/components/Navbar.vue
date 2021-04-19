@@ -15,13 +15,76 @@
         </div>
       </div>
     </div>
+    <Modal v-show="isSessionModalVisible" @close="closeSessionModal">
+      <template v-slot:header>
+        Du kommer loggas ut.
+      </template>
+
+      <template v-slot:body>
+        Du har varit inaktiv i 45minuter, du kommer att loggas ut om 15minuter.
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
+import store from "../store/store.js";
+import router from "../router/index.js";
+import Modal from "../components/Modal.vue";
+
 export default {
   name: "Navbar",
+  data() {
+    return {
+      isAdminModalVisible: false,
+      isSessionModalVisible: false,
+      loggedInUser: false
+    };
+  },
+  created() {
+    var timeout;
+    var closeTimeout;
+    var _this = this;
+    function refresh() {
+      if (_this.isSessionModalVisible) {
+        _this.closeSessionModal();
+      }
+      console.log(_this.checkStatus());
+      if (!_this.checkStatus()) {
+        document.removeEventListener("mousemove", refresh, false);
+      } else {
+        document.addEventListener("mousemove", refresh);
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          _this.showSessionModal();
+          close();
+        }, 1 * 10 * 1000);
+      }
+      function close() {
+        clearTimeout(closeTimeout);
+        clearTimeout(timeout);
+        closeTimeout = setTimeout(() => {
+          document.removeEventListener("mousemove", refresh);
+          console.log("you were logged out");
+          _this.showSessionModal();
+          store.dispatch("logOut");
+          router.push("/");
+        }, 1 * 8 * 1000);
+      }
+    }
+    refresh();
+  },
   methods: {
+    showSessionModal() {
+      this.isSessionModalVisible = true;
+    },
+    closeSessionModal() {
+      this.isSessionModalVisible = false;
+    },
+    checkStatus() {
+      this.loggedInUser = this.loggedIn;
+      return this.loggedInUser;
+    },
     async signOut() {
       await this.$store.dispatch("logOut");
       if (
@@ -29,7 +92,7 @@ export default {
         this.$router.currentRoute.path !== "/"
       )
         this.$router.push("/");
-    }
+    },
   },
   computed: {
     loggedIn() {
@@ -37,8 +100,11 @@ export default {
     },
     user() {
       return this.$store.getters.getLoggedInUser;
-    }
-  }
+    },
+  },
+  components: {
+    Modal,
+  },
 };
 </script>
 

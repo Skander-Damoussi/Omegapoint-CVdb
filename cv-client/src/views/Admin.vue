@@ -23,24 +23,13 @@
       </div>
     </div>
     <EditCv v-show="isAdminModalVisible" @close="closeAdminModal" />
-    <Modal v-show="isSessionModalVisible" @close="closeSessionModal">
-      <template v-slot:header>
-        Du kommer loggas ut.
-      </template>
-
-      <template v-slot:body>
-        Du har varit inaktiv i 45minuter, du kommer att loggas ut om 15minuter.
-      </template>
-    </Modal>
   </div>
 </template>
 
 <script>
-import store from "../store/store.js";
 import RegisterUser from "../components/RegisterUser";
 import EditCv from "../components/EditCv";
-import router from "../router/index.js";
-import Modal from "../components/Modal.vue";
+
 export default {
   name: "Admin",
   data() {
@@ -59,39 +48,9 @@ export default {
       ]
     };
   },
-  mounted() {
-    var timeout;
-    var _this = this;
-    function refresh() {
-      if (_this.isSessionModalVisible) {
-        _this.closeSessionModal();
-      }
-
-      console.log("timer started");
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        _this.showSessionModal();
-        close();
-      }, 1 * 10 * 1000);
-    }
-    function close() {
-      console.log("close timer started");
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        document.removeEventListener("mousemove", refresh);
-        console.log("you were logged out");
-        _this.showSessionModal();
-        store.dispatch("logOut");
-        router.push("/");
-      }, 1 * 8 * 1000);
-    }
-    document.addEventListener("mousemove", refresh);
-    refresh();
-  },
   components: {
     RegisterUser,
-    EditCv,
-    Modal
+    EditCv
   },
   methods: {
     showAdminModal() {
@@ -99,12 +58,6 @@ export default {
     },
     closeAdminModal() {
       this.isAdminModalVisible = false;
-    },
-    showSessionModal() {
-      this.isSessionModalVisible = true;
-    },
-    closeSessionModal() {
-      this.isSessionModalVisible = false;
     }
   }
 };
