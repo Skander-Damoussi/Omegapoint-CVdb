@@ -68,11 +68,11 @@ export default {
   validations: {
     email: {
       email,
-      required,
+      required
     },
     password: {
-      required,
-    },
+      required
+    }
   },
   components: {},
   methods: {
@@ -183,6 +183,7 @@ input[type="reset"] {
   width: 6em;
   flex: 1 0 auto;
   cursor: pointer;
+  margin-top: 1em;
 }
 h2 {
   margin: 0;
@@ -208,5 +209,4 @@ h2 {
 .error {
   font-size: 12px;
 }
-
 </style>

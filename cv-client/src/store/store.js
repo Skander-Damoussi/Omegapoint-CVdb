@@ -9,7 +9,7 @@ const getDefaultState = () => {
   return {
     loggedIn: false,
     user: {},
-    loggedInUser: {},
+    loggedInUser: null,
     users: [],
     consultantList: [],
     userExperience: [],
@@ -68,7 +68,6 @@ export default new Vuex.Store({
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
           await commit("setLoggedIn", true);
-          console.log(this.loggedIn);
         })
         .catch(err => console.log(err));
     },
