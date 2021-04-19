@@ -10,7 +10,7 @@
             <i class="fas fa-image fa-10x"></i>
             <p>{{ item.name }}</p>
           </div>
-          <div class="templateDiv" @click="showModal">
+          <div class="templateDiv" @click="showAdminModal">
             <i class="fas fa-plus-square fa-10x"></i>
             <p>Lägg till ny mall</p>
           </div>
@@ -22,60 +22,91 @@
         <RegisterUser />
       </div>
     </div>
-    <EditCv v-show="isModalVisible" @close="closeModal" />
+    <EditCv v-show="isAdminModalVisible" @close="closeAdminModal" />
+    <Modal v-show="isSessionModalVisible" @close="closeSessionModal">
+      <template v-slot:header>
+        Du kommer loggas ut.
+      </template>
+
+      <template v-slot:body>
+        Du har varit inaktiv i 45minuter, du kommer att loggas ut om 15minuter.
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
+import store from "../store/store.js";
 import RegisterUser from "../components/RegisterUser";
 import EditCv from "../components/EditCv";
+import router from "../router/index.js";
+import Modal from "../components/Modal.vue";
 export default {
   name: "Admin",
   data() {
     return {
-      isModalVisible: false,
+      isAdminModalVisible: false,
+      isSessionModalVisible: false,
       cv: [
         {
           name: "Mall 1",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
         },
         {
           name: "Mall 2",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
         }
       ]
     };
   },
-  async mounted () {
-     var timeout
-async function refresh(){
-  console.log("timeout started")
-  clearTimeout(timeout)
-  timeout = setTimeout(() => {
-    console.log("you were logged out")
-    this.$store.dispatch("logOut");
-    var sUser = this.$store.getters.getLoggedInUser;
-     console.log(sUser);
-  }, 1 * 60 * 1000)
-}
-refresh()
-document.addEventListener('click', refresh)
+  mounted() {
+    var timeout;
+    var _this = this;
+    function refresh() {
+      if (_this.isSessionModalVisible) {
+        _this.closeSessionModal();
+      }
+
+      console.log("timer started");
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        _this.showSessionModal();
+        close();
+      }, 1 * 10 * 1000);
+    }
+    function close() {
+      console.log("close timer started");
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        document.removeEventListener("mousemove", refresh);
+        console.log("you were logged out");
+        _this.showSessionModal();
+        store.dispatch("logOut");
+        router.push("/");
+      }, 1 * 8 * 1000);
+    }
+    document.addEventListener("mousemove", refresh);
+    refresh();
   },
   components: {
     RegisterUser,
-    EditCv
-  },
-  created() {
-   
+    EditCv,
+    Modal
   },
   methods: {
-    showModal() {
-      this.isModalVisible = true;
+    showAdminModal() {
+      this.isAdminModalVisible = true;
     },
-    closeModal() {
-      this.isModalVisible = false;
+    closeAdminModal() {
+      this.isAdminModalVisible = false;
     },
-  },
+    showSessionModal() {
+      this.isSessionModalVisible = true;
+    },
+    closeSessionModal() {
+      this.isSessionModalVisible = false;
+    }
+  }
 };
 </script>
 
