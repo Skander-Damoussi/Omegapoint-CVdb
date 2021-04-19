@@ -13,7 +13,7 @@
       <div class="section">
         <label for="currentPassword">Nuvarande lösenord</label>
         <input
-          type="currentPassword"
+          type="password"
           id="currentPassword"
           v-model="user.currentPassword"
           name="currentPassword"
@@ -25,25 +25,31 @@
         <input
           type="password"
           id="password"
-          v-model="user.newPassword"
+          v-model="password"
           name="password"
           ref="password"
         />
+        <div class="error" v-if="!checkPasswordLength">
+          Lösenordet måste bestå av minst sex tecken varav en stor bokstav.
+        </div>
       </div>
       <div class="section">
         <label for="confirmPassword">Bekräfta nytt lösenord</label>
         <input
           type="password"
           id="confirmPassword"
-          v-model="confirmation"
+          v-model="confirmPassword"
           name="confirmPassword"
         />
+        <div class="error" v-if="!matchPasswords">
+          Lösenordsfälten stämmer inte.
+        </div>
       </div>
       <div class="submit">
         <input
           type="button"
           class="bttn"
-          v-on:click="updateUser(user)"
+          v-on:click="updateUser()"
           value="Spara"
         />
       </div>
@@ -52,13 +58,25 @@
 </template>
 
 <script>
+//import { sameAs, minLength } from "vuelidate/lib/validators";
+
 export default {
   name: "EditUser",
   data() {
     return {
-      confirmation: ""
+      password: "",
+      confirmPassword: "",
+      matchPasswords: true,
+      checkPasswordLength: true,
+      valid: false
     };
   },
+  // validations: {
+  //   confirmPassword: {
+  //     minLength: minLength(6),
+  //     sameAsPassword: sameAs(this.user.password)
+  //   }
+  // },
   computed: {
     user() {
       return this.$store.getters.getLoggedInUser;
@@ -69,12 +87,35 @@ export default {
     console.log("user", this.user.firstName);
   },
   methods: {
-    updateUser(user) {
-      if (user.newPassword != this.confirmation) {
-        alert("Lösenordsfälten matchar inte, försök igen.");
+    updateUser() {
+      //this.$v.$touch();
+      if (this.password != null) {
+        this.checkForm();
       } else {
+        this.valid = true;
+      }
+      console.log("password", this.user.password);
+      if (this.valid) {
+        this.user.password = this.password;
         console.log("update.this", this.user);
         this.$store.dispatch("updateUser", this.user);
+      }
+    },
+    checkForm() {
+      if (this.password.length > 1 && this.password.length < 6) {
+        this.checkPasswordLength = false;
+      } else {
+        this.checkPasswordLength = true;
+      }
+      if (this.password != this.confirmPassword) {
+        this.matchPasswords = false;
+        console.log("matchPasswords", this.matchPasswords);
+      } else {
+        this.matchPasswords = true;
+      }
+      if (this.checkPasswordLength == true && this.matchPasswords == true) {
+        this.user.password = this.password;
+        this.valid = true;
       }
     }
   }
