@@ -5,11 +5,97 @@
         <button @click="CVClick()">
           <i class="fas fa-chevron-circle-left"></i> Tillbaka
         </button>
-        <h2 id="addButton">Erfarenheter</h2>
         <button @click="AddClick()" id="addButton">
           Lägg till <i class="fas fa-plus"></i>
         </button>
       </div>
+      <h2 class="center" id="addButton">Erfarenheter</h2>
+      <div class="rownomargin" v-if="experienceList.length > 0">
+        <div
+          class="sort stickleft sorttitle"
+          title="Sort by title"
+          @click="sortListTitle()"
+        >
+          <i class="fas fa-sort"></i>
+        </div>
+        <div class="center">
+          <input
+            type="text"
+            v-model="searchText"
+            v-on:input="search()"
+            @keyup.enter="search()"
+          />
+        </div>
+        <div
+          class="sort stickright sortdate"
+          title="Sort by date"
+          @click="sortListDate()"
+        >
+          <i class="fas fa-sort"></i>
+        </div>
+      </div>
+      <div v-else>
+        <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
+      </div>
+      <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
+        <div class="title" @click="col.show = !col.show">
+          <div class="rownomargin">
+            <p>
+              {{ col.title }}
+            </p>
+            <p v-if="col.endDate === ''" class="stickright">
+              {{ col.startDate }} - Pågående
+            </p>
+            <p v-else class="stickright">
+              {{ col.startDate }} - {{ col.endDate }}
+            </p>
+          </div>
+        </div>
+        <div class="container" id="container" v-if="col.show">
+          <div class="rownomargin">
+            <h3>Programming languages</h3>
+            <div class="stickright">
+              <div
+                class="stickright experienceedit"
+                title="Edit experience"
+                @click="EditClick(index)"
+              >
+                <i class="fas fa-edit"></i>
+              </div>
+              <div
+                class="stickright experienceremove"
+                title="Remove experience"
+                @click="RemoveClick(index)"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </div>
+            </div>
+          </div>
+          <li id="inboxText" v-for="language in col.language" :key="language">
+            {{ language }}
+          </li>
+          <h3 id="h3space">Software</h3>
+          <li id="inboxText" v-for="software in col.software" :key="software">
+            {{ software }}
+          </li>
+          <h3 id="h3space">Assignments</h3>
+          <li id="inboxText" v-for="assign in col.assignments" :key="assign">
+            {{ assign }}
+          </li>
+          <h3 id="h3space">Roles</h3>
+          <li id="inboxText" v-for="role in col.role" :key="role">
+            {{ role }}
+          </li>
+        </div>
+      </div>
+    </div>
+    <div class="tasks">
+      <div class="row">
+        <button @click="AddClick()" class="makespace" id="addButton">
+          Lägg till <i class="fas fa-plus"></i>
+        </button>
+      </div>
+      <h2 class="center" id="addButton">Presentationer</h2>
       <div class="rownomargin" v-if="experienceList.length > 0">
         <div
           class="sort stickleft sorttitle"
@@ -101,6 +187,7 @@ export default {
       sortDate: false,
       searchText: "",
       experienceList: {},
+      presentationList: {},
     };
   },
   async mounted() {
@@ -374,5 +461,14 @@ h3 {
 #textcenter {
   margin-top: 30vh;
   text-align: center;
+}
+
+.center {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.makespace {
+  margin-top: 5vh;
 }
 </style>
