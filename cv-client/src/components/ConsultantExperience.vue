@@ -1,56 +1,95 @@
 <template>
-<div>
-  <div class="box">
+  <div>
     <div class="tasks">
       <div class="row">
-        <p id="nomargin">Administrations Software</p>
+        <button @click="CVClick()">
+          <i class="fas fa-chevron-circle-left"></i> Tillbaka
+        </button>
+        <h2 id="addButton">Erfarenheter</h2>
+        <button @click="AddClick()" id="addButton">
+          Lägg till <i class="fas fa-plus"></i>
+        </button>
       </div>
-      <div class="tablewrapper">
-      <table style="width:100%">
-        <tr>
-          <th>Microsoft Office</th>
-          <th>Delete</th>
-        </tr>
-        <tr>
-          <th>Azure</th>
-          <th>Delete</th>
-        </tr>
-        <tr>
-          <th>Foo</th>
-          <th>Delete</th>
-        </tr>
-      </table>
-      <div class="row">
-        <input type="text" id="addSoftware" name="addSoftware" placeholder="....">
-        <button id="addButton">Lägg till</button>
+      <div class="rownomargin" v-if="experienceList.length > 0">
+        <div
+          class="sort stickleft sorttitle"
+          title="Sort by title"
+          @click="sortListTitle()"
+        >
+          <i class="fas fa-sort"></i>
+        </div>
+        <div class="center">
+          <input
+            type="text"
+            v-model="searchText"
+            v-on:input="search()"
+            @keyup.enter="search()"
+          />
+        </div>
+        <div
+          class="sort stickright sortdate"
+          title="Sort by date"
+          @click="sortListDate()"
+        >
+          <i class="fas fa-sort"></i>
+        </div>
       </div>
+      <div v-else>
+        <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
       </div>
-    </div>
-    <div class="tasks as">
-      <div class="row">
-        <p id="nomargin">Uppdrag</p>
-        <button id="addButton">Lägg till nytt</button>
-      </div>
-      <div class="wrapper" v-for="col in collection" :key="col.title">
+      <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
         <div class="title" @click="col.show = !col.show">
-          <p>{{ col.title }}</p>
+          <div class="rownomargin">
+            <p>
+              {{ col.title }}
+            </p>
+            <p v-if="col.endDate === ''" class="stickright">
+              {{ col.startDate }} - Pågående
+            </p>
+            <p v-else class="stickright">
+              {{ col.startDate }} - {{ col.endDate }}
+            </p>
+          </div>
         </div>
         <div class="container" id="container" v-if="col.show">
-          <p>
-            {{ col.text }}
-          </p>
+          <div class="rownomargin">
+            <h3>Programming languages</h3>
+            <div class="stickright">
+              <div
+                class="stickright experienceedit"
+                title="Edit experience"
+                @click="EditClick(index)"
+              >
+                <i class="fas fa-edit"></i>
+              </div>
+              <div
+                class="stickright experienceremove"
+                title="Remove experience"
+                @click="RemoveClick(index)"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </div>
+            </div>
+          </div>
+          <li id="inboxText" v-for="language in col.language" :key="language">
+            {{ language }}
+          </li>
+          <h3 id="h3space">Software</h3>
+          <li id="inboxText" v-for="software in col.software" :key="software">
+            {{ software }}
+          </li>
+          <h3 id="h3space">Assignments</h3>
+          <li id="inboxText" v-for="assign in col.assignments" :key="assign">
+            {{ assign }}
+          </li>
+          <h3 id="h3space">Roles</h3>
+          <li id="inboxText" v-for="role in col.role" :key="role">
+            {{ role }}
+          </li>
         </div>
       </div>
     </div>
-    <div class="tasks as stickright">
-      <div class="row">
-        <p id="nomargin">Presentation</p>
-        <button id="addButton">Lägg till</button>
-      </div>
-      <textarea></textarea>
-    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -58,27 +97,99 @@ export default {
   name: "EditUser",
   data: function() {
     return {
-      collection: [
-        {
-          show: false,
-          title: "Uppdrag 1",
-          text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non",
-        },
-        {
-          show: false,
-          title: "Uppdrag 2",
-          text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non",
-        },
-        {
-          show: false,
-          title: "Uppdrag 3",
-          text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet nunc eu nisi semper semper. Praesent vestibulum mauris quis volutpat commodo. Etiam convallis orci faucibus massa viverra, at ultrices ex iaculis. Sed a congue turpis, quis vehicula lacus. Donec libero arcu, feugiat sit amet lacinia id, finibus in nulla. Duis vel tellus non",
-        },
-      ],
+      sortTitle: false,
+      sortDate: false,
+      searchText: "",
+      experienceList: {},
     };
+  },
+  async mounted() {
+    let user = await this.$store.getters.getLoggedInUser;
+    await this.$store.dispatch("getUserExperience", user.id);
+    this.experienceList = this.$store.getters.getUserExperience;
+  },
+  methods: {
+    CVClick() {
+      this.$router.push({ name: "Consultant" });
+    },
+    EditClick(index) {
+      this.$router.push({
+        name: "ConsultantExperienceEdit",
+        params: this.experienceList[index],
+      });
+    },
+    search() {
+      var elements = document.getElementsByClassName("wrapper");
+
+      var i;
+      for (i = 0; i < elements.length; i++) {
+        var title =
+          elements[i].childNodes[0].childNodes[0].children[0].innerText;
+        var date =
+          elements[i].childNodes[0].childNodes[0].children[1].innerText;
+
+        if (
+          title.includes(this.searchText) ||
+          date.includes(this.searchText) ||
+          this.experienceList[i].language.includes(this.searchText) ||
+          this.experienceList[i].role.includes(this.searchText) ||
+          this.experienceList[i].software.includes(this.searchText)
+        ) {
+          elements[i].style.display = "block";
+        } else {
+          elements[i].style.display = "none";
+        }
+      }
+    },
+    AddClick() {
+      this.$router.push({ name: "ConsultantExperienceEdit" });
+    },
+    async RemoveClick(index) {
+      if (!confirm("Are you sure?")) {
+        return;
+      }
+      let user = await this.$store.getters.getLoggedInUser;
+      await this.$store.dispatch("removeExperience", {
+        token: this.$store.getters.getUserToken,
+        input: {
+          title: this.experienceList[index].title,
+          startDate: null,
+          endDate: null,
+          Language: null,
+          Software: null,
+          Assignments: null,
+          Role: null,
+          userID: user.id,
+          newExperience: false,
+          id: this.experienceList[index].id,
+        },
+      });
+      this.experienceList.splice(index, 1);
+    },
+    sortListTitle() {
+      if (this.sortTitle) {
+        this.experienceList = this.experienceList.sort((a, b) =>
+          a.title > b.title ? 1 : -1
+        );
+      } else {
+        this.experienceList = this.experienceList.sort((b, a) =>
+          a.title > b.title ? 1 : -1
+        );
+      }
+      this.sortTitle = !this.sortTitle;
+    },
+    sortListDate() {
+      if (this.sortDate) {
+        this.experienceList = this.experienceList.sort((a, b) =>
+          a.startDate > b.startDate ? 1 : -1
+        );
+      } else {
+        this.experienceList = this.experienceList.sort((b, a) =>
+          a.startDate > b.startDate ? 1 : -1
+        );
+      }
+      this.sortDate = !this.sortDate;
+    },
   },
 };
 </script>
@@ -93,16 +204,18 @@ export default {
 .wrapper {
   border-radius: 2px;
   border: 2px solid #f7f7f7;
+  max-width: 60vw;
+  margin: auto;
 }
 
 .tasks {
-  padding: 30px;
   text-align: left;
-  flex-basis: 30%;
-  margin: 30px;
+  margin: auto;
+  max-width: 60vw;
+  margin-top: 20px;
 }
 
-.tablewrapper{
+.tablewrapper {
   padding: 30px;
   border: 1px solid #f7f7f7;
 }
@@ -112,32 +225,19 @@ export default {
   padding: 10px;
   text-align: left;
   border: 1px solid #cecece;
+  transition-duration: 0.5s;
 }
 
-.container {
-  margin: 10px;
-}
-
-#nomargin {
-  margin: 0px;
-}
-
-#addSoftware {
-  flex: 70%;
-  margin-right: 10px;
-  height: 32px;
+.title:hover {
+  background: #f7f7f7;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #006166;
+  cursor: pointer;
 }
 
 #addButton {
   margin-left: auto;
-  color: white;
-  background: #2185d0;
-  border: none;
-  text-decoration: none;
-  border-radius: 2px;
-  transition-duration: 0.4s;
-  border: 2px solid #2185d0;
-  padding: 6px;
 }
 
 .row {
@@ -147,23 +247,36 @@ export default {
   margin-bottom: 10px;
 }
 
+.rownomargin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .box {
   background-color: white;
   margin: 50px;
   display: flex;
 }
 
-input[type=text], select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
+input[type="text"],
+select {
+  padding: 6px 10px;
+  margin-left: auto;
+  margin-right: auto;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+  max-width: 15vw;
 }
 
-input[type=text]:focus {
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+input[type="text"]:focus {
   border: 1px solid #555;
 }
 
@@ -190,5 +303,76 @@ textarea {
 
 .stickright {
   margin-left: auto;
+}
+
+.stickleft {
+  margin-right: auto;
+}
+
+button {
+  color: white;
+  background: #2185d0;
+  border: none;
+  text-decoration: none;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  border: 2px solid #2185d0;
+  margin-bottom: 1em;
+  padding: 10px;
+}
+
+button:hover {
+  background-color: white; /* Green */
+  color: black;
+  border: 2px solid #2185d0;
+  cursor: pointer;
+}
+
+#inboxText {
+  font-size: 12px;
+}
+
+h3 {
+  margin-bottom: 5px;
+}
+
+#h3space {
+  margin-top: 25px;
+}
+
+.container {
+  padding: 15px;
+}
+
+.sort {
+  margin-bottom: 5px;
+}
+
+.sort:hover {
+  cursor: pointer;
+  color: #2185d0;
+}
+
+.sortdate {
+  margin-right: 5vw;
+}
+
+.sorttitle {
+  margin-left: 5vw;
+}
+
+.experienceedit:hover {
+  cursor: pointer;
+  color: #2185d0;
+}
+
+.experienceremove:hover {
+  cursor: pointer;
+  color: #2185d0;
+}
+
+#textcenter {
+  margin-top: 30vh;
+  text-align: center;
 }
 </style>

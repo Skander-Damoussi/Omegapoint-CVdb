@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.Identity.MongoDbCore.Models;
+using cv_api.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace cv_api.Areas.Identity.Data
@@ -12,6 +13,8 @@ namespace cv_api.Areas.Identity.Data
 	{
 		public string? FirstName { get; set; }
 		public string? LastName { get; set; }
+
+		public List<Experience>? Experiences { get; set; }
 
 		public ApplicationUser() : base()
 		{
