@@ -98,7 +98,7 @@ export default {
 }
 
 #editUser {
-  margin-left: 35px;
+  margin-left: 0.5vw;
 }
 
 h2 {
