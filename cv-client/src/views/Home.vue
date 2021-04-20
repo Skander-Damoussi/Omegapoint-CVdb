@@ -72,7 +72,11 @@ export default {
     },
     password: {
       required
+<<<<<<< HEAD
     },
+=======
+    }
+>>>>>>> development
   },
   components: {},
   methods: {
@@ -183,6 +187,7 @@ input[type="reset"] {
   width: 6em;
   flex: 1 0 auto;
   cursor: pointer;
+  margin-top: 1em;
 }
 h2 {
   margin: 0;
@@ -208,5 +213,4 @@ h2 {
 .error {
   font-size: 12px;
 }
-
 </style>

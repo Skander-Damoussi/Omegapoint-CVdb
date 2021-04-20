@@ -4,25 +4,46 @@
       <h1>Användaruppgifter</h1>
       <div class="section">
         <label for="firstName">Förnamn</label>
-        <input type="text" v-model="getUser" id="firstName" />
+        <input type="text" v-model="user.firstName" id="firstName" />
       </div>
       <div class="section">
         <label for="lastName">Efternamn</label>
-        <input type="text" v-model="getUser" id="lastName" />
+        <input type="text" v-model="user.lastName" id="lastName" />
       </div>
       <div class="section">
-        <label for="password">Lösenord</label>
-        <input type="text" placeholder="******" required id="password" />
+        <label for="currentPassword">Nuvarande lösenord</label>
+        <input
+          type="currentPassword"
+          id="currentPassword"
+          v-model="user.currentPassword"
+          name="currentPassword"
+          ref="currentPassword"
+        />
       </div>
       <div class="section">
-        <label for="confirmPassword">Bekräfta lösenord</label>
-        <input type="text" placeholder="******" required id="confirmPassword" />
+        <label for="password">Nytt lösenord</label>
+        <input
+          type="password"
+          id="password"
+          v-model="user.newPassword"
+          name="password"
+          ref="password"
+        />
+      </div>
+      <div class="section">
+        <label for="confirmPassword">Bekräfta nytt lösenord</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          v-model="confirmation"
+          name="confirmPassword"
+        />
       </div>
       <div class="submit">
         <input
           type="button"
           class="bttn"
-          v-on:click="updateUser(getUser)"
+          v-on:click="updateUser(user)"
           value="Spara"
         />
       </div>
@@ -33,19 +54,28 @@
 <script>
 export default {
   name: "EditUser",
+  data() {
+    return {
+      confirmation: ""
+    };
+  },
   computed: {
-    getUser() {
-      return this.$store.getters.getUser;
+    user() {
+      return this.$store.getters.getLoggedInUser;
     }
   },
+  mounted() {
+    //this.$store.dispatch("getLoggedInUser");
+    console.log("user", this.user.firstName);
+  },
   methods: {
-    mounted() {
-      this.store.dispatch("getUser");
-    },
-    updateUser(getUser) {
-      console.log("update user");
-      /*string field,string finthis, update */
-      this.store.dispatch("updateUser", getUser);
+    updateUser(user) {
+      if (user.newPassword != this.confirmation) {
+        alert("Lösenordsfälten matchar inte, försök igen.");
+      } else {
+        console.log("update.this", this.user);
+        this.$store.dispatch("updateUser", this.user);
+      }
     }
   }
 };

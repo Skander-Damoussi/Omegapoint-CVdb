@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection;
 using cv_api.Areas.Identity.Data;
 using Microsoft.AspNetCore.Http;
 
@@ -46,6 +47,7 @@ namespace cv_api.Controllers
             return Ok(result);
         }
 
+        //[Authorize(Roles = "Admin,Konsultchef")]
         [Authorize(Roles = "Konsultchef")]
         [HttpGet("getConsultantList")]
         public async Task<IActionResult> GetConsultantList()
@@ -179,20 +181,61 @@ namespace cv_api.Controllers
             });
         }
 
-        //https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
         [HttpPut]
-        public IActionResult Put(string field, string findThis, string update)
+        public async Task<IActionResult> UpdateUser(UpdateUser updatedUser)
         {
-            //repository Users = new repository();
-            //Users.Update("user", new BsonDocument(field, findThis), field, update);
-            return Ok();
+            try
+            {
+                var identityUser = await userManager.FindByIdAsync(updatedUser.Id);
 
-        //            public virtual async Task ReplaceOneAsync(TDocument document)
+                if (updatedUser.FirstName != "" && identityUser.FirstName != updatedUser.FirstName)
+                {
+                    identityUser.FirstName = updatedUser.FirstName;
+                }
+                if(updatedUser.LastName != "" && identityUser.LastName != updatedUser.LastName)
+                {
+                    identityUser.LastName = updatedUser.LastName;
+                }
+                if (updatedUser.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedUser.NewPassword) == false)
+                {
+                    var res = await userManager.ChangePasswordAsync(identityUser, updatedUser.CurrentPassword, updatedUser.NewPassword);
+                }
+                var result = await userManager.UpdateAsync(identityUser);
+
+                var roles = await userManager.GetRolesAsync(identityUser);
+
+                return Ok(new
+                {
+                    role = roles[0],
+                    firstName = identityUser.FirstName,
+                    lastName = identityUser.LastName,
+                    userId = identityUser.Id.ToString()
+                });
+            }
+            catch
+            {
+                return BadRequest(updatedUser);
+            }
+
+        }
+
+        //public UpdateUser CheckIfNull(UpdateUser updatedUser)
         //{
-        //    var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-        //    await _collection.FindOneAndReplaceAsync(filter, document);
+        //    var user = _userRepository.FindById(updatedUser.Id);
+        //    foreach (PropertyInfo prop in updatedUser.GetType().GetProperties())
+        //    {
+        //        var res = prop.GetValue(updatedUser, null);
+        //        if (res != "")
+        //        {
+        //            var property = prop.Name;
+                   
+
+        //        }
+        //        Console.WriteLine($"{prop.Name}: {prop.GetValue(updatedUser, null)}");
+
+        //    }
+        //    return updatedUser;
         //}
-    }
 
 
         [HttpPost("login")]
@@ -257,18 +300,6 @@ namespace cv_api.Controllers
             //repository Users = new repository();
             //Users.Post("user", newUser);
             //return Ok();
-        //}
-
-        ////https://localhost:44390/user/?field=FirstName&findThis=test&update=Horse
-        //[HttpPut("updateUser")]
-        //public async Task<User> Put(User user)
-        //{
-        //    //repository Users = new repository();
-        //    //Users.Update("user", new BsonDocument(field, findThis), field, update);
-        //    //return Ok(user);
-
-        //    await _userRepository.
-
         //}
 
     }

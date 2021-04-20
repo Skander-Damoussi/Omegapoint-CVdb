@@ -8,6 +8,10 @@
         <div class="box">
           <div class="row">
             <h2>Hej! {{ user.firstName }}</h2>
+            <a id="editUser" v-on:click="editUser">
+              <i class="far fa-edit"></i>
+            </a>
+            <!-- Needs icon instead, works for now -->
             <a @click="signOut" id="logout" title="Logga ut"
               ><i class="fas fa-sign-out-alt"></i
             ></a>
@@ -87,6 +91,9 @@ export default {
       )
         this.$router.push("/");
     },
+    editUser() {
+      this.$router.push("/editUser");
+    }
   },
   computed: {
     loggedIn() {
@@ -148,6 +155,10 @@ export default {
 
 #logout {
   margin-left: 35px;
+}
+
+#editUser {
+  margin-left: 0.5vw;
 }
 
 h2 {
