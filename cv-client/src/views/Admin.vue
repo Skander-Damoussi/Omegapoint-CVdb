@@ -10,8 +10,8 @@
             <i class="fas fa-image fa-10x"></i>
             <p>{{ item.name }}</p>
           </div>
-          <div class="templateDiv" @click="showModal">
-            <i class="fas fa-plus-square fa-10x "></i>
+          <div class="templateDiv" @click="showAdminModal">
+            <i class="fas fa-plus-square fa-10x"></i>
             <p>Lägg till ny mall</p>
           </div>
         </div>
@@ -22,26 +22,28 @@
         <RegisterUser />
       </div>
     </div>
-    <EditCv v-show="isModalVisible" @close="closeModal" />
+    <EditCv v-show="isAdminModalVisible" @close="closeAdminModal" />
   </div>
 </template>
 
 <script>
 import RegisterUser from "../components/RegisterUser";
 import EditCv from "../components/EditCv";
+
 export default {
   name: "Admin",
   data() {
     return {
-      isModalVisible: false,
+      isAdminModalVisible: false,
+      isSessionModalVisible: false,
       cv: [
         {
           name: "Mall 1",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
         },
         {
           name: "Mall 2",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg"
+          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
         }
       ]
     };
@@ -51,11 +53,11 @@ export default {
     EditCv
   },
   methods: {
-    showModal() {
-      this.isModalVisible = true;
+    showAdminModal() {
+      this.isAdminModalVisible = true;
     },
-    closeModal() {
-      this.isModalVisible = false;
+    closeAdminModal() {
+      this.isAdminModalVisible = false;
     }
   }
 };
