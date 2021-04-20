@@ -72,12 +72,8 @@ export default {
     },
     password: {
       required
-<<<<<<< HEAD
-    },
-=======
     }
->>>>>>> development
-  },
+    },
   components: {},
   methods: {
     async login() {
