@@ -15,15 +15,7 @@
         </div>
       </div>
     </div>
-    <Modal v-show="isSessionModalVisible" @close="closeSessionModal">
-      <template v-slot:header>
-        Du kommer loggas ut.
-      </template>
-
-      <template v-slot:body>
-        Du har varit inaktiv i 45minuter, du kommer att loggas ut om 15minuter.
-      </template>
-    </Modal>
+    <Modal v-show="isSessionModalVisible" @close="closeSessionModal"> </Modal>
   </div>
 </template>
 
@@ -38,40 +30,42 @@ export default {
     return {
       isAdminModalVisible: false,
       isSessionModalVisible: false,
-      loggedInUser: false
+      loggedInUser: false,
     };
   },
-  created() {
+  mounted() {
     var timeout;
-    var closeTimeout;
     var _this = this;
     function refresh() {
       if (_this.isSessionModalVisible) {
         _this.closeSessionModal();
       }
-      console.log(_this.checkStatus());
-      if (!_this.checkStatus()) {
-        document.removeEventListener("mousemove", refresh, false);
-      } else {
-        document.addEventListener("mousemove", refresh);
+      if (_this.checkStatus()) {
+        console.log("timer started");
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           _this.showSessionModal();
           close();
         }, 1 * 10 * 1000);
       }
-      function close() {
-        clearTimeout(closeTimeout);
+    }
+
+    function close() {
+      if (_this.checkStatus()) {
+        console.log("close timer started");
         clearTimeout(timeout);
-        closeTimeout = setTimeout(() => {
+        timeout = setTimeout(() => {
           document.removeEventListener("mousemove", refresh);
           console.log("you were logged out");
-          _this.showSessionModal();
+          _this.closeSessionModal();
           store.dispatch("logOut");
           router.push("/");
         }, 1 * 8 * 1000);
       }
     }
+    setInterval(function() {
+      document.addEventListener("mousemove", refresh);
+    }, 10000);
     refresh();
   },
   methods: {

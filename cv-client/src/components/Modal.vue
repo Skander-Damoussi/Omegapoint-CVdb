@@ -3,7 +3,7 @@
     <div class="modal">
       <header class="modal-header">
         <slot name="header">
-          This is the default title!
+          Du kommer loggas ut ja.
         </slot>
         <button type="button" class="btn-close" @click="close">
           x
@@ -12,7 +12,10 @@
 
       <section class="modal-body">
         <slot name="body">
-          This is the default body!
+          <p style="color: black;">
+            Du har varit inaktiv i 45minuter. Du kommer att loggas ut om
+            15minuter.
+          </p>
         </slot>
       </section>
     </div>
@@ -25,8 +28,8 @@ export default {
   methods: {
     close() {
       this.$emit("close");
-    },
-  },
+    }
+  }
 };
 </script>
 
