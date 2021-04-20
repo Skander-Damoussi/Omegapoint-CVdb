@@ -3,7 +3,7 @@
     <div class="modal">
       <header class="modal-header">
         <slot name="header">
-          Du kommer loggas ut ja.
+          Du kommer loggas ut.
         </slot>
         <button type="button" class="btn-close" @click="close">
           x
