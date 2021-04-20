@@ -79,7 +79,8 @@ export default new Vuex.Store({
             id: resp.data.userId,
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
-            role: resp.data.role
+            role: resp.data.role,
+            experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
           console.log(this.loggedInUser);

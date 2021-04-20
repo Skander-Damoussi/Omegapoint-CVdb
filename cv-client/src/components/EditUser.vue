@@ -1,6 +1,6 @@
 <template>
   <div class="edit-user">
-    <div class="user-form">
+    <div class="edit-name">
       <h1>Användaruppgifter</h1>
       <div class="section">
         <label for="firstName">Förnamn</label>
@@ -10,41 +10,44 @@
         <label for="lastName">Efternamn</label>
         <input type="text" v-model="user.lastName" id="lastName" />
       </div>
-      <div class="section">
-        <label for="currentPassword">Nuvarande lösenord</label>
-        <input
-          type="password"
-          id="currentPassword"
-          v-model="user.currentPassword"
-          name="currentPassword"
-          ref="currentPassword"
-        />
-      </div>
-      <div class="section">
-        <label for="password">Nytt lösenord</label>
-        <input
-          type="password"
-          id="password"
-          v-model="password"
-          name="password"
-          ref="password"
-        />
-        <div class="error" v-if="!checkPasswordLength">
-          Lösenordet måste bestå av minst sex tecken varav en stor bokstav.
+      <!-- <form id="password-form">
+        <div class="section">
+          <label for="currentPassword">Nuvarande lösenord</label>
+          <input
+            type="password"
+            id="currentPassword"
+            v-model="currentPassword"
+            name="currentPassword"
+            ref="currentPassword"
+          />
         </div>
-      </div>
-      <div class="section">
-        <label for="confirmPassword">Bekräfta nytt lösenord</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          v-model="confirmPassword"
-          name="confirmPassword"
-        />
-        <div class="error" v-if="!matchPasswords">
-          Lösenordsfälten stämmer inte.
+        <div class="section">
+          <label for="password">Nytt lösenord</label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            name="password"
+            ref="password"
+          />
+          <div class="error" v-if="!checkPasswordLength">
+            Lösenordet måste bestå av minst sex tecken varav en stor bokstav.
+          </div>
         </div>
-      </div>
+        <div class="section">
+          <label for="confirmPassword">Bekräfta nytt lösenord</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            v-model="confirmPassword"
+            name="confirmPassword"
+          />
+          <div class="error" v-if="!matchPasswords">
+            Lösenordsfälten stämmer inte.
+          </div>
+        </div>
+      </form> -->
+
       <div class="submit">
         <input
           type="button"
@@ -54,16 +57,25 @@
         />
       </div>
     </div>
+    <div class="edit-password">
+      <h1>Ändra lösenord</h1>
+      <EditPassword />
+    </div>
   </div>
 </template>
 
 <script>
-//import { sameAs, minLength } from "vuelidate/lib/validators";
+//import { requierd, sameAs, minLength } from "vuelidate/lib/validators";
+import EditPassword from "./EditPassword.vue";
 
 export default {
   name: "EditUser",
+  components: {
+    EditPassword
+  },
   data() {
     return {
+      currentPassword: "",
       password: "",
       confirmPassword: "",
       matchPasswords: true,
@@ -72,9 +84,15 @@ export default {
     };
   },
   // validations: {
+  //   currentPassword: {
+  //     requierd
+  //   },
+  //   password: {
+  //     minLength: minLength(6)
+  //   },
   //   confirmPassword: {
   //     minLength: minLength(6),
-  //     sameAsPassword: sameAs(this.user.password)
+  //     sameAsPassword: sameAs(this.password)
   //   }
   // },
   computed: {
@@ -88,17 +106,23 @@ export default {
   },
   methods: {
     updateUser() {
-      //this.$v.$touch();
       if (this.password != null) {
         this.checkForm();
       } else {
         this.valid = true;
       }
-      console.log("password", this.user.password);
-      if (this.valid) {
-        this.user.password = this.password;
-        console.log("update.this", this.user);
-        this.$store.dispatch("updateUser", this.user);
+      var updateUser = {
+        Id: this.user.id,
+        FirstName: this.user.firstName,
+        LastName: this.user.lastName,
+        CurrentPassword: this.user.currentPassword
+      };
+      console.log("update.this", updateUser);
+      if (this.valid && this.password != null) {
+        updateUser.NewPassword = this.password;
+        this.$store.dispatch("updateUser", updateUser);
+      } else {
+        this.$store.dispatch("updateUser", updateUser);
       }
     },
     checkForm() {
@@ -114,7 +138,6 @@ export default {
         this.matchPasswords = true;
       }
       if (this.checkPasswordLength == true && this.matchPasswords == true) {
-        this.user.password = this.password;
         this.valid = true;
       }
     }
@@ -131,16 +154,13 @@ export default {
 .edit-user {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
 }
 
-.user-form > h1 {
-  margin-bottom: 20%;
+.edit-user > h1 {
   font-size: 2vw;
 }
 
-.user-form {
+.edit-name {
   display: flex;
   flex-direction: column;
   align-self: center;
