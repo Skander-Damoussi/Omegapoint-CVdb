@@ -1,7 +1,7 @@
 <template>
   <div class="edit-user">
     <div class="edit-name">
-      <h1>Användaruppgifter</h1>
+      <h3>Ändra namn</h3>
       <div class="section">
         <label for="firstName">Förnamn</label>
         <input type="text" v-model="user.firstName" id="firstName" />
@@ -48,41 +48,36 @@
         </div>
       </form> -->
 
-      <div class="submit">
-        <input
-          type="button"
-          class="bttn"
-          v-on:click="updateUser()"
-          value="Spara"
-        />
+      <div class="section">
+        <button class="submit bttn" v-on:click="updateUser()">Ändra</button>
+      </div>
+      <div class="edit-password">
+        <h3>Ändra lösenord</h3>
+        <EditPassword1 />
       </div>
     </div>
-    <div class="edit-password">
-      <h1>Ändra lösenord</h1>
-      <EditPassword />
-    </div>
+
   </div>
 </template>
 
 <script>
 //import { requierd, sameAs, minLength } from "vuelidate/lib/validators";
-import EditPassword from "./EditPassword.vue";
-
+import EditPassword1 from "./EditPassword1.vue";
 export default {
   name: "EditUser",
   components: {
-    EditPassword
+    EditPassword1
   },
-  data() {
-    return {
-      currentPassword: "",
-      password: "",
-      confirmPassword: "",
-      matchPasswords: true,
-      checkPasswordLength: true,
-      valid: false
-    };
-  },
+  // data() {
+  //   return {
+  //     currentPassword: "",
+  //     password: "",
+  //     confirmPassword: "",
+  //     matchPasswords: true,
+  //     checkPasswordLength: true,
+  //     valid: false
+  //   };
+  // },
   // validations: {
   //   currentPassword: {
   //     requierd
@@ -106,41 +101,42 @@ export default {
   },
   methods: {
     updateUser() {
-      if (this.password != null) {
-        this.checkForm();
-      } else {
-        this.valid = true;
-      }
+      // if (this.password != null) {
+      //   this.checkForm();
+      // } else {
+      //   this.valid = true;
+      // }
       var updateUser = {
         Id: this.user.id,
         FirstName: this.user.firstName,
-        LastName: this.user.lastName,
-        CurrentPassword: this.user.currentPassword
+        LastName: this.user.lastName
+        //CurrentPassword: this.user.currentPassword
       };
-      console.log("update.this", updateUser);
-      if (this.valid && this.password != null) {
-        updateUser.NewPassword = this.password;
-        this.$store.dispatch("updateUser", updateUser);
-      } else {
-        this.$store.dispatch("updateUser", updateUser);
-      }
-    },
-    checkForm() {
-      if (this.password.length > 1 && this.password.length < 6) {
-        this.checkPasswordLength = false;
-      } else {
-        this.checkPasswordLength = true;
-      }
-      if (this.password != this.confirmPassword) {
-        this.matchPasswords = false;
-        console.log("matchPasswords", this.matchPasswords);
-      } else {
-        this.matchPasswords = true;
-      }
-      if (this.checkPasswordLength == true && this.matchPasswords == true) {
-        this.valid = true;
-      }
+      // console.log("update.this", updateUser);
+      // if (this.valid && this.password != null) {
+      //   updateUser.NewPassword = this.password;
+      //   this.$store.dispatch("updateUser", updateUser);
+      // } else {
+      //   this.$store.dispatch("updateUser", updateUser);
+      // }
+      this.$store.dispatch("updateUser", updateUser);
     }
+    // checkForm() {
+    //   if (this.password.length > 1 && this.password.length < 6) {
+    //     this.checkPasswordLength = false;
+    //   } else {
+    //     this.checkPasswordLength = true;
+    //   }
+    //   if (this.password != this.confirmPassword) {
+    //     this.matchPasswords = false;
+    //     console.log("matchPasswords", this.matchPasswords);
+    //   } else {
+    //     this.matchPasswords = true;
+    //   }
+    //   if (this.checkPasswordLength == true && this.matchPasswords == true) {
+    //     this.valid = true;
+    //   }
+    //}
   }
 };
 </script>
@@ -156,26 +152,25 @@ export default {
   flex-direction: column;
 }
 
-.edit-user > h1 {
-  font-size: 2vw;
+h3 {
+  text-align: left;
+  margin-bottom: 2vh;
 }
 
 .edit-name {
   display: flex;
   flex-direction: column;
   align-self: center;
-  justify-content: left;
-  width: 30vw;
   border: 1px solid rgb(173, 173, 173);
   padding: 5vw;
-  margin-top: 5%;
+  margin-top: 5vh;
 }
 
 .section > input {
   height: 3vh;
-  margin-bottom: 3%;
+  margin-bottom: 1vh;
   width: 100%;
-  padding: 1%;
+  padding: 0.5vw;
 }
 
 .section {
@@ -188,16 +183,11 @@ export default {
   font-weight: bold;
 }
 
-.submit {
-  display: flex;
-  justify-content: flex-end;
-}
-.submit > .bttn {
+.section > button {
   width: 5vw;
   padding: 1.5%;
   color: white;
   background-color: #2185d0;
   border: none;
-  margin-top: 10%;
 }
 </style>

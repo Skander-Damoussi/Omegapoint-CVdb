@@ -3,10 +3,11 @@
     <h3>Ändra lösenord</h3>
     <div class="formDiv">
       <form>
-        <div
+        <!-- <div
           class="form-group"
           :class="{ 'form-group--error': $v.currentPassword.$error }"
-        >
+        > -->
+        <div>
           <label class="form__label">Nuvarande lösenord</label>
           <input
             class="form__input"
@@ -14,44 +15,44 @@
             v-model.trim="$v.currentPassword.$model"
           />
         </div>
-        <div class="error" v-if="!$v.currentPasswordField.requierd">
+        <!-- <div class="error" v-if="!$v.currentPasswordField.requierd">
           Skriv in ditt nuvarande lösenord.
         </div>
         <div
           class="form-group"
           :class="{ 'form-group--error': $v.password.$error }"
-        >
+        > -->
+        <div>
           <label for="password">Lösenord</label><br />
           <input
+            class="form__input"
             type="password"
-            id="password"
-            name="password"
-            v-model.trim="$v.password.$model"
+            v-model="$v.password.$model"
           />
-          <div class="error" v-if="!passwordField">
+          <!-- <div class="error" v-if="!passwordField">
             Password is required.
           </div>
           <div class="error" v-if="!$v.password.minLength">
-            Password must have at least
-            {{ $v.password.$params.minLength.min }} letters.
-          </div>
+            Password must have at least 6 letters.
+          </div> -->
         </div>
         <br />
-
+        <!-- 
         <div
           class="form-group"
           :class="{ 'form-group--error': $v.confirmPassword.$error }"
-        >
+        > -->
+        <div>
           <label class="form__label">Bekräfta lösenord</label>
           <input
             class="form__input"
             type="password"
-            v-model.trim="$v.confirmPassword.$model"
+            v-model="$v.confirmPassword.$model"
           />
         </div>
-        <div class="error" v-if="!$v.confirmPassword.sameAsPassword">
+        <!-- <div class="error" v-if="!$v.confirmPassword.sameAsPassword">
           Passwords must be identical.
-        </div>
+        </div> -->
         <tree-view
           :data="$v"
           :options="{ rootObjectKey: '$v', maxDepth: 2 }"
@@ -77,10 +78,11 @@ export default {
   name: "EditPassword",
   data() {
     return {
-      password: "",
+      password: null,
       confirmPassword: "",
       currentPassword: "",
-      currentPasswordField: true
+      currentPasswordField: true,
+      passwordField: true
     };
   },
   validations: {
@@ -101,6 +103,9 @@ export default {
     editPassword() {
       this.$v.$touch();
       this.checkForm();
+      console.log("currentpassword", this.currentPassword);
+      console.log("password", this.password);
+      console.log("confirmpassword", this.confirmPassword);
     }
   }
 };
