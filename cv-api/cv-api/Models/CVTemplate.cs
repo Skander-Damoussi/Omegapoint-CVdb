@@ -4,13 +4,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Attributes;
+using cv_api.Repository;
+using System.IO;
 
 namespace cv_api.Models
 {
-    public class CVTemplate
+    [BsonCollection("testCv")]
+    public class CVTemplate : Document
     {
         [Required]
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        //[BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string Name { get; set; }
+        public byte[] FileByte { get; set; }
+
+
+
+        
+
     }
 }

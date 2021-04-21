@@ -10,6 +10,7 @@ using cv_api.Models;
 using MongoDB.Bson.Serialization;
 using cv_api.Repository;
 
+
 namespace cv_api.Controllers
 {
     [ApiController]
@@ -33,7 +34,8 @@ namespace cv_api.Controllers
 
         [HttpGet("getPeopleData")]
         public IEnumerable<string> GetPeopleData()
-        {
+        {           
+            
             var people = _exampleRepository.FilterBy(
                 filter => filter.FirstName != "Horse",
                 projection => projection.FirstName
