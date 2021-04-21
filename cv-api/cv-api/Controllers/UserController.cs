@@ -209,7 +209,8 @@ namespace cv_api.Controllers
                     role = roles[0],
                     firstName = identityUser.FirstName,
                     lastName = identityUser.LastName,
-                    userId = identityUser.Id.ToString()
+                    userId = identityUser.Id.ToString(),
+                    experiences = identityUser.Experiences
                 });
             }
             catch
