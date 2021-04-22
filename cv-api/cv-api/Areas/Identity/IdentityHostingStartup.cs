@@ -12,11 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 [assembly: HostingStartup(typeof(cv_api.Areas.Identity.IdentityHostingStartup))]
 namespace cv_api.Areas.Identity
 {
-    public class IdentityHostingStartup : IHostingStartup
-    {
-        public void Configure(IWebHostBuilder builder)
-        {
-            builder.ConfigureServices((context, services) => {
+	public class IdentityHostingStartup : IHostingStartup
+	{
+		public void Configure(IWebHostBuilder builder)
+		{
+			builder.ConfigureServices((context, services) => {
 
 				services.AddIdentity<ApplicationUser, ApplicationRole>()
 				.AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
@@ -25,19 +25,21 @@ namespace cv_api.Areas.Identity
 					"MongoDbTests"
 				)
 				.AddDefaultTokenProviders();
-                
-                services.Configure<IdentityOptions>(options =>
-                {
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequiredLength = 6;
-                    options.Password.RequiredUniqueChars = 0;
+				
+				services.Configure<IdentityOptions>(options =>
+				{
+					options.Password.RequireLowercase = false;
+					options.Password.RequireNonAlphanumeric = false;
+					options.Password.RequireUppercase = true;
+					options.Password.RequiredLength = 6;
+					options.Password.RequiredUniqueChars = 0;
 
-                    options.User.RequireUniqueEmail = false;
-                });
+					options.User.RequireUniqueEmail = false;
 
-            });
-        }
-    }
+					options.SignIn.RequireConfirmedEmail = false;
+				});
+
+			});
+		}
+	}
 }

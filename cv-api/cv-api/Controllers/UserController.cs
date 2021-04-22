@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using cv_api.Areas.Identity.Data;
 using Microsoft.AspNetCore.Http;
+using NETCore.MailKit.Core;
 
 namespace cv_api.Controllers
 {
@@ -29,14 +30,24 @@ namespace cv_api.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<ApplicationRole> roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailService _emailService;
 
-        public UserController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ILogger<UserController> logger, IMongoRepository<User> userRepository, IConfiguration configuration)
+        public UserController(UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            RoleManager<ApplicationRole> roleManager, 
+            ILogger<UserController> logger, 
+            IMongoRepository<User> userRepository, 
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _logger = logger;
             _userRepository = userRepository;
             this.userManager = userManager;
             this.roleManager = roleManager;
             _configuration = configuration;
+            _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -173,12 +184,29 @@ namespace cv_api.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
+
+
             var returnUserId = await userManager.FindByNameAsync(newUser.Email);
 
+             await _emailService.SendAsync("skander_test@hotmail.com", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
             return Ok(new
             {
                 userId = returnUserId.Id
             });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyEmail(string userId, string code)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+                return BadRequest();
+
+            var result = await userManager.ConfirmEmailAsync(user, code);
+            return Ok();
         }
 
         [HttpPut]
@@ -241,9 +269,11 @@ namespace cv_api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate(Login userInput)
         {
+            var signInResult = await _signInManager.PasswordSignInAsync(userInput.Email, userInput.Password, false, false);
+
             var user = await userManager.FindByNameAsync(userInput.Email);
 
-            if (user == null || await userManager.CheckPasswordAsync(user, userInput.Password) == false)
+            if (signInResult.IsNotAllowed)
                 return Unauthorized();
 
             var userRoles = await userManager.GetRolesAsync(user);

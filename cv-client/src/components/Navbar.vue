@@ -67,10 +67,10 @@ export default {
         }, 1 * 8 * 1000);
       }
     }
-    setInterval(function() {
-      document.addEventListener("mousemove", refresh);
-    }, 10000);
-    refresh();
+    // setInterval(function() {
+    //   document.addEventListener("mousemove", refresh);
+    // }, 10000);
+    //refresh();
   },
   methods: {
     showSessionModal() {
