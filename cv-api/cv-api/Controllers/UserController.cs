@@ -196,10 +196,7 @@ namespace cv_api.Controllers
                 {
                     identityUser.LastName = updatedUser.LastName;
                 }
-                if (updatedUser.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedUser.NewPassword) == false)
-                {
-                    var res = await userManager.ChangePasswordAsync(identityUser, updatedUser.CurrentPassword, updatedUser.NewPassword);
-                }
+
                 var result = await userManager.UpdateAsync(identityUser);
 
                 var roles = await userManager.GetRolesAsync(identityUser);
@@ -220,24 +217,36 @@ namespace cv_api.Controllers
 
         }
 
-        //public UpdateUser CheckIfNull(UpdateUser updatedUser)
-        //{
-        //    var user = _userRepository.FindById(updatedUser.Id);
-        //    foreach (PropertyInfo prop in updatedUser.GetType().GetProperties())
-        //    {
-        //        var res = prop.GetValue(updatedUser, null);
-        //        if (res != "")
-        //        {
-        //            var property = prop.Name;
-                   
+        [HttpPut("updatePassword")]
+        public async Task<IActionResult> UpdatePassword(UpdatePassword updatedPassword)
+        {
+            try
+            {
+                var identityUser = await userManager.FindByIdAsync(updatedPassword.Id);
 
-        //        }
-        //        Console.WriteLine($"{prop.Name}: {prop.GetValue(updatedUser, null)}");
+                if (updatedPassword.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedPassword.NewPassword) == false)
+                {
+                    var res = await userManager.ChangePasswordAsync(identityUser, updatedPassword.CurrentPassword, updatedPassword.NewPassword);
+                }
+                var result = await userManager.UpdateAsync(identityUser);
 
-        //    }
-        //    return updatedUser;
-        //}
+                var roles = await userManager.GetRolesAsync(identityUser);
 
+                return Ok(new
+                {
+                    role = roles[0],
+                    firstName = identityUser.FirstName,
+                    lastName = identityUser.LastName,
+                    userId = identityUser.Id.ToString(),
+                    experiences = identityUser.Experiences
+                });
+            }
+            catch
+            {
+                return BadRequest(updatedPassword);
+            }
+
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate(Login userInput)
@@ -282,26 +291,6 @@ namespace cv_api.Controllers
                 experiences = user.Experiences
             });
         }
-
-
-        //[HttpPost("registerUser")]
-        //public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
-        //{
-        //    try
-        //    {
-        //        await _userRepository.InsertOneAsync(newUser);
-        //        return Ok();
-        //    }
-        //    catch
-        //    {
-        //        // Conflict with the current state of the target resource StatusCode(409);
-        //        return Conflict();
-        //    }
-
-            //repository Users = new repository();
-            //Users.Post("user", newUser);
-            //return Ok();
-        //}
 
     }
 }
