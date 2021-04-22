@@ -196,9 +196,6 @@ namespace cv_api.Controllers
             filter => filter.Name == "TestMedUpload2",
             projection => projection.FileByte).FirstOrDefault();
 
-
-
-
             using MemoryStream memoryStream = new MemoryStream(cv);
             {
                 WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
