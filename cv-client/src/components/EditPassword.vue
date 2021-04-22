@@ -1,162 +1,166 @@
 <template>
-  <div class="mainDiv">
-    <h3>Ändra lösenord</h3>
-    <div class="formDiv">
-      <form>
-        <!-- <div
-          class="form-group"
-          :class="{ 'form-group--error': $v.currentPassword.$error }"
-        > -->
-        <div>
-          <label class="form__label">Nuvarande lösenord</label>
-          <input
-            class="form__input"
-            type="password"
-            v-model.trim="$v.currentPassword.$model"
-          />
-        </div>
-        <!-- <div class="error" v-if="!$v.currentPasswordField.requierd">
-          Skriv in ditt nuvarande lösenord.
-        </div>
-        <div
-          class="form-group"
-          :class="{ 'form-group--error': $v.password.$error }"
-        > -->
-        <div>
-          <label for="password">Lösenord</label><br />
-          <input
-            class="form__input"
-            type="password"
-            v-model="$v.password.$model"
-          />
-          <!-- <div class="error" v-if="!passwordField">
-            Password is required.
-          </div>
-          <div class="error" v-if="!$v.password.minLength">
-            Password must have at least 6 letters.
-          </div> -->
-        </div>
-        <br />
-        <!-- 
-        <div
-          class="form-group"
-          :class="{ 'form-group--error': $v.confirmPassword.$error }"
-        > -->
-        <div>
-          <label class="form__label">Bekräfta lösenord</label>
-          <input
-            class="form__input"
-            type="password"
-            v-model="$v.confirmPassword.$model"
-          />
-        </div>
-        <!-- <div class="error" v-if="!$v.confirmPassword.sameAsPassword">
-          Passwords must be identical.
-        </div> -->
-        <tree-view
-          :data="$v"
-          :options="{ rootObjectKey: '$v', maxDepth: 2 }"
-        ></tree-view>
-        <br />
-        <div class="buttonDiv">
-          <input
-            type="button"
-            value="Ändra lösenord"
-            class="button"
-            @click="editPassword"
-          />
-        </div>
-      </form>
-    </div>
+  <div id="mainDiv">
+    <main class="formContain">
+      <h3>Ändra lösenord</h3>
+      <section>
+        <label for="cPassword">Nuvarande lösenord</label>
+        <input
+          id="cPassword"
+          v-model="$v.formResponses.currentPassword.$model"
+          type="password"
+        />
+        <p v-if="errors" class="error">
+          <span v-if="!$v.formResponses.currentPassword.required"
+            >Skriv in ditt nuvarande lösenord.</span
+          >
+        </p>
+      </section>
+      <section>
+        <label for="newPassword">Nytt lösenord</label>
+        <input
+          id="newPassword"
+          v-model="$v.formResponses.password.$model"
+          type="password"
+        />
+        <p v-if="errors" class="error">
+          <span v-if="!$v.formResponses.password.required"
+            >Skriv in nytt lösenord.</span
+          >
+          <span v-if="!$v.formResponses.password.minLength"
+            >Lösenordet måste bestå av minst sex tecken.</span
+          >
+        </p>
+      </section>
+      <section>
+        <label for="confirmPassword">Bekräfta nytt lösenord</label>
+        <input
+          id="confirmPassword"
+          v-model="$v.formResponses.confirmPassword.$model"
+          type="password"
+        />
+        <p v-if="errors" class="error">
+          <span v-if="!$v.formResponses.confirmPassword.required"
+            >Bekräfta nytt lösenord.</span
+          >
+          <span v-if="!$v.formResponses.confirmPassword.sameAsPassword"
+            >Lösenordsfälten matchar inte.</span
+          >
+        </p>
+      </section>
+      <section>
+        <button @click.prevent="submitForm" class="submit bttn">Ändra</button>
+        <p v-if="errors || (empty && state === 'submit clicked')" class="error">
+          Fyll i fälten för att byta lösenord.
+        </p>
+      </section>
+    </main>
   </div>
 </template>
 
 <script>
-import { requierd, sameAs, minLength } from "vuelidate/lib/validators";
+import { required, minLength, sameAs } from "vuelidate/lib/validators";
 
 export default {
-  name: "EditPassword",
   data() {
     return {
-      password: null,
-      confirmPassword: "",
-      currentPassword: "",
-      currentPasswordField: true,
-      passwordField: true
+      state: "submit not clicked",
+      errors: false,
+      empty: true,
+      formResponses: {
+        currentPassword: null,
+        password: null,
+        confirmPassword: null
+      }
     };
   },
+  computed: {
+    user() {
+      return this.$store.getters.getLoggedInUser;
+    }
+  },
   validations: {
-    currentPassword: {
-      requierd
-    },
-    password: {
-      minLength: minLength(6)
-    },
-    confirmPassword: {
-      sameAsPassword: sameAs("password")
+    formResponses: {
+      currentPassword: {
+        required
+      },
+      password: {
+        required,
+        minLength: minLength(6)
+      },
+      confirmPassword: {
+        required,
+        sameAsPassword: sameAs("password")
+      }
     }
   },
   methods: {
-    checkForm() {
-      this.currentPasswordField = this.$v.currentPassword.required;
-    },
-    editPassword() {
-      this.$v.$touch();
-      this.checkForm();
-      console.log("currentpassword", this.currentPassword);
-      console.log("password", this.password);
-      console.log("confirmpassword", this.confirmPassword);
+    submitForm() {
+      this.empty = !this.$v.formResponses.$anyDirty;
+      this.errors = this.$v.formResponses.$anyError;
+      this.state = "submit clicked";
+      if (this.errors === false && this.empty === false) {
+        var updatePassword = {
+          id: this.user.id,
+          currentPassword: this.formResponses.currentPassword,
+          newPassword: this.formResponses.password
+        };
+        this.$store.dispatch("updatePassword", updatePassword);
+        console.log("current", this.formResponses.currentPassword);
+        console.log("password", this.formResponses.password);
+        console.log("confirm", this.formResponses.confirmPassword);
+        this.state = "form submitted";
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-.formDiv {
-  margin: 0px 2%;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-form {
+
+.mainDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+section {
   text-align: left;
+}
+
+section > label {
+  font-weight: bold;
+}
+
+section > input {
+  height: 3vh;
+  margin-bottom: 1vh;
   width: 100%;
+  padding: 0.5vw;
 }
-.button {
-  color: white;
-  background: #2185d0;
-  border: none;
-  text-decoration: none;
-  border-radius: 4px;
-  border: 2px solid #2185d0;
+
+h3 {
+  text-align: left;
+  margin-bottom: 2vh;
 }
-input {
-  padding: 0.5em 1em;
-  border-radius: 4px;
-  margin: 0 auto;
-  width: 100%;
-  border: 00.1px solid;
-}
-select {
-  flex: 1 0 auto;
-  padding: 0.5em 1em;
-  border-radius: 4px;
-  width: 100%;
-}
+
 .error {
   color: red;
 }
-.mainDiv {
-  border: solid 1px black;
-  height: 87vh;
-  margin: 0px 2%;
+
+section > button {
+  width: 5vw;
+  padding: 1.5%;
+  color: white;
+  background-color: #2185d0;
+  border: none;
 }
-label {
-  text-align: left;
-}
-h3 {
-  margin: 30px 0px;
-}
-.buttonDiv {
-  display: flex;
-  align-content: flex-end;
-  text-align: end;
-}
+
+/* .formContain section {
+  padding-bottom: 1vh;
+  position: relative;
+} */
 </style>
