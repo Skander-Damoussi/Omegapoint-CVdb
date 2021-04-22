@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace cv_api.Controllers
 {
@@ -26,11 +28,11 @@ namespace cv_api.Controllers
             _cvRepository = cvRepository;
             _configuration = configuration;
 
-            
+
         }
 
 
-        //Test för att ladda upp cv, från lokalt
+        //Temporary, upload cv from local
         [HttpPost]
         public async Task<IActionResult> PostCvTemplate(CVTemplate test)
         {
@@ -42,7 +44,7 @@ namespace cv_api.Controllers
 
 
 
-            byte[] hej = new byte[8];
+            //byte[] hej = new byte[8];
 
             cvTemplate.FileByte = System.IO.File.ReadAllBytes(filePath);
 
@@ -61,11 +63,24 @@ namespace cv_api.Controllers
         [HttpGet("GetCvTemplate")]
         public async Task<IActionResult> GetCvTemplate()
         {
-            CVTemplate cvTemplate = new CVTemplate();
+            //CVTemplate cvTemplate = new CVTemplate();
 
             var cv = _cvRepository.FilterBy(
             filter => filter.Name == "TestMedUpload2",
-            projection => projection.FileByte);
+            projection => projection.FileByte).FirstOrDefault();
+
+            using (var net = new System.Net.WebClient())
+            {
+                //Problem med return OK()
+                return new FileContentResult(cv, "application/docx")
+                {
+                    FileDownloadName = DateTime.Now.ToString() + ".docx"
+                };
+            }
+
+            //Testkod
+
+            //cvTemplate.FileByte = cv;
 
             //byte[] test = new byte[8];
             //byte[] test = cv;
@@ -73,10 +88,54 @@ namespace cv_api.Controllers
             //cvTemplate.FileByte = cv;
 
             //cvTemplate.FileByte = System.IO.File.();
+            //var cv=null;
+
+            //using MemoryStream stream = new MemoryStream(cv);
+            //{
+            //    return Ok(stream);
+            //}
+
+            //using MemoryStream memoryStream = new MemoryStream(cv);
+            //{
+            //using WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
+            //{
+            //    //Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+
+            //    //string txt = "Hello World";
+
+            //    //// Add new text.
+            //    //Paragraph para = body.AppendChild(new Paragraph());
+            //    //Run run = para.AppendChild(new Run());
+            //    //run.AppendChild(new Text(txt));
+
+
+            //    wordprocessingDocument.Save();
+            //    wordprocessingDocument.Close();
+            //}
+            //}
+
+            //using MemoryStream memoryStream = new MemoryStream(cv);
+            //{
+            //    WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
+            //    Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+            //    string txt = "Hello World";
+            //    // Add new text.
+            //    Paragraph para = body.AppendChild(new Paragraph());
+            //    Run run = para.AppendChild(new Run());
+            //    run.AppendChild(new Text(txt));
+            //    wordprocessingDocument.Save();
+            //    wordprocessingDocument.Close();
+            //    //return Ok(wordprocessingDocument);
+            //}
+            //System.IO.File.ReadAllBytes(wordprocessingDocument);
+
+            //return Ok(File(memoryStream.ToArray(),"application/docx","test.docx"));
 
             //using MemoryStream stream = new MemoryStream()
             //{
-                
+            // stream= _cvRepository.FilterBy(
+            //filter => filter.Name == "TestMedUpload2",
+            //projection => projection.FileByte)
             //};
 
             //using System.IO.FileStream filestream = new FileStream("test.docx")
@@ -84,12 +143,90 @@ namespace cv_api.Controllers
 
             //};
 
+            //var test=Convert.ToBase64String(cv);
 
 
             //var testtt = File( "name.docx");
 
-            return Ok(cv);
+
+        }
+
+        //Test, download populate cv template
+        [HttpGet("GetCvDocx")]
+        public async Task<IActionResult> GetCvDocx()
+        {
+            var cv = _cvRepository.FilterBy(
+            filter => filter.Name == "TestMedUpload2",
+            projection => projection.FileByte).FirstOrDefault();
+
+
+
+
+            using MemoryStream memoryStream = new MemoryStream(cv);
+            {
+                WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
+                Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+                string txt = "Hello World";
+                // Add new text.
+                Paragraph para = body.AppendChild(new Paragraph());
+                Run run = para.AppendChild(new Run());
+                run.AppendChild(new Text(txt));
+                run.AppendChild(new Text(txt));
+                wordprocessingDocument.Save();
+                wordprocessingDocument.Close();
+                //return Ok(wordprocessingDocument);
+            }
+
+            using (var net = new System.Net.WebClient())
+            {
+                //Problem med return Ok()
+                return new FileContentResult(memoryStream.ToArray(), "application/docx")
+                {
+                    FileDownloadName = DateTime.Now.ToString() + ".docx"
+                };
+            }
+
+        }
+
+        //Test, download populate cv template, pdf
+        [HttpGet("GetCvPdf")]
+        public async Task<IActionResult> GetCvPdf()
+        {
+            var cv = _cvRepository.FilterBy(
+            filter => filter.Name == "TestMedUpload2",
+            projection => projection.FileByte).FirstOrDefault();
+
+
+
+
+            using MemoryStream memoryStream = new MemoryStream(cv);
+            {
+                WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
+                Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+                string txt = "Hello World";
+                // Add new text.
+                Paragraph para = body.AppendChild(new Paragraph());
+                Run run = para.AppendChild(new Run());
+                run.AppendChild(new Text(txt));
+                run.AppendChild(new Text(txt));
+                wordprocessingDocument.Save();
+                wordprocessingDocument.Close();
+                //return Ok(wordprocessingDocument);
+            }
+
+            //Testa gör om till pdf
+
+            using (var net = new System.Net.WebClient())
+            {
+                //Problem med return Ok()
+                return new FileContentResult(memoryStream.ToArray(), "application/docx")
+                {
+                    FileDownloadName = DateTime.Now.ToString() + ".docx"
+                };
+            }
+
         }
 
     }
+    
 }
