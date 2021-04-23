@@ -64,7 +64,7 @@ export default new Vuex.Store({
             lastName: resp.data.lastName,
             role: resp.data.role,
             experiences: resp.data.experiences
-          }
+          };
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
           await commit("setLoggedIn", true);
@@ -123,10 +123,10 @@ export default new Vuex.Store({
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
-        .then(async (resp) => {
+        .then(async resp => {
           this.users = resp;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUsers", this.users);
     },
     async registerUser({ commit }, { token, input }) {

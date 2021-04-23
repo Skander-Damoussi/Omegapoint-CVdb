@@ -102,5 +102,6 @@ h3 {
   color: white;
   background-color: #2185d0;
   border: none;
+  border-radius: 0.5vw;
 }
 </style>

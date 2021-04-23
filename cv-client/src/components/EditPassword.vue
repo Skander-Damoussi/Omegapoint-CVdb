@@ -137,7 +137,7 @@ section > label {
 
 section > input {
   height: 3vh;
-  margin-bottom: 1vh;
+  margin-bottom: 0.5vh;
   width: 100%;
   padding: 0.5vw;
 }
@@ -157,6 +157,14 @@ section > button {
   color: white;
   background-color: #2185d0;
   border: none;
+  border-radius: 0.5vw;
+  margin-bottom: 0.5vh;
+}
+
+p {
+  font-size: small;
+  font-weight: normal;
+  margin-bottom: 1vh;
 }
 
 /* .formContain section {
