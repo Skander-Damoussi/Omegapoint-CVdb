@@ -73,7 +73,7 @@ export default {
     password: {
       required
     }
-  },
+    },
   components: {},
   methods: {
     async login() {

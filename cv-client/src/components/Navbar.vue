@@ -19,13 +19,70 @@
         </div>
       </div>
     </div>
+    <Modal v-show="isSessionModalVisible" @close="closeSessionModal"> </Modal>
   </div>
 </template>
 
 <script>
+import store from "../store/store.js";
+import router from "../router/index.js";
+import Modal from "../components/Modal.vue";
+
 export default {
   name: "Navbar",
+  data() {
+    return {
+      isAdminModalVisible: false,
+      isSessionModalVisible: false,
+      loggedInUser: false,
+    };
+  },
+  mounted() {
+    var timeout;
+    var _this = this;
+    function refresh() {
+      if (_this.isSessionModalVisible) {
+        _this.closeSessionModal();
+      }
+      if (_this.checkStatus()) {
+        console.log("timer started");
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          _this.showSessionModal();
+          close();
+        }, 1 * 10 * 1000);
+      }
+    }
+
+    function close() {
+      if (_this.checkStatus()) {
+        console.log("close timer started");
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          document.removeEventListener("mousemove", refresh);
+          console.log("you were logged out");
+          _this.closeSessionModal();
+          store.dispatch("logOut");
+          router.push("/");
+        }, 1 * 8 * 1000);
+      }
+    }
+    setInterval(function() {
+      document.addEventListener("mousemove", refresh);
+    }, 10000);
+    refresh();
+  },
   methods: {
+    showSessionModal() {
+      this.isSessionModalVisible = true;
+    },
+    closeSessionModal() {
+      this.isSessionModalVisible = false;
+    },
+    checkStatus() {
+      this.loggedInUser = this.loggedIn;
+      return this.loggedInUser;
+    },
     async signOut() {
       await this.$store.dispatch("logOut");
       if (
@@ -44,8 +101,11 @@ export default {
     },
     user() {
       return this.$store.getters.getLoggedInUser;
-    }
-  }
+    },
+  },
+  components: {
+    Modal,
+  },
 };
 </script>
 
