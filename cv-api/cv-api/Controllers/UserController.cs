@@ -198,7 +198,7 @@ namespace cv_api.Controllers
             });
         }
 
-        [HttpGet]
+        [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail(string userId, string code)
         {
             var user = await userManager.FindByIdAsync(userId);
