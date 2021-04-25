@@ -140,6 +140,79 @@ namespace cv_api.Controllers
             return BadRequest();
         }
 
+        //[Authorize(Roles = "Konsult")]
+        [HttpGet("getConsultantPresentationList/{userId}")]
+        public async Task<IActionResult> getConsultantPresentationList(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return Ok(user.Presentations);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("postPresentation")]
+        public async Task<IActionResult> postPresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+
+            if (input.newPresentation)
+            {
+                if (user.Presentations == null)
+                {
+                    user.Presentations = new List<Presentation>();
+                }
+                user.Presentations.Add(new Presentation
+                {
+                    Title = input.title,
+                    Paragraph = input.Paragraph,
+                    id = input.id
+                });
+            }
+            else
+            {
+                for (int i = 0; i < user.Presentations.Count; i++)
+                {
+
+                }
+            }
+            await userManager.UpdateAsync(user);
+            return Ok(user.Presentations);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updatePresentation")]
+        public async Task<IActionResult> updatePresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Presentations.Count; i++)
+            {
+                if (user.Presentations[i].id == input.id)
+                {
+                    user.Presentations[i].Title = input.title;
+                    user.Presentations[i].Paragraph = input.Paragraph;
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Presentations);
+                }
+            }
+            return BadRequest();
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("removePresentation")]
+        public async Task<IActionResult> removePresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Presentations.Count; i++)
+            {
+                if (user.Presentations[i].id == input.id)
+                {
+                    user.Presentations.RemoveAt(i);
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Presentations);
+                }
+            }
+            return BadRequest();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post(User newUser)
