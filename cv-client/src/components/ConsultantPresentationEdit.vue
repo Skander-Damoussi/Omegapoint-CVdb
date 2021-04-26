@@ -17,10 +17,10 @@
           <i class="fas fa-redo"></i>
         </div>
         <button v-if="this.newEntry" @click="SaveClick()" id="addButton">
-          Spara presenation
+          Spara presentation
         </button>
         <button v-else @click="SaveClick()" id="addButton">
-          Uppdatera presenation <i class="fas fa-check"></i>
+          Uppdatera presentation <i class="fas fa-check"></i>
         </button>
       </div>
       <div v-if="editTitle">
