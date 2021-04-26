@@ -20,11 +20,11 @@
 
         <div id="export" v-if="exportMenu">
           <p>Välj ett exporteringformat</p>
-          <a href>Exportera PDF</a>
+          <a @click="exportToPDF">Exportera PDF</a>
           <a href>Exportera WORD</a>
         </div>
       </div>
-      <div id="wrapper">
+      <div id="wrapper" ref="document">
         <div id="left">
           <h4>Presentation</h4>
 
@@ -143,6 +143,8 @@
 </template>
 
 <script>
+import html2pdf from 'html2pdf.js'
+
 export default {
   name: "Consultant",
   props: {},
@@ -157,7 +159,16 @@ export default {
     },
     editMethod() {
       this.$router.push("ConsultantExperience/");
-    }
+    },
+    exportToPDF () {
+				html2pdf(this.$refs.document, {
+					margin: 1,
+					filename: 'document.pdf',
+					image: { type: 'jpeg', quality: 0.98 },
+					html2canvas: { dpi: 192, letterRendering: true },
+					jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+				})
+			}
   },
 };
 </script>
