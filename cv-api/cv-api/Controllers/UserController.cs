@@ -151,6 +151,79 @@ namespace cv_api.Controllers
             return BadRequest();
         }
 
+        //[Authorize(Roles = "Konsult")]
+        [HttpGet("getConsultantPresentationList/{userId}")]
+        public async Task<IActionResult> getConsultantPresentationList(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return Ok(user.Presentations);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("postPresentation")]
+        public async Task<IActionResult> postPresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+
+            if (input.newPresentation)
+            {
+                if (user.Presentations == null)
+                {
+                    user.Presentations = new List<Presentation>();
+                }
+                user.Presentations.Add(new Presentation
+                {
+                    Title = input.title,
+                    Paragraph = input.Paragraph,
+                    id = input.id
+                });
+            }
+            else
+            {
+                for (int i = 0; i < user.Presentations.Count; i++)
+                {
+
+                }
+            }
+            await userManager.UpdateAsync(user);
+            return Ok(user.Presentations);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updatePresentation")]
+        public async Task<IActionResult> updatePresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Presentations.Count; i++)
+            {
+                if (user.Presentations[i].id == input.id)
+                {
+                    user.Presentations[i].Title = input.title;
+                    user.Presentations[i].Paragraph = input.Paragraph;
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Presentations);
+                }
+            }
+            return BadRequest();
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("removePresentation")]
+        public async Task<IActionResult> removePresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Presentations.Count; i++)
+            {
+                if (user.Presentations[i].id == input.id)
+                {
+                    user.Presentations.RemoveAt(i);
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Presentations);
+                }
+            }
+            return BadRequest();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post(User newUser)
@@ -224,9 +297,37 @@ namespace cv_api.Controllers
                 {
                     identityUser.LastName = updatedUser.LastName;
                 }
-                if (updatedUser.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedUser.NewPassword) == false)
+
+                var result = await userManager.UpdateAsync(identityUser);
+
+                var roles = await userManager.GetRolesAsync(identityUser);
+
+                return Ok(new
                 {
-                    var res = await userManager.ChangePasswordAsync(identityUser, updatedUser.CurrentPassword, updatedUser.NewPassword);
+                    role = roles[0],
+                    firstName = identityUser.FirstName,
+                    lastName = identityUser.LastName,
+                    userId = identityUser.Id.ToString(),
+                    experiences = identityUser.Experiences
+                });
+            }
+            catch
+            {
+                return BadRequest(updatedUser);
+            }
+
+        }
+
+        [HttpPut("updatePassword")]
+        public async Task<IActionResult> UpdatePassword(UpdatePassword updatedPassword)
+        {
+            try
+            {
+                var identityUser = await userManager.FindByIdAsync(updatedPassword.Id);
+
+                if (updatedPassword.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedPassword.NewPassword) == false)
+                {
+                    var res = await userManager.ChangePasswordAsync(identityUser, updatedPassword.CurrentPassword, updatedPassword.NewPassword);
                 }
                 var result = await userManager.UpdateAsync(identityUser);
 
@@ -237,34 +338,16 @@ namespace cv_api.Controllers
                     role = roles[0],
                     firstName = identityUser.FirstName,
                     lastName = identityUser.LastName,
-                    userId = identityUser.Id.ToString()
+                    userId = identityUser.Id.ToString(),
+                    experiences = identityUser.Experiences
                 });
             }
             catch
             {
-                return BadRequest(updatedUser);
+                return BadRequest(updatedPassword);
             }
 
         }
-
-        //public UpdateUser CheckIfNull(UpdateUser updatedUser)
-        //{
-        //    var user = _userRepository.FindById(updatedUser.Id);
-        //    foreach (PropertyInfo prop in updatedUser.GetType().GetProperties())
-        //    {
-        //        var res = prop.GetValue(updatedUser, null);
-        //        if (res != "")
-        //        {
-        //            var property = prop.Name;
-                   
-
-        //        }
-        //        Console.WriteLine($"{prop.Name}: {prop.GetValue(updatedUser, null)}");
-
-        //    }
-        //    return updatedUser;
-        //}
-
 
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate(Login userInput)
@@ -311,26 +394,6 @@ namespace cv_api.Controllers
                 experiences = user.Experiences
             });
         }
-
-
-        //[HttpPost("registerUser")]
-        //public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
-        //{
-        //    try
-        //    {
-        //        await _userRepository.InsertOneAsync(newUser);
-        //        return Ok();
-        //    }
-        //    catch
-        //    {
-        //        // Conflict with the current state of the target resource StatusCode(409);
-        //        return Conflict();
-        //    }
-
-            //repository Users = new repository();
-            //Users.Post("user", newUser);
-            //return Ok();
-        //}
 
     }
 }

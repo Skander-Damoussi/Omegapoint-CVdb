@@ -16,6 +16,8 @@ namespace cv_api.Areas.Identity.Data
 
 		public List<Experience>? Experiences { get; set; }
 
+		public List<Presentation>? Presentations { get; set; }
+
 		public ApplicationUser() : base()
 		{
 		}

@@ -64,7 +64,7 @@ export default new Vuex.Store({
             lastName: resp.data.lastName,
             role: resp.data.role,
             experiences: resp.data.experiences
-          }
+          };
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
           await commit("setLoggedIn", true);
@@ -72,13 +72,30 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
     },
     async updateUser({ commit }, user) {
+      console.log(user.password);
       await Axios.put("user/", user)
         .then(async resp => {
           var respUser = {
             id: resp.data.userId,
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
-            role: resp.data.role
+            role: resp.data.role,
+            experiences: resp.data.experiences
+          };
+          await commit("setLoggedInUser", respUser);
+          console.log(this.loggedInUser);
+        })
+        .catch(err => console.log(err));
+    },
+    async updatePassword({ commit }, password) {
+      await Axios.put("user/updatePassword", password)
+        .then(async resp => {
+          var respUser = {
+            id: resp.data.userId,
+            firstName: resp.data.firstName,
+            lastName: resp.data.lastName,
+            role: resp.data.role,
+            experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
           console.log(this.loggedInUser);
@@ -106,10 +123,10 @@ export default new Vuex.Store({
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
-        .then(async (resp) => {
+        .then(async resp => {
           this.users = resp;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUsers", this.users);
     },
     async registerUser({ commit }, { token, input }) {
@@ -171,7 +188,7 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUserExperience", this.userExperience);
-    },
+    }
   },
   getters: {
     getLoggedIn(state) {

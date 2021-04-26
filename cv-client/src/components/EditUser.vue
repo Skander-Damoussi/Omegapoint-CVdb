@@ -1,7 +1,7 @@
 <template>
   <div class="edit-user">
-    <div class="user-form">
-      <h1>Användaruppgifter</h1>
+    <div class="edit-box">
+      <h3>Ändra namn</h3>
       <div class="section">
         <label for="firstName">Förnamn</label>
         <input type="text" v-model="user.firstName" id="firstName" />
@@ -11,53 +11,22 @@
         <input type="text" v-model="user.lastName" id="lastName" />
       </div>
       <div class="section">
-        <label for="currentPassword">Nuvarande lösenord</label>
-        <input
-          type="currentPassword"
-          id="currentPassword"
-          v-model="user.currentPassword"
-          name="currentPassword"
-          ref="currentPassword"
-        />
+        <button class="submit bttn" v-on:click="updateUser()">Ändra</button>
       </div>
-      <div class="section">
-        <label for="password">Nytt lösenord</label>
-        <input
-          type="password"
-          id="password"
-          v-model="user.newPassword"
-          name="password"
-          ref="password"
-        />
-      </div>
-      <div class="section">
-        <label for="confirmPassword">Bekräfta nytt lösenord</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          v-model="confirmation"
-          name="confirmPassword"
-        />
-      </div>
-      <div class="submit">
-        <input
-          type="button"
-          class="bttn"
-          v-on:click="updateUser(user)"
-          value="Spara"
-        />
+      <div class="edit-password">
+        <EditPassword />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import EditPassword from "./EditPassword.vue";
+
 export default {
   name: "EditUser",
-  data() {
-    return {
-      confirmation: ""
-    };
+  components: {
+    EditPassword
   },
   computed: {
     user() {
@@ -69,13 +38,13 @@ export default {
     console.log("user", this.user.firstName);
   },
   methods: {
-    updateUser(user) {
-      if (user.newPassword != this.confirmation) {
-        alert("Lösenordsfälten matchar inte, försök igen.");
-      } else {
-        console.log("update.this", this.user);
-        this.$store.dispatch("updateUser", this.user);
-      }
+    updateUser() {
+      var updateUser = {
+        Id: this.user.id,
+        FirstName: this.user.firstName,
+        LastName: this.user.lastName
+      };
+      this.$store.dispatch("updateUser", updateUser);
     }
   }
 };
@@ -90,31 +59,31 @@ export default {
 .edit-user {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
 }
 
-.user-form > h1 {
-  margin-bottom: 20%;
-  font-size: 2vw;
+h3 {
+  text-align: left;
+  margin-bottom: 2vh;
 }
 
-.user-form {
+.edit-box {
   display: flex;
   flex-direction: column;
   align-self: center;
-  justify-content: left;
-  width: 30vw;
   border: 1px solid rgb(173, 173, 173);
   padding: 5vw;
-  margin-top: 5%;
+  margin-top: 5vh;
+}
+
+.edit-password {
+  margin-top: 2vh;
 }
 
 .section > input {
   height: 3vh;
-  margin-bottom: 3%;
+  margin-bottom: 1vh;
   width: 100%;
-  padding: 1%;
+  padding: 0.5vw;
 }
 
 .section {
@@ -127,16 +96,12 @@ export default {
   font-weight: bold;
 }
 
-.submit {
-  display: flex;
-  justify-content: flex-end;
-}
-.submit > .bttn {
+.section > button {
   width: 5vw;
   padding: 1.5%;
   color: white;
   background-color: #2185d0;
   border: none;
-  margin-top: 10%;
+  border-radius: 0.5vw;
 }
 </style>
