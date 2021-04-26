@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +84,8 @@ namespace cv_api
                     //ValidIssuer = Configuration["JWT:ValidIssuer"]
                 };
             });
+
+            services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

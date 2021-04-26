@@ -34,7 +34,7 @@ export default {
     return {
       isAdminModalVisible: false,
       isSessionModalVisible: false,
-      loggedInUser: false,
+      loggedInUser: false
     };
   },
   mounted() {
@@ -50,7 +50,7 @@ export default {
         timeout = setTimeout(() => {
           _this.showSessionModal();
           close();
-        }, 1 * 10 * 1000);
+        }, 45 * 60 * 1000);
       }
     }
 
@@ -64,7 +64,7 @@ export default {
           _this.closeSessionModal();
           store.dispatch("logOut");
           router.push("/");
-        }, 1 * 8 * 1000);
+        }, 15 * 60 * 1000);
       }
     }
     setInterval(function() {
@@ -101,11 +101,11 @@ export default {
     },
     user() {
       return this.$store.getters.getLoggedInUser;
-    },
+    }
   },
   components: {
-    Modal,
-  },
+    Modal
+  }
 };
 </script>
 
