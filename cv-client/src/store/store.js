@@ -13,6 +13,7 @@ const getDefaultState = () => {
     users: [],
     consultantList: [],
     userExperience: [],
+    userPresentation: [],
     token: null,
     role: null
   };
@@ -52,6 +53,9 @@ export default new Vuex.Store({
     },
     setUserExperience(state, token) {
       state.userExperience = token;
+    },
+    setUserPresentation(state, token) {
+      state.userPresentation = token;
     }
   },
   actions: {
@@ -188,6 +192,53 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUserExperience", this.userExperience);
+    },
+    async addPresentation({ commit }, { token, input }) { //
+      await Axios.post("user/postPresentation/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userPresentation = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.presentations);
+    },
+    async updatePresentation({ commit }, { token, input }) {
+      await Axios.post("user/updatepresentation/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userPresentation = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.presentations);
+    },
+    async removePresentation({ commit }, { token, input }) {
+      await Axios.post("user/removepresentation/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.presentations);
+    },
+    async getUserPresentation({ commit }, userId) {
+      await Axios.get(`user/getConsultantPresentationList/${userId}`)
+        .then(async resp => {
+          this.userPresentation = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.userPresentation);
     }
   },
   getters: {
@@ -208,6 +259,9 @@ export default new Vuex.Store({
     },
     getUserExperience(state) {
       return state.userExperience;
+    },
+    getUserPresentation(state) {
+      return state.userPresentation;
     }
   }
 });

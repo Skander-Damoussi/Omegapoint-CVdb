@@ -5,10 +5,12 @@
         <button @click="CVClick()">
           <i class="fas fa-chevron-circle-left"></i> Tillbaka
         </button>
-        <h2 id="addButton">Erfarenheter</h2>
-        <button @click="AddClick()" id="addButton">
-          Lägg till <i class="fas fa-plus"></i>
-        </button>
+          <input
+            type="text"
+            v-model="searchText"
+            v-on:input="search()"
+            @keyup.enter="search()"
+          />
       </div>
       <div class="rownomargin" v-if="experienceList.length > 0">
         <div
@@ -18,21 +20,17 @@
         >
           <i class="fas fa-sort"></i>
         </div>
-        <div class="center">
-          <input
-            type="text"
-            v-model="searchText"
-            v-on:input="search()"
-            @keyup.enter="search()"
-          />
-        </div>
+        <h2 id="addButton">Erfarenheter</h2>
         <div
-          class="sort stickright sortdate"
+          class="sort sortdate"
           title="Sort by date"
           @click="sortListDate()"
         >
           <i class="fas fa-sort"></i>
         </div>
+        <button @click="AddClick()" id="addButton">
+          Lägg till <i class="fas fa-plus"></i>
+        </button>
       </div>
       <div v-else>
         <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
@@ -89,6 +87,67 @@
         </div>
       </div>
     </div>
+    <div class="tasks">
+      <div class="row">
+      </div>
+      <div class="rownomargin" v-if="presentationList.length > 0">
+        <div
+          class="sort stickleft sorttitle"
+          title="Sort by title"
+          @click="sortListTitlePresentation()"
+        >
+          <i class="fas fa-sort"></i>
+        </div>
+        <h2 id="addButtonPresentation">Presentationer</h2>
+        <button @click="AddClickPresentation()" id="addButton">
+          Lägg till <i class="fas fa-plus"></i>
+        </button>
+      </div>
+      <div v-else>
+        <p id="textcenter">Var vänlig lägg till presentationer.</p>
+      </div>
+      <div
+        class="wrapperPresentation"
+        v-for="(col, index) in presentationList"
+        :key="index"
+      >
+        <div class="title" @click="col.show = !col.show">
+          <div class="rownomargin">
+            <p>
+              {{ col.title }}
+            </p>
+          </div>
+        </div>
+        <div class="container" id="container" v-if="col.show">
+          <div class="rownomargin">
+            <h3>Stycken</h3>
+            <div class="stickright">
+              <div
+                class="stickright experienceedit"
+                title="Edit experience"
+                @click="EditClickPresentation(index)"
+              >
+                <i class="fas fa-edit"></i>
+              </div>
+              <div
+                class="stickright experienceremove"
+                title="Remove experience"
+                @click="RemoveClickPresentation(index)"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </div>
+            </div>
+          </div>
+          <li
+            id="inboxTextPresentation"
+            v-for="paragraph in col.paragraph"
+            :key="paragraph"
+          >
+            {{ paragraph }}
+          </li>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -101,12 +160,15 @@ export default {
       sortDate: false,
       searchText: "",
       experienceList: {},
+      presentationList: {},
     };
   },
   async mounted() {
     let user = await this.$store.getters.getLoggedInUser;
     await this.$store.dispatch("getUserExperience", user.id);
     this.experienceList = this.$store.getters.getUserExperience;
+    await this.$store.dispatch("getUserPresentation", user.id);
+    this.presentationList = this.$store.getters.getUserPresentation;
   },
   methods: {
     CVClick() {
@@ -134,6 +196,23 @@ export default {
           this.experienceList[i].language.includes(this.searchText) ||
           this.experienceList[i].role.includes(this.searchText) ||
           this.experienceList[i].software.includes(this.searchText)
+        ) {
+          elements[i].style.display = "block";
+        } else {
+          elements[i].style.display = "none";
+        }
+      }
+
+      elements = document.getElementsByClassName("wrapperPresentation");
+
+      for (i = 0; i < elements.length; i++) {
+        title = elements[i].childNodes[0].childNodes[0].children[0].innerText;
+
+        if (
+          title.includes(this.searchText) ||
+          this.presentationList[i].paragraph.find((a) =>
+            a.includes(this.searchText)
+          )
         ) {
           elements[i].style.display = "block";
         } else {
@@ -190,7 +269,45 @@ export default {
       }
       this.sortDate = !this.sortDate;
     },
-  },
+    EditClickPresentation(index) {
+      this.$router.push({
+        name: "ConsultantPresentationEdit",
+        params: this.presentationList[index],
+      });
+    },
+    AddClickPresentation() {
+      this.$router.push({ name: "ConsultantPresentationEdit" });
+    },
+    async RemoveClickPresentation(index) {
+      if (!confirm("Are you sure?")) {
+        return;
+      }
+      let user = await this.$store.getters.getLoggedInUser;
+      await this.$store.dispatch("removePresentation", {
+        token: this.$store.getters.getUserToken,
+        input: {
+          title: this.presentationList[index].title,
+          paragraph: null,
+          userID: user.id,
+          newExperience: false,
+          id: this.presentationList[index].id,
+        },
+      });
+      this.presentationList.splice(index, 1);
+    },
+    sortListTitlePresentation() {
+      if (this.sortTitle) {
+        this.presentationList = this.presentationList.sort((a, b) =>
+          a.title > b.title ? 1 : -1
+        );
+      } else {
+        this.presentationList = this.presentationList.sort((b, a) =>
+          a.title > b.title ? 1 : -1
+        );
+      }
+      this.sortTitle = !this.sortTitle;
+    }
+  }
 };
 </script>
 
@@ -202,6 +319,13 @@ export default {
 }
 
 .wrapper {
+  border-radius: 2px;
+  border: 2px solid #f7f7f7;
+  max-width: 60vw;
+  margin: auto;
+}
+
+.wrapperPresentation {
   border-radius: 2px;
   border: 2px solid #f7f7f7;
   max-width: 60vw;
@@ -237,7 +361,18 @@ export default {
 }
 
 #addButton {
-  margin-left: auto;
+  margin-left: 10px;
+  padding: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+#addButtonPresentation {
+  margin-left: 10px;
+  padding: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: auto;
 }
 
 .row {
@@ -263,12 +398,11 @@ input[type="text"],
 select {
   padding: 6px 10px;
   margin-left: auto;
-  margin-right: auto;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-  max-width: 15vw;
+  width: 200px;
 }
 
 .center {
@@ -332,6 +466,12 @@ button:hover {
   font-size: 12px;
 }
 
+#inboxTextPresentation {
+  font-size: 12px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
 h3 {
   margin-bottom: 5px;
 }
@@ -346,6 +486,8 @@ h3 {
 
 .sort {
   margin-bottom: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .sort:hover {
@@ -354,7 +496,7 @@ h3 {
 }
 
 .sortdate {
-  margin-right: 5vw;
+  margin-left: auto;
 }
 
 .sorttitle {
