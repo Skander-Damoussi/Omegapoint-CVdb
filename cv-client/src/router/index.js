@@ -7,6 +7,7 @@ import Admin from "../views/Admin";
 import EditUser from "../components/EditUser.vue";
 import ConsultantExperience from "../components/ConsultantExperience.vue";
 import ConsultantExperienceEdit from "../components/ConsultantExperienceEdit.vue";
+import Verify from "../components/Verify.vue";
 import store from "../store/store.js";
 
 Vue.use(VueRouter);
@@ -58,6 +59,11 @@ const routes = [
       adminAuth: true,
       consultantManagerAuth: true
     }
+  },
+  {
+    path: "/verify/:token/:userId",
+    name: "Verify",
+    component: Verify
   }
 ];
 

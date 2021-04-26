@@ -276,10 +276,15 @@ namespace cv_api.Controllers
         {
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
-                return BadRequest();
+                return BadRequest("Invalid confirmation or expired token.");
 
             var result = await userManager.ConfirmEmailAsync(user, code);
-            return Ok();
+
+            if (!result.Succeeded)
+                return BadRequest("Invalid confirmation or expired token.");
+
+            userManager.
+            return Ok("Email has been confirmed");
         }
 
         [HttpPut]

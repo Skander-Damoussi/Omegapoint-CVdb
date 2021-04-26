@@ -14,7 +14,8 @@ const getDefaultState = () => {
     consultantList: [],
     userExperience: [],
     token: null,
-    role: null
+    role: null,
+    verified: null
   };
 };
 
@@ -52,6 +53,9 @@ export default new Vuex.Store({
     },
     setUserExperience(state, token) {
       state.userExperience = token;
+    },
+    setVerify(state, verified) {
+      state.verified = verified
     }
   },
   actions: {
@@ -188,6 +192,16 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUserExperience", this.userExperience);
+    },
+    async verify({ commit }, { userId, token }) {
+      console.log(userId);
+      console.log(token);
+      await Axios.post("user/verify", userId, token)
+        .then(async resp => {
+          this.verified = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserExperience", this.verified);
     }
   },
   getters: {
