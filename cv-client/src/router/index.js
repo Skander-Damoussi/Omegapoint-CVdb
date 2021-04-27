@@ -8,6 +8,7 @@ import EditUser from "../components/EditUser.vue";
 import ConsultantExperience from "../components/ConsultantExperience.vue";
 import ConsultantExperienceEdit from "../components/ConsultantExperienceEdit.vue";
 import Verify from "../components/Verify.vue";
+import ConsultantPresentationEdit from "../components/ConsultantPresentationEdit.vue";
 import store from "../store/store.js";
 
 Vue.use(VueRouter);
@@ -41,6 +42,12 @@ const routes = [
     path: "/consultantExperienceEdit",
     name: "ConsultantExperienceEdit",
     component: ConsultantExperienceEdit,
+    meta: { reqAuth: true, consultAuth: true }
+  },
+  {
+    path: "/consultantPresentationEdit",
+    name: "ConsultantPresentationEdit",
+    component: ConsultantPresentationEdit,
     meta: { reqAuth: true, consultAuth: true }
   },
   {

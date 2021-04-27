@@ -45,7 +45,6 @@ export default {
         _this.closeSessionModal();
       }
       if (_this.checkStatus()) {
-        console.log("timer started");
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           _this.showSessionModal();
@@ -56,11 +55,9 @@ export default {
 
     function close() {
       if (_this.checkStatus()) {
-        console.log("close timer started");
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           document.removeEventListener("mousemove", refresh);
-          console.log("you were logged out");
           _this.closeSessionModal();
           store.dispatch("logOut");
           router.push("/");
