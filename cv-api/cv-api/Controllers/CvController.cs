@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using cv_api.DocxCreate;
 
 namespace cv_api.Controllers
 {
@@ -20,14 +21,15 @@ namespace cv_api.Controllers
     {
         private readonly ILogger<CvController> _logger;
         private readonly IMongoRepository<CVTemplate> _cvRepository;
+        //private readonly IMongoRepository<User> _userRepository;
         private readonly IConfiguration _configuration;
 
         public CvController(ILogger<CvController> logger, IMongoRepository<CVTemplate> cvRepository, IConfiguration configuration)
         {
             _logger = logger;
             _cvRepository = cvRepository;
+            //_userRepository = userRepository;
             _configuration = configuration;
-
 
         }
 
@@ -160,21 +162,23 @@ namespace cv_api.Controllers
             projection => projection.FileByte).FirstOrDefault();
 
 
-
+            DocxCreator docxCreate = new DocxCreator();
 
             using MemoryStream memoryStream = new MemoryStream(cv);
             {
-                WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
-                Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
-                string txt = "Hello World";
-                // Add new text.
-                Paragraph para = body.AppendChild(new Paragraph());
-                Run run = para.AppendChild(new Run());
-                run.AppendChild(new Text(txt));
-                run.AppendChild(new Text(txt));
-                wordprocessingDocument.Save();
-                wordprocessingDocument.Close();
-                //return Ok(wordprocessingDocument);
+                docxCreate.CreateDocx(memoryStream);
+
+                //WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
+                //Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+                //string txt = "Hello World";
+                //// Add new text.
+                //Paragraph para = body.AppendChild(new Paragraph());
+                //Run run = para.AppendChild(new Run());
+                //run.AppendChild(new Text(txt));
+                //run.AppendChild(new Text(txt));
+                //wordprocessingDocument.Save();
+                //wordprocessingDocument.Close();
+                ////return Ok(wordprocessingDocument);
             }
 
             using (var net = new System.Net.WebClient())
@@ -184,6 +188,13 @@ namespace cv_api.Controllers
                 {
                     FileDownloadName = DateTime.Now.ToString() + ".docx"
                 };
+
+                //FileContentResult file = new FileContentResult(memoryStream.ToArray(), "application/docx")
+                //{
+                //    FileDownloadName = DateTime.Now.ToString() + ".docx"
+                //};
+
+                //return Ok(file);
             }
 
         }
@@ -198,17 +209,17 @@ namespace cv_api.Controllers
 
             using MemoryStream memoryStream = new MemoryStream(cv);
             {
-                WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
-                Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
-                string txt = "Hello World";
-                // Add new text.
-                Paragraph para = body.AppendChild(new Paragraph());
-                Run run = para.AppendChild(new Run());
-                run.AppendChild(new Text(txt));
-                run.AppendChild(new Text(txt));
-                wordprocessingDocument.Save();
-                wordprocessingDocument.Close();
-                //return Ok(wordprocessingDocument);
+                //WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(memoryStream, true);
+                //Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+                //string txt = "Hello World";
+                //// Add new text.
+                //Paragraph para = body.AppendChild(new Paragraph());
+                //Run run = para.AppendChild(new Run());
+                //run.AppendChild(new Text(txt));
+                //run.AppendChild(new Text(txt));
+                //wordprocessingDocument.Save();
+                //wordprocessingDocument.Close();
+                ////return Ok(wordprocessingDocument);
             }
 
             //Testa gör om till pdf
