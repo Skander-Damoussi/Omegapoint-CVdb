@@ -36,7 +36,7 @@ namespace cv_api.Areas.Identity
 
 					options.User.RequireUniqueEmail = false;
 
-					options.SignIn.RequireConfirmedEmail = false;
+					options.SignIn.RequireConfirmedEmail = true;
 				});
 
 			});
