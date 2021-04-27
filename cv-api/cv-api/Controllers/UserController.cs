@@ -259,6 +259,10 @@ namespace cv_api.Controllers
 
             var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
+            user.EmailConfirmationToken = code;
+
+            var update = userManager.UpdateAsync(user);
+
             var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
 
 
@@ -278,12 +282,29 @@ namespace cv_api.Controllers
             if (user == null)
                 return BadRequest("Invalid confirmation or expired token.");
 
-            var result = await userManager.ConfirmEmailAsync(user, code);
+            if(user.EmailConfirmationToken != code)
+            {
+                return BadRequest("Invalid confirmation or expired token.");
+            }
 
+            if(user.EmailConfirmationToken == null)
+            {
+                if(user.EmailConfirmed)
+                {
+                    return BadRequest("Email has already been confirmed");
+                }
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, user.EmailConfirmationToken);
+
+            
             if (!result.Succeeded)
                 return BadRequest("Invalid confirmation or expired token.");
+            
+            user.EmailConfirmationToken = null;
 
-            userManager.
+            var update = await userManager.UpdateAsync(user);
+
             return Ok("Email has been confirmed");
         }
 
