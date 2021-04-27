@@ -36,11 +36,11 @@ namespace cv_api.DocxCreate
         public void ReplaceFields(MemoryStream memoryStream)
         {
             string story = @"Som många utvecklare trivs Andreas bäst när han får lösa" +
-            "komplexa problem och växer med utmaningar. Att ta stort" +
-            "ansvar som ensam utvecklare i projekt eller vara en dynamisk" +
-            "del av ett större team gör Michal bra vilket som. Med stor" +
-            "nyikenhet, prestigelöshet och en positiv attityd lyssnar Andreas" +
-            "gärna för att inte bara utveckla saker rätt, utan också rätt saker";
+            " komplexa problem och växer med utmaningar. Att ta stort" +
+            " ansvar som ensam utvecklare i projekt eller vara en dynamisk" +
+            " del av ett större team gör Michal bra vilket som. Med stor" +
+            " nyikenhet, prestigelöshet och en positiv attityd lyssnar Andreas" +
+            " gärna för att inte bara utveckla saker rätt, utan också rätt saker";
 
             ReplaceTextBookmarks(memoryStream, "userName", "Andreas Andreasson");
             ReplaceTextBookmarks(memoryStream, "userNameFooter", "Andreas Andreasson");
