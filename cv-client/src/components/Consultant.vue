@@ -1,149 +1,99 @@
 <template>
-  <div>
-    <div id="main">
-      <div id="top">
-        <p class="icon-click" v-on:click="editMethod()">
+  <div class="row wrapper">
+    <div id="pdfBox">
+      <div id="pdf" ref="document">
+        <div class="row">
+          <img src="../assets/templogo.png" height="23px" class="logo" />
+          <div class="contactdiv">
+            <p class="contact contactTitel">Frontwalker AB</p>
+            <p class="contact">0702-23 23 25</p>
+            <p class="contact">www.frontwalker.se</p>
+            <p class="contact">magnus.nilsson@frontwalker.se</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <img src="../assets/temp.png" height="150px" class="selfie" />
+          <div class="cvTitelDiv">
+            <h1 class="cvTitel">Mikael Strömgren</h1>
+            <p class="cvTitelRoll">Utvecklare</p>
+          </div>
+        </div>
+        <div class="introstycke">
+          <p class="stycke">
+            I grunden utbildad interaktionsdesigner, men har i min yrkesroll
+            jobbat väldigt brett inom webb. Jag i alla de olika aspekterna av
+            webben, både design och teknik, men även det sociala och
+            affärsmässiga. Har under mina 10+ år i branschen bidragit med
+            affärsnytta till både stora och små kunder och upphör aldrig att
+            fascineras av den stora skillnad som bra webb kan göra. Mina
+            drivkrafter är nyfikenhet och kunskapstörst.
+          </p>
+          <p class="stycke">
+            Av omgivningen ses jag som ödmjuk och prestigelös. Jag trivs med att
+            verka i en öppen miljö, där jag inspireras av duktiga kollegor, och
+            utbyta kunskaper och erfarenheter. Upplevs som tydlig, kunnig och
+            hjälpsam av kunder.
+          </p>
+          <p class="stycke">
+            Mikaels erfarenheter inom webbutveckling har gett honom en bred
+            kompetens som kommer väl till pass i de flest projekt. En vana av
+            att ta projekt från ax till limpa med bra förmåga att kommunicer,
+            planera, dokumentera och utveckla.
+          </p>
+        </div>
+        <div class="fokusBox">
+          <h3 class="fokusTitel">Uppdrag i fokus</h3>
+          <div>
+            <h4 class="fokusRoll">Utvecklare</h4>
+            <p class="fokusFöretag">Thage i Skåne AB</p>
+            <p class="stycke förstaStycke">
+              Thage vill skicka viktig kommunikation till sina samrbetspartners.
+              För att säkerställa att sådan kommunikation hittar rätt är det
+              centralt att alla uppgifter hålls aktuella. Leverantörsportalen är
+              en webbportal dit Thage bjuder in sina partners. Resultatet blir
+              en högre kvalitet på kontaktuppgifterna och därför högre
+              träffsäkerhet gällande utskickade förfrågningar, offerter med
+              mera.
+            </p>
+          </div>
+        </div>
+        <div class="contactFooterBox">
+          <h3 class="contactFooterTitel">Säljkontakt</h3>
+          <p class="contactFooterText">Magnus Nilsson</p>
+          <p class="contactFooterText">magnus.nilsson@frontwalker.se</p>
+          <p class="contactFooterText">070-4586320</p>
+        </div>
+        <div class="footer">
+        <p class="bottomMidText">Frontwalker AB - Mikael Strömgren</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="icon-click" v-on:click="editMethod()">
+        <div class="row">
           <i
-            class="btn fas fa-edit fa-2x"
+            class="fas fa-edit fa-2x"
             v-on:click="editMethod()"
             title="Tryck för att redigera"
           ></i>
-        </p>
-
-        <p class="icon-click" v-on:click="toggleExport()">
-          <i
-            class="btn fas fa-file-export fa-2x"
-            @click="toggleExport()"
-            title="Tryck för att exportera"
-          ></i>
-        </p>
-
-        <div id="export" v-if="exportMenu">
-          <p>Välj ett exporteringformat</p>
-          <a @click="exportToPDF">Exportera PDF</a>
-          <a href>Exportera WORD</a>
-        </div>
-      </div>
-      <div id="wrapper" ref="document">
-        <div id="left">
-          <h4>Presentation</h4>
-
-          <p>
-            XXXXXX är engagerad, har en unik analytisk förmåga och en smittsam
-            öppen personlighet. Han är myckt bra på särskilt svåra problem som
-            kräver mycket tanke och att samarbeta i dessa situationer. XXXXXX
-            bryr sig om att resultatet är bra och han har en ständig drivkraft
-            för att förbättra och utveckla sina yrkeskunskaper. Han tar till sig
-            ny kunskap snabbt och är mannen att gå till när du behöver hjälp.
-            XXXXXX kan förstå och lösa komplexa och abstrakta problem.
-          </p>
-
-          <p>
-            Han är mycket tekniskt skicklig och med ett lugn driver han
-            utvecklingen framåt. Han är grundlig, effektiv och skicklig. Både i
-            komplexa situationer och de som börjar känna sig omöjliga kommer
-            XXXXXX att hitta nya idéer och förslag till lösningar på problemet.
-            XXXXXX är bra på att förstår och lösa problem och kommunicera
-            teknisk information på ett enkelt sätt för personer med liten eller
-            ingen teknisk erfarenhet. Han inspirerar när han går utanför boxen
-            och gör mer än vad som förväntas av honom. XXXXXX har en hög
-            arbetsmoral och är en härlig kollega som inte är rädd för att öppna
-            sig.
-          </p>
-        </div>
-
-        <div id="right">
-          <div id="right-top">
-            <h4>Teknisk profil</h4>
-
-            <b>Administrations Software</b>
-            <p>
-              Active Directory, Microsoft Exchange, Office 365 Admin Portal,
-              Azure AD
-            </p>
-
-            <b>Programmeringsspråk och CMS</b>
-            <p>
-              C#, Javascript, C++, Perl, Bash, PowerShell, TurboPascal,
-              EpiServer, SiteCore
-            </p>
-
-            <b>Editors och IDE</b>
-            <p>
-              Visual Studio, UltraEdit, Powershell ISE, MS SQL Server,
-              Management Studio
-            </p>
-
-            <b>Version kontroll system</b>
-            <p>Git, SVN, Bitbucket, Github, Sourcesafe</p>
-
-            <b>Databaser</b>
-            <p>MSSQL, MySQL, SQLite</p>
-
-            <b>Operativ System</b>
-            <p>Windows Server, Windows, Linux</p>
-
-            <b>Monitorering</b>
-            <p>OP5, kinga, Nagios, TMArt</p>
-
-            <b>Dokumentation</b>
-            <p>Mediawiki, Confluence</p>
-
-            <b>Virtualisering</b>
-            <p>VMWare, Virtualbox</p>
-
-            <b>Webbserver</b>
-            <p>NGINX, IIS, Apache</p>
-
-            <b>Cloud Plattformar</b>
-            <p>Azure, vCloud Director</p>
-          </div>
-
-          <div id="right-mid">
-            <h4>Roller</h4>
-            <p>
-              Systemutvecklare, Webbutvecklare, Applikationsutvecklare,
-              Integratör
-            </p>
-          </div>
-
-          <div id="right-bottom">
-            <h4>Certifieringar</h4>
-            <p>2014 ITIL-Foundation</p>
-          </div>
+          <p>Redigera</p>
         </div>
       </div>
 
-      <div id="bottom">
-        <h4>Urval av aktuella uppdrag</h4>
-        <div id="bottom-wrapper">
-          <b>SiteCore utvecklare- 24hr</b>
-
-          <b>2020-2021</b>
-        </div>
+      <div class="icon-click row" v-on:click="exportToPDF">
+        <i
+          class="btn fas fa-file-export fa-2x"
+          title="Tryck för att exportera"
+        ></i>
+        <p>Exportera till PDF</p>
       </div>
-
-      <footer>
-        <div id="footer-left">
-          <p>Omegapoint AB</p>
-          <p>www.omegapoint.se</p>
-        </div>
-
-        <div id="footer-middle">
-          <p>Adelgatan 6</p>
-          <p>SE-211 22 Malmö</p>
-        </div>
-
-        <div id="footer-right">
-          <img src="../assets/omegapoint.png" />
-        </div>
-      </footer>
     </div>
   </div>
 </template>
 
 <script>
-import html2pdf from 'html2pdf.js'
+import html2pdf from "html2pdf.js";
 
 export default {
   name: "Consultant",
@@ -160,15 +110,15 @@ export default {
     editMethod() {
       this.$router.push("ConsultantExperience/");
     },
-    exportToPDF () {
-				html2pdf(this.$refs.document, {
-					margin: 1,
-					filename: 'document.pdf',
-					image: { type: 'jpeg', quality: 0.98 },
-					html2canvas: { dpi: 192, letterRendering: true },
-					jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-				})
-			}
+    exportToPDF() {
+      html2pdf(this.$refs.document, {
+        margin: [0, 0, 0, 0],
+        filename: "document.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { dpi: 192, letterRendering: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      });
+    },
   },
 };
 </script>
@@ -186,177 +136,144 @@ div {
   text-align: left;
 }
 
-#main {
-  background: white;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-  border: 1px;
-  border-color: grey;
+.wrapper {
+  margin-top: 20px;
+}
+
+#pdf {
+  width: 210mm;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#pdfBox {
+  margin-right: auto;
+  margin-left: auto;
+  width: 250mm;
   border-style: solid;
-  margin-top: 5%;
-  margin-left: 25%;
-  margin-right: 25%;
-  margin-bottom: 5%;
+  border-width: 1px;
+  margin-bottom: 10vh;
 }
 
-#top {
-  width: 100%;
+.row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  position: relative;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.btn {
-  margin: 2px;
-  /* width: 20px; */
+.cvTitelDiv {
+  margin-top: auto;
+  margin-bottom: 15px;
+}
+
+.cvTitel {
+  color: #006d86;
+}
+
+.cvTitelRoll {
+  color: gray;
+  font-style: unset;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.selfie {
+  margin-left: 18px;
+}
+
+.logo {
+  margin-left: 40px;
+  margin-bottom: 60px;
+  margin-top: 60px;
+}
+
+.introstycke {
+  width: 50%;
+  font-style: normal;
+  margin-left: 40px;
+}
+
+.stycke {
+  margin-top: 15px;
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.contactdiv {
+  margin-left: auto;
+  text-align: right;
+  margin-right: 40px;
+}
+
+.contact {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.contactTitel {
+  color: #006d86;
+  font-weight: bold;
 }
 
 .icon-click {
-  cursor: pointer;
+  margin: 15px;
 }
 
-#export {
-  position: absolute;
-  z-index: 1;
-  background: white;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid grey;
-  border-radius: 5px;
-  right: -105px;
-  top: 30px;
-  text-align: left;
-  height: auto;
+.fokusBox {
+  width: 50%;
+  margin-left: 40px;
+  margin-top: 25px;
 }
 
-#export > p {
-  font-size: 8px;
-  margin: 5px;
-}
-#export > a {
-  font-size: 10px;
-  margin: 5px;
-  text-decoration: none;
-  color: black;
-  padding: 2px;
-}
-#export > a:hover {
-  /* color: grey; */
-  border: 1px solid grey;
-  border-radius: 5px;
-  padding: 1px;
+.fokusTitel {
+  color: #006d86;
+  border-bottom: solid;
+  border-width: 1px;
 }
 
-#wrapper {
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
-}
-
-#left {
-  background: white;
-  width: 35%;
-  margin: 20px 10px 10px 10px;
-  font-size: 12px;
-}
-
-#left > p {
+.fokusRoll {
   margin-top: 10px;
 }
 
-#right {
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-  margin: 20px 10px 10px 10px;
+.fokusFöretag {
+  margin-top: 5px;
+  font-size: 13px;
+  margin-bottom: 3px;
 }
 
-#right > div > p {
-  font-size: 8px;
-  margin: 0;
-}
-#right > div > b {
-  font-size: 8px;
-  margin: 0;
+.förstaStycke {
+  margin-top: 0px;
 }
 
-#right > div > h4 {
-  font-size: 12px;
-  margin-bottom: 0px;
+.contactFooterBox {
+  background: #006d86;
+  color: white;
+  border-style: none;
+  border-radius: 10px;
+  width: 25%;
+  padding-left: 8px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: auto;
+  margin-right: 40px;
 }
 
-#right-top {
-  background: white;
-  margin: 0px 10px 10px 10px;
+.contactFooterTitel {
+  font-size: 18px;
 }
 
-#right-mid {
-  margin: 10px 10px 10px 10px;
+.contactFooterText {
+  font-size: 10px;
+  font-weight: lighter;
+  margin-bottom: 3px;
 }
 
-#right-bottom {
-  margin: 10px 10px 10px 10px;
+.footer {
+  margin-top: 20px;
 }
 
-#bottom {
-  width: 70%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 21%;
-  margin-top: 5%;
-}
-
-#bottom-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-#bottom > h4 {
-  font-size: 12px;
-  margin-bottom: 12px;
-}
-
-#bottom-wrapper > b {
-  font-size: 12px;
-}
-
-#bottom-wrapper > b:nth-child(2) {
-  margin-left: 35%;
-}
-
-footer {
-  position: center;
-  display: flex;
-  margin-top: 10%;
-  margin-left: 18%;
-  margin-right: 5%;
-  margin-bottom: 3%;
-}
-
-footer > div > p {
-  font-size: 8px;
-}
-
-footer > div:nth-child(2) {
-  margin-left: 30%;
-}
-footer > div:nth-child(3) {
-  margin-left: 10%;
-}
-
-#footer-right {
-  width: 10%;
-}
-
-h4 {
-  color: GREY;
-  font-size: 12px;
-}
-
-p {
-  font-size: 12px;
+.bottomMidText {
+  text-align: center;
+  color: black;
 }
 </style>
