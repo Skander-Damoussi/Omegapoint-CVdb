@@ -67,7 +67,7 @@ export default {
 .mainDiv {
   border: solid 1px black;
   min-height: 87vh;
-  margin: 25px 2%;
+  margin: 2vh 1vh;
   border-radius: 4px;
 }
 .templateDiv {
