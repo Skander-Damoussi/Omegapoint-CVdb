@@ -9,7 +9,7 @@
             id="searchInput"
             class="searchInput"
             v-model="searchString"
-            v-on:input="search()"
+            
             @keyup.enter="search()"
             placeholder="Sök"
           />
@@ -92,6 +92,7 @@ export default {
   margin: 1.3% 5%;
   border-radius: 1%;
   width: 50vw;
+  overflow-y: scroll;
 }
 
 .search {
@@ -143,5 +144,9 @@ th {
 
 input:-webkit-autofill {
   -webkit-box-shadow: inset 0 0 0px 9999px white;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 </style>
