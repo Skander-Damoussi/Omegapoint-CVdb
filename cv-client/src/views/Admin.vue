@@ -71,9 +71,8 @@ export default {
   border-radius: 4px;
 }
 .templateDiv {
-  margin-left: 2%;
+  margin-left: 2vh;
   border-radius: 10px;
-  max-width: 160px;
 }
 .templateDiv:hover {
   cursor: pointer;
@@ -90,10 +89,7 @@ export default {
 }
 .h2Div {
   display: flex;
-  margin: 0px 2%;
-}
-img {
-  max-width: 100%;
+  margin: 0px 2vh;
 }
 .flex {
   display: flex;
@@ -103,7 +99,7 @@ img {
   display: flex;
 }
 .flex-item-left {
-  flex: 75%;
+  flex: 70vw;
 }
 
 .flex-item-right {
