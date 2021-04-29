@@ -97,11 +97,11 @@ export default {
   display: flex;
 }
 .flex-item-left {
-  flex: 70vw;
+  flex: 75vw;
 }
 
 .flex-item-right {
-  flex: 25%;
+  flex: 20vw;
 }
 p {
   font-weight: bold;
