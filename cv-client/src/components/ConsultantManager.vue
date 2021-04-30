@@ -9,7 +9,7 @@
             id="searchInput"
             class="searchInput"
             v-model="searchString"
-            
+            v-on:input="search()"
             @keyup.enter="search()"
             placeholder="Sök"
           />
@@ -23,7 +23,7 @@
           <th>Efternamn</th>
           <th></th>
         </tr>
-        <tr v-for="(i, index) in consultantList" :key="index">
+        <tr v-for="(i, index) in displayList" :key="index">
           <th>{{ index }}</th>
           <th>{{ i.firstName }}</th>
           <th>{{ i.lastName }}</th>
@@ -50,7 +50,8 @@ export default {
   },
   data() {
     return {
-      searchString: ""
+      searchString: "",
+      displayList: []
     };
   },
   computed: {
@@ -63,19 +64,56 @@ export default {
       console.log("click", index);
     },
     search() {
+      this.displayList = [];
       if (this.searchString.length < 1) {
         this.$store.dispatch("getConsultantList");
       } else {
-        this.$store.dispatch("searchConsultant", this.searchString);
+        for (var i = 0; i < this.consultantList.length; i++) {
+          console.log(this.consultantList[i]);
+          if (
+            this.consultantList[i].firstName.includes(this.searchString) ||
+            this.consultantList[i].lastName.includes(this.searchString)
+          ) {
+            this.displayList.push(this.consultantList[i]);
+          }
+          if (this.consultantList[i].experiences != null) {
+            for (
+              var a = 0;
+              a < this.consultantList[i].experiences.length;
+              a++
+            ) {
+              if (
+                this.consultantList[i].experiences[a].language.includes(
+                  this.searchString
+                ) ||
+                this.consultantList[i].experiences[a].role.includes(
+                  this.searchString
+                ) ||
+                this.consultantList[i].experiences[a].software.includes(
+                  this.searchString
+                ) ||
+                this.consultantList[i].experiences[a].title.includes(
+                  this.searchString
+                ) ||
+                this.consultantList[i].experiences[a].assignments.includes(
+                  this.searchString
+                )
+              ) {
+                this.displayList.push(this.consultantList[i]);
+              }
+            }
+          }
+        }
       }
     },
     resetSearch() {
       this.searchString = "";
-      this.$store.dispatch("getConsultantList");
+      this.displayList = this.consultantList;
     }
   },
   mounted() {
     this.$store.dispatch("getConsultantList");
+    this.displayList = this.consultantList;
   }
 };
 </script>

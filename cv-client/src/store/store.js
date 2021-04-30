@@ -207,7 +207,7 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
       commit("setUserExperience", this.verified);
     },
-    async addPresentation({ commit }, { token, input }) { 
+    async addPresentation({ commit }, { token, input }) {
       await Axios.post("user/postPresentation/", input, {
         headers: {
           "Content-Type": "application/json",
