@@ -293,14 +293,12 @@ export default {
 .row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   margin-bottom: 10px;
 }
 
 .rownomargin {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
 }
 
 li {

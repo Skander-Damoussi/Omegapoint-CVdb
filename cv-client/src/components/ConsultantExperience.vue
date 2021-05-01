@@ -5,12 +5,12 @@
         <button @click="CVClick()">
           <i class="fas fa-chevron-circle-left"></i> Tillbaka
         </button>
-          <input
-            type="text"
-            v-model="searchText"
-            v-on:input="search()"
-            @keyup.enter="search()"
-          />
+        <input
+          type="text"
+          v-model="searchText"
+          v-on:input="search()"
+          @keyup.enter="search()"
+        />
       </div>
       <div class="rownomargin" v-if="experienceList.length > 0">
         <div
@@ -21,11 +21,7 @@
           <i class="fas fa-sort"></i>
         </div>
         <h2 id="addButton">Erfarenheter</h2>
-        <div
-          class="sort sortdate"
-          title="Sort by date"
-          @click="sortListDate()"
-        >
+        <div class="sort sortdate" title="Sort by date" @click="sortListDate()">
           <i class="fas fa-sort"></i>
         </div>
         <button @click="AddClick()" id="addButton">
@@ -88,8 +84,7 @@
       </div>
     </div>
     <div class="tasks">
-      <div class="row">
-      </div>
+      <div class="row"></div>
       <div class="rownomargin" v-if="presentationList.length > 0">
         <div
           class="sort stickleft sorttitle"
@@ -306,8 +301,8 @@ export default {
         );
       }
       this.sortTitle = !this.sortTitle;
-    }
-  }
+    },
+  },
 };
 </script>
 
