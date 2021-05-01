@@ -245,9 +245,12 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 9">
-              <div class="">
-                <p>ddd</p>
-                <textarea name="" id="" cols="30" rows="10"></textarea>
+              <div
+                class="row"
+                v-for="(obj, index) in consult_experience_options"
+                :key="index"
+              >
+                <p>{{ obj.title }}</p>
               </div>
             </div>
           </div>
@@ -334,6 +337,9 @@ export default {
       contact_email: "magnus.nilsson@omegapoint.se",
       consult_picture: "",
       consult_name: "Magnus Nilsson",
+      consult_experience_focus: [],
+      consult_experience: [],
+      consult_experience_options: [],
       consult_role: "Utvecklare",
       consult_role_options: [],
       consult_presentations: [
@@ -350,6 +356,8 @@ export default {
   },
   created() {
     var temp = this.$store.getters.getUserExperience;
+    this.consult_experience_options = temp;
+
     var i;
     for (i = 0; i < temp.length; i++) {
       for (var ii = 0; ii < temp[i].role.length; ii++) {
@@ -363,6 +371,9 @@ export default {
     }
   },
   methods: {
+    checkboxChange(input) {
+      console.log(input)
+    },
     toggleExport() {
       this.exportMenu = !this.exportMenu;
       console.log("exportMenu=", this.exportMenu);
@@ -375,7 +386,7 @@ export default {
         margin: [0, 0, 0, 0],
         filename: "document.pdf",
         image: { type: "jpeg", quality: 1 },
-        html2canvas: { dpi: 192, letterRendering: false },
+        html2canvas: { dpi: 192, letterRendering: true },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       });
     },
@@ -598,6 +609,10 @@ select {
   max-width: 15vw;
 }
 
+input[type="checkbox"] {
+  width: 25px;
+}
+
 input[type="text"]:focus {
   border: 1px solid #555;
 }
@@ -649,7 +664,7 @@ button:hover {
   padding: 15px;
 }
 
-.container2{
+.container2 {
   padding: 15px;
   width: 500px;
 }
@@ -667,5 +682,9 @@ button:hover {
 .stickright {
   margin-left: auto;
   margin-right: auto;
+}
+
+#listAddPresentation {
+  padding: 3px;
 }
 </style>
