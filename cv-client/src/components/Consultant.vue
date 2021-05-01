@@ -198,7 +198,10 @@
                       Välj
                     </button>
 
-                    <button @click="EditClickPresentation(Arrindex)" class="editButtonIntroText">
+                    <button
+                      @click="EditClickPresentation(Arrindex)"
+                      class="editButtonIntroText"
+                    >
                       Redigera
                     </button>
                   </div>
@@ -216,7 +219,41 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 7">
-              <div class=""></div>
+              <div class="">
+                <p>
+                  Välj ett uppdrag i fokus
+                </p>
+                <select
+                  name="focus"
+                  v-model="consult_experience_focus_title"
+                  @change="setFocusExperience(consult_experience_focus_title)"
+                >
+                  <option
+                    v-for="(option, index) in consult_experience_options"
+                    :key="index"
+                    >{{ option.title }}</option
+                  >
+                </select>
+                <div v-if="consult_experience_focus_title != ''">
+                  <p class="textInput">Välj en roll</p>
+                  <select
+                    name="rolefocus"
+                    v-model="consult_experience_focus_role"
+                  >
+                    <option
+                      v-for="(option, index) in consult_experience_focus.role"
+                      :key="index"
+                      >{{ option }}</option
+                    >
+                  </select>
+                  <p class="textInput">Välj en uppdragsbeskrivning</p>
+                  <div class="focusDescription" v-for="(assignments, index) in consult_experience_focus.assignments"
+                      :key="index"
+                      @click="consult_experience_focus_description = assignments">
+                    {{assignments}}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="wrapper">
@@ -292,16 +329,10 @@
             <div class="fokusBox">
               <h3 class="fokusTitel">Uppdrag i fokus</h3>
               <div>
-                <h4 class="fokusRoll">Utvecklare</h4>
-                <p class="fokusFöretag">Thage i Skåne AB</p>
+                <h4 class="fokusRoll">{{ consult_experience_focus_role }}</h4>
+                <p class="fokusFöretag">{{ consult_experience_focus_title }}</p>
                 <p class="stycke förstaStycke">
-                  Thage vill skicka viktig kommunikation till sina
-                  samrbetspartners. För att säkerställa att sådan kommunikation
-                  hittar rätt är det centralt att alla uppgifter hålls aktuella.
-                  Leverantörsportalen är en webbportal dit Thage bjuder in sina
-                  partners. Resultatet blir en högre kvalitet på
-                  kontaktuppgifterna och därför högre träffsäkerhet gällande
-                  utskickade förfrågningar, offerter med mera.
+                  {{ consult_experience_focus_description }}
                 </p>
               </div>
             </div>
@@ -341,6 +372,9 @@ export default {
       contact_email: "magnus.nilsson@omegapoint.se",
       consult_picture: "",
       consult_name: "Magnus Nilsson",
+      consult_experience_focus_title: "",
+      consult_experience_focus_role: "",
+      consult_experience_focus_description: "",
       consult_experience_focus: [],
       consult_experience: [],
       consult_experience_options: [],
@@ -364,7 +398,6 @@ export default {
     await this.$store.dispatch("getUserPresentation", user.id);
     var temp = this.$store.getters.getUserExperience;
     this.consult_experience_options = temp;
-
     var i;
     for (i = 0; i < temp.length; i++) {
       for (var ii = 0; ii < temp[i].role.length; ii++) {
@@ -379,6 +412,14 @@ export default {
   },
   created() {},
   methods: {
+    setFocusExperience(input) {
+      for (var i = 0; i < this.consult_experience_options.length; i++) {
+        if (this.consult_experience_options[i].title === input) {
+          this.consult_experience_focus = this.consult_experience_options[i];
+          return;
+        }
+      }
+    },
     toggleExport() {
       this.exportMenu = !this.exportMenu;
       console.log("exportMenu=", this.exportMenu);
@@ -709,5 +750,22 @@ button:hover {
 
 .editButtonIntroText {
   margin-left: 15px;
+}
+
+.focusDescription {
+  margin-top: 10px;
+  padding: 10px;
+  border-width: 3px;
+  border-color:#2185d0;
+  border-style: dotted;
+}
+
+.focusDescription:hover {
+  margin-top: 10px;
+  padding: 10px;
+  border-width: 3px;
+  border-color:black;
+  border-style: solid;
+  cursor: pointer;
 }
 </style>

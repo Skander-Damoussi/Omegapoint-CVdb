@@ -51,7 +51,7 @@
             </button>
             {{ list }}
           </li>
-          <div class="rownomargin">
+          <div v-if="col.title != 'Arbetsbeskrivningar'" class="rownomargin">
             <input
               type="text"
               v-model="col.listInput"
@@ -59,6 +59,16 @@
               @keyup.enter="AddClick(col.title)"
             />
             <button @click="AddClick(col.title)" id="listAdd">
+              <i class="fas fa-plus-square"></i>
+            </button>
+          </div>
+          <div v-else class="rownomargin">
+            <textarea
+              v-model="col.listInput"
+              class="listInput"
+              @keyup.enter="AddClick(col.title)"
+            />
+            <button @click="AddClick(col.title)" id="listAddPresentation">
               <i class="fas fa-plus-square"></i>
             </button>
           </div>
@@ -98,25 +108,25 @@ export default {
       collection: [
         {
           show: true,
-          title: "Programmeringsspårk",
+          title: "Programeringsspråk & tekniker",
           list: [],
           listInput: "",
         },
         {
           show: false,
-          title: "Software",
+          title: "Mjukvara",
           list: [],
           listInput: "",
         },
         {
           show: false,
-          title: "Assignments",
+          title: "Arbetsbeskrivningar",
           list: [],
           listInput: "",
         },
         {
           show: false,
-          title: "Role",
+          title: "Arbetsroller",
           list: [],
           listInput: "",
         },
@@ -377,7 +387,13 @@ button:hover {
 }
 
 #inboxText {
-  font-size: 12px;
+  font-size: 16px;
+  width: 500px;
+}
+
+#inboxTextArea {
+  font-size: 16px;
+  width: 400px;
 }
 
 h3 {
@@ -466,5 +482,23 @@ h2 {
 
 .homebutton {
   margin-left: 15px;
+}
+
+textarea {
+  height: 150px;
+  width: 30vw;
+  padding: 6px 6px;
+  margin: 10px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none;
+}
+
+#listAddPresentation {
+  margin-top: auto;
+  padding: 5px;
+  margin-right: auto;
 }
 </style>

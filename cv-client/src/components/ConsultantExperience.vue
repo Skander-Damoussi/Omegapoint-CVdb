@@ -47,7 +47,9 @@
         </div>
         <div class="container" id="container" v-if="col.show">
           <div class="rownomargin">
-            <h3>Programming languages</h3>
+            <h3 v-if="col.language.length > 0">
+              Programeringsspråk & tekniker
+            </h3>
             <div class="stickright">
               <div
                 class="stickright experienceedit"
@@ -68,15 +70,17 @@
           <li id="inboxText" v-for="language in col.language" :key="language">
             {{ language }}
           </li>
-          <h3 id="h3space">Software</h3>
+          <h3 id="h3space" v-if="col.software.length > 0">Mjukvara</h3>
           <li id="inboxText" v-for="software in col.software" :key="software">
             {{ software }}
           </li>
-          <h3 id="h3space">Assignments</h3>
-          <li id="inboxText" v-for="assign in col.assignments" :key="assign">
+          <h3 id="h3space" v-if="col.assignments.length > 0">
+            Arbetsbeskrivningar
+          </h3>
+          <li id="inboxTextArea" v-for="assign in col.assignments" :key="assign">
             {{ assign }}
           </li>
-          <h3 id="h3space">Roles</h3>
+          <h3 id="h3space" v-if="col.role.length > 0">Arbetsroller</h3>
           <li id="inboxText" v-for="role in col.role" :key="role">
             {{ role }}
           </li>
@@ -458,7 +462,11 @@ button:hover {
 }
 
 #inboxText {
-  font-size: 12px;
+  font-size: 16px;
+}
+
+#inboxTextArea {
+  width: 500px;
 }
 
 #inboxTextPresentation {
