@@ -113,19 +113,19 @@ export default {
           listInput: "",
         },
         {
-          show: false,
+          show: true,
           title: "Mjukvara",
           list: [],
           listInput: "",
         },
         {
-          show: false,
+          show: true,
           title: "Arbetsbeskrivningar",
           list: [],
           listInput: "",
         },
         {
-          show: false,
+          show: true,
           title: "Arbetsroller",
           list: [],
           listInput: "",
@@ -148,10 +148,10 @@ export default {
       this.collection[1].list = this.$route.params.software;
       this.collection[2].list = this.$route.params.assignments;
       this.collection[3].list = this.$route.params.role;
-      this.collection[0].show = true;
-      this.collection[1].show = true;
-      this.collection[2].show = true;
-      this.collection[3].show = true;
+      this.collection[0].show = false;
+      this.collection[1].show = false;
+      this.collection[2].show = false;
+      this.collection[3].show = false;
     }
   },
   mounted() {

@@ -234,6 +234,13 @@
                     >{{ option.title }}</option
                   >
                 </select>
+                <button
+                  v-if="consult_experience_focus_title != ''"
+                  @click="EditClickExperience(consult_experience_focus)"
+                  class="editButtonIntroText"
+                >
+                  Redigera
+                </button>
                 <div v-if="consult_experience_focus_title != ''">
                   <p class="textInput">Välj en roll</p>
                   <select
@@ -247,10 +254,14 @@
                     >
                   </select>
                   <p class="textInput">Välj en uppdragsbeskrivning</p>
-                  <div class="focusDescription" v-for="(assignments, index) in consult_experience_focus.assignments"
-                      :key="index"
-                      @click="consult_experience_focus_description = assignments">
-                    {{assignments}}
+                  <div
+                    class="focusDescription"
+                    v-for="(assignments,
+                    index) in consult_experience_focus.assignments"
+                    :key="index"
+                    @click="consult_experience_focus_description = assignments"
+                  >
+                    {{ assignments }}
                   </div>
                 </div>
               </div>
@@ -330,7 +341,22 @@
               <h3 class="fokusTitel">Uppdrag i fokus</h3>
               <div>
                 <h4 class="fokusRoll">{{ consult_experience_focus_role }}</h4>
-                <p class="fokusFöretag">{{ consult_experience_focus_title }}</p>
+                <p
+                  v-if="consult_experience_focus.endDate === ''"
+                  class="fokusFöretag"
+                >
+                  {{ consult_experience_focus_title }}
+                  <span class="smallText"
+                    >{{ consult_experience_focus.startDate }} - Pågående</span
+                  >
+                </p>
+                <p v-else class="fokusFöretag">
+                  {{ consult_experience_focus_title }}
+                  <span class="smallText">
+                    {{ consult_experience_focus.startDate }} -
+                    {{ consult_experience_focus.endDate }}
+                  </span>
+                </p>
                 <p class="stycke förstaStycke">
                   {{ consult_experience_focus_description }}
                 </p>
@@ -372,9 +398,10 @@ export default {
       contact_email: "magnus.nilsson@omegapoint.se",
       consult_picture: "",
       consult_name: "Magnus Nilsson",
-      consult_experience_focus_title: "",
-      consult_experience_focus_role: "",
-      consult_experience_focus_description: "",
+      consult_experience_focus_title: "Thage i Skåne AB",
+      consult_experience_focus_role: "Utvecklare",
+      consult_experience_focus_description:
+        "Thage vill skicka viktig kommunikation till sina samrbetspartners. För att säkerställa att sådan kommunikation hittar rätt är det centralt att alla uppgifter hålls aktuella. Leverantörsportalen är en webbportal dit Thage bjuder in sina partners. Resultatet blir en högre kvalitet på kontaktuppgifterna och därför högre träffsäkerhet gällande utskickade förfrågningar, offerter med mera.",
       consult_experience_focus: [],
       consult_experience: [],
       consult_experience_options: [],
@@ -409,6 +436,8 @@ export default {
     for (i = 0; i < temp.length; i++) {
       this.consult_presentations_options.push(temp[i]);
     }
+
+    this.setFocusExperience(this.consult_experience_focus_title);
   },
   created() {},
   methods: {
@@ -448,6 +477,12 @@ export default {
       this.$router.push({
         name: "ConsultantPresentationEdit",
         params: temp[arr],
+      });
+    },
+    EditClickExperience(arr) {
+      this.$router.push({
+        name: "ConsultantExperienceEdit",
+        params: arr,
       });
     },
   },
@@ -756,7 +791,7 @@ button:hover {
   margin-top: 10px;
   padding: 10px;
   border-width: 3px;
-  border-color:#2185d0;
+  border-color: #2185d0;
   border-style: dotted;
 }
 
@@ -764,8 +799,13 @@ button:hover {
   margin-top: 10px;
   padding: 10px;
   border-width: 3px;
-  border-color:black;
+  border-color: black;
   border-style: solid;
   cursor: pointer;
+}
+
+.smallText {
+  font-weight: bold;
+  margin-left: 30%;
 }
 </style>
