@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="wrapper row">
-      <div class="editBox">
+      <div class="editBox mainwrapper">
         <div>
           <div class="wrapper">
             <div class="title" @click="toggleTabs(1)">
@@ -170,8 +170,8 @@
               <div class=""></div>
               <div
                 class="wrapper"
-                v-for="(obj, index) in consult_presentations_options"
-                :key="index"
+                v-for="(obj, Arrindex) in consult_presentations_options"
+                :key="Arrindex"
               >
                 <div class="title" @click="obj.show = !obj.show">
                   <div class="rownomargin">
@@ -196,6 +196,10 @@
                       class=""
                     >
                       Välj
+                    </button>
+
+                    <button @click="EditClickPresentation(Arrindex)" class="editButtonIntroText">
+                      Redigera
                     </button>
                   </div>
                 </div>
@@ -256,7 +260,7 @@
           </div>
         </div>
       </div>
-      <div class="wrapperPdfbox">
+      <div class="wrapperPdfbox mainwrapper">
         <div id="pdfBox">
           <div id="pdf" ref="document">
             <div class="row">
@@ -354,7 +358,10 @@ export default {
       role_freeEdit: false,
     };
   },
-  created() {
+  async mounted() {
+    let user = await this.$store.getters.getLoggedInUser;
+    await this.$store.dispatch("getUserExperience", user.id);
+    await this.$store.dispatch("getUserPresentation", user.id);
     var temp = this.$store.getters.getUserExperience;
     this.consult_experience_options = temp;
 
@@ -370,10 +377,8 @@ export default {
       this.consult_presentations_options.push(temp[i]);
     }
   },
+  created() {},
   methods: {
-    checkboxChange(input) {
-      console.log(input)
-    },
     toggleExport() {
       this.exportMenu = !this.exportMenu;
       console.log("exportMenu=", this.exportMenu);
@@ -396,6 +401,13 @@ export default {
       } else {
         this.show = input;
       }
+    },
+    EditClickPresentation(arr) {
+      var temp = this.$store.getters.getUserPresentation;
+      this.$router.push({
+        name: "ConsultantPresentationEdit",
+        params: temp[arr],
+      });
     },
   },
 };
@@ -569,7 +581,7 @@ div {
 }
 
 .editBox {
-  width: 40vw;
+  width: 35vw;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: auto;
@@ -691,7 +703,11 @@ button:hover {
   margin-right: auto;
 }
 
-#listAddPresentation {
-  padding: 3px;
+.mainwrapper {
+  margin-top: 10px;
+}
+
+.editButtonIntroText {
+  margin-left: 15px;
 }
 </style>

@@ -2,8 +2,8 @@
   <div>
     <div class="tasks">
       <div class="row">
-        <button @click="CVClick()">
-          <i class="fas fa-chevron-circle-left"></i> Tillbaka
+        <button class="homebutton" @click="CVClick()">
+          <i class="fas fa-home "></i>
         </button>
         <input
           type="text"
@@ -20,7 +20,7 @@
         >
           <i class="fas fa-sort"></i>
         </div>
-        <h2 id="addButton">Erfarenheter</h2>
+        <h2 id="addButton">Uppdrag</h2>
         <div class="sort sortdate" title="Sort by date" @click="sortListDate()">
           <i class="fas fa-sort"></i>
         </div>
@@ -29,7 +29,7 @@
         </button>
       </div>
       <div v-else>
-        <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
+        <p id="textcenter">Var vänlig lägg till dina uppdrag.</p>
       </div>
       <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
         <div class="title" @click="col.show = !col.show">
@@ -462,9 +462,11 @@ button:hover {
 }
 
 #inboxTextPresentation {
-  font-size: 12px;
+  font-size: 16px;
   margin-bottom: 10px;
   margin-top: 10px;
+  width: 400px;
+  list-style-type: none;
 }
 
 h3 {

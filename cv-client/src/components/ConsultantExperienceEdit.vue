@@ -5,6 +5,9 @@
         <button @click="BackClick()">
           <i class="fas fa-chevron-circle-left"></i> Tillbaka
         </button>
+        <button class="homebutton" @click="HomeClick()">
+          <i class="fas fa-home "></i>
+        </button>
         <h2 id="addButton">{{ this.title }}</h2>
         <div
           class="editTitle"
@@ -159,6 +162,9 @@ export default {
     },
     BackClick() {
       this.$router.push({ name: "ConsultantExperience" });
+    },
+    HomeClick() {
+      this.$router.push({ name: "Consultant" });
     },
     RemoveClick(title, index) {
       this.collection.forEach(function(entry) {
@@ -456,5 +462,9 @@ h2 {
 .clickNull:hover {
   color: black;
   cursor: pointer;
+}
+
+.homebutton {
+  margin-left: 15px;
 }
 </style>
