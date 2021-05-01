@@ -420,6 +420,7 @@ div {
 
 #pdf {
   width: 210mm;
+  height: 297mm;
   margin-right: auto;
   margin-left: auto;
 }
@@ -498,6 +499,11 @@ div {
   width: 200px;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
+}
+
+.icon-click:hover {
+  color: #006166;
 }
 
 .fokusBox {
@@ -566,6 +572,7 @@ div {
   width: 40vw;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: auto;
 }
 
 .wrapperPdfbox {
