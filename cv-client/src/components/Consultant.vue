@@ -898,6 +898,7 @@ button:hover {
 
 .mainwrapper {
   margin-top: 10px;
+  margin-bottom: auto;
 }
 
 .editButtonIntroText {
