@@ -302,7 +302,61 @@
                 v-for="(obj, index) in consult_experience_options"
                 :key="index"
               >
-                <p>{{ obj.title }}</p>
+                <div class="rownomargin">
+                  <input
+                    type="checkbox"
+                    @change="
+                      consult_experience_other[
+                        index
+                      ].checked = !consult_experience_other[index].checked
+                    "
+                  />
+                  <p class="stickright"></p>
+                </div>
+                <div class="title row barwidth" @click="obj.show = !obj.show">
+                  <div class="rownomargin">
+                    <p>
+                      {{ obj.title }}
+                    </p>
+                    <p class="stickright"></p>
+                  </div>
+                </div>
+                <div class="container3" id="container" v-if="obj.show">
+                  <div class="">
+                    <div>
+                      <p class="textInput">Välj en roll</p>
+                      <select
+                        name="rolefocus"
+                        v-model="consult_experience_other[index].role"
+                      >
+                        <option
+                          v-for="(option, index) in obj.role"
+                          :key="index"
+                          >{{ option }}</option
+                        >
+                      </select>
+                      <p class="textInput textSpaceUpper">Välj en uppdragsbeskrivning</p>
+                      <div
+                        class="focusDescription"
+                        v-for="(assignments, indexx) in obj.assignments"
+                        :key="indexx"
+                        @click="
+                          consult_experience_other[
+                            index
+                          ].description = assignments
+                        "
+                      >
+                        {{ assignments }}
+                      </div>
+                    </div>
+                    <button
+                      @click="EditClickExperience(obj)"
+                      class="editButtonIntroText textSpaceUpper"
+                    >
+                      Redigera
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -373,6 +427,52 @@
                 {{ company_name }} - {{ consult_name }}
               </p>
             </div>
+            <h3 class="tidigareTitel">Tidigare projekt och uppdrag</h3>
+            <div
+              class=""
+              v-for="(obj, index) in consult_experience_other"
+              :key="index"
+            >
+              <div v-if="obj.checked" class="row">
+                <div class="leftbox">
+                  <h4>{{ consult_experience_options[index].title }}</h4>
+                  <p
+                    v-if="consult_experience_options[index].endDate === ''"
+                    class="lightText"
+                  >
+                    {{ consult_experience_options[index].startDate }} - Pågående
+                  </p>
+                  <p v-else class="lightText">
+                    {{ consult_experience_options[index].startDate }} -
+                    {{ consult_experience_options[index].endDate }}
+                  </p>
+                </div>
+                <div class="rightbox">
+                  <h3>{{ obj.role }}</h3>
+                  <p class="lighterBreadText">
+                    {{ obj.description }}
+                  </p>
+                  <div class="row blobspace">
+                    <p
+                      class="blob"
+                      v-for="(blob, index) in consult_experience_options[index]
+                        .software"
+                      :key="index"
+                    >
+                      {{ blob }}
+                    </p>
+                    <p
+                      class="blob"
+                      v-for="(blob, index) in consult_experience_options[index]
+                        .language"
+                      :key="index"
+                    >
+                      {{ blob }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -413,6 +513,7 @@ export default {
         "Mikaels erfarenheter inom webbutveckling har gett honom en bred kompetens som kommer väl till pass i de flest projekt. En vana av att ta projekt från ax till limpa med bra förmåga att kommunicer, planera, dokumentera och utveckla.",
       ],
       consult_presentations_options: [],
+      consult_experience_other: [],
       sale_name: "Nicklas Söderberg",
       sale_email: "nicklas.soderberg@omegapoint.se",
       sale_phone: "0702-624556",
@@ -427,6 +528,12 @@ export default {
     this.consult_experience_options = temp;
     var i;
     for (i = 0; i < temp.length; i++) {
+      this.consult_experience_other.push({
+        checked: false,
+        role: "",
+        description: "",
+        company: "",
+      });
       for (var ii = 0; ii < temp[i].role.length; ii++) {
         this.consult_role_options.push(temp[i].role[ii]);
       }
@@ -764,6 +871,16 @@ button:hover {
   width: 500px;
 }
 
+.container3 {
+  padding: 15px;
+  width: 500px;
+  margin-left: 15px;
+}
+
+.textSpaceUpper {
+  margin-top: 15px;
+}
+
 .center {
   margin-left: auto;
 }
@@ -807,5 +924,60 @@ button:hover {
 .smallText {
   font-weight: bold;
   margin-left: 30%;
+}
+
+.tidigareTitel {
+  color: #006d86;
+  border-bottom: solid;
+  border-width: 1px;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.leftbox {
+  width: 25%;
+  margin-left: 40px;
+  margin-bottom: auto;
+}
+
+.rightbox {
+  width: 66%;
+}
+
+.blob {
+  background: #f1f1f1;
+  border: solid;
+  border-color: #e2e2e2;
+  border-width: 1px;
+  margin-right: 7px;
+  border-radius: 15px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-weight: lighter;
+  margin-bottom: 7px;
+}
+
+.blobspace {
+  margin-top: 15px;
+}
+
+.lightText {
+  font-weight: lighter;
+  font-size: 14px;
+  margin-top: 7px;
+}
+
+.lighterBreadText {
+  font-weight: lighter;
+  font-size: 16px;
+  margin-top: 7px;
+}
+
+.barwidth {
+  width: 90%;
 }
 </style>
