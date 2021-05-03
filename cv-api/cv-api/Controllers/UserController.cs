@@ -239,6 +239,7 @@ namespace cv_api.Controllers
             user.CV.sale_name = input.sale_name;
             user.CV.sale_email = input.sale_email;
             user.CV.sale_phone = input.sale_phone;
+            user.CV.consult_experience_other_list = input.consult_experience_other_list;
             await userManager.UpdateAsync(user);
             return Ok(user.CV);
         }

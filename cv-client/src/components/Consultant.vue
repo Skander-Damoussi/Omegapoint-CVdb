@@ -315,11 +315,8 @@
                 <div class="rownomargin">
                   <input
                     type="checkbox"
-                    @change="
-                      consult_experience_other[
-                        index
-                      ].checked = !consult_experience_other[index].checked
-                    "
+                    @change="handleOtherList(index)"
+                    v-model="consult_experience_other[index].isChecked"
                   />
                   <p class="stickright"></p>
                 </div>
@@ -338,6 +335,7 @@
                       <select
                         name="rolefocus"
                         v-model="consult_experience_other[index].role"
+                        @change="refreshVars()"
                       >
                         <option
                           v-for="(option, index) in obj.role"
@@ -355,7 +353,8 @@
                         @click="
                           consult_experience_other[
                             index
-                          ].description = assignments
+                          ].description = assignments;
+                          refreshVars();
                         "
                       >
                         {{ assignments }}
@@ -375,8 +374,13 @@
         </div>
       </div>
       <div class="wrapperPdfbox mainwrapper">
+        <div class="row centerrow">
+          <div @click="page--"><i class="fas fa-arrow-left icon-click-next"></i></div>
+          <p>Sida {{this.page}}</p>
+          <div @click="page++"><i class="fas fa-arrow-right icon-click-next"></i></div>
+        </div>
         <div id="pdfBox">
-          <div id="pdf" ref="document">
+          <div v-if="page === 1" id="pdf" ref="document">
             <div class="row">
               <img src="../assets/templogo.png" height="23px" class="logo" />
               <div class="contactdiv">
@@ -439,24 +443,26 @@
                 {{ company_name }} - {{ consult_name }}
               </p>
             </div>
+          </div>
+          <div v-if="page === 2" id="pdf" ref="document">
             <h3 class="tidigareTitel">Tidigare projekt och uppdrag</h3>
             <div
-              class=""
-              v-for="(obj, index) in consult_experience_other"
+              class="blobspace"
+              v-for="(obj, index) in consult_experience_other_list"
               :key="index"
             >
-              <div v-if="obj.checked" class="row">
+              <div v-if="getInfoByID('checked', obj.id)" class="row">
                 <div class="leftbox">
-                  <h4>{{ consult_experience_options[index].title }}</h4>
+                  <h4>{{ getInfoByID("title", obj.id) }}</h4>
                   <p
-                    v-if="consult_experience_options[index].endDate === ''"
+                    v-if="getInfoByID('endDate', obj.id) === ''"
                     class="lightText"
                   >
-                    {{ consult_experience_options[index].startDate }} - Pågående
+                    {{ getInfoByID("startDate", obj.id) }} - Pågående
                   </p>
                   <p v-else class="lightText">
-                    {{ consult_experience_options[index].startDate }} -
-                    {{ consult_experience_options[index].endDate }}
+                    {{ getInfoByID("startDate", obj.id) }} -
+                    {{ getInfoByID("endDate", obj.id) }}
                   </p>
                 </div>
                 <div class="rightbox">
@@ -467,17 +473,15 @@
                   <div class="row blobspace">
                     <p
                       class="blob"
-                      v-for="(blob, index) in consult_experience_options[index]
-                        .software"
-                      :key="index"
+                      v-for="blob in getInfoByID('software', obj.id)"
+                      :key="blob"
                     >
                       {{ blob }}
                     </p>
                     <p
                       class="blob"
-                      v-for="(blob, index) in consult_experience_options[index]
-                        .language"
-                      :key="index"
+                      v-for="blob in getInfoByID('language', obj.id)"
+                      :key="blob"
                     >
                       {{ blob }}
                     </p>
@@ -502,6 +506,7 @@ export default {
   data() {
     return {
       show: 0,
+      page: 1,
       company_name: "",
       color: "",
       company_logo: "",
@@ -521,6 +526,7 @@ export default {
       consult_presentations: [],
       consult_presentations_options: [],
       consult_experience_other: [],
+      consult_experience_other_list: [],
       sale_name: "",
       sale_email: "",
       sale_phone: "",
@@ -551,19 +557,35 @@ export default {
     this.sale_name = cv.sale_name;
     this.sale_email = cv.sale_email;
     this.sale_phone = cv.sale_phone;
-
+    if (cv.consult_experience_other_list != null) {
+      this.consult_experience_other_list = cv.consult_experience_other_list;
+    }
     var temp = this.$store.getters.getUserExperience;
     this.consult_experience_options = temp;
     var i;
+    var ii;
     for (i = 0; i < temp.length; i++) {
       this.consult_experience_other.push({
-        checked: false,
+        isChecked: false,
         role: "",
         description: "",
-        company: "",
+        id: this.consult_experience_options[i].id,
       });
-      for (var ii = 0; ii < temp[i].role.length; ii++) {
+      for (ii = 0; ii < temp[i].role.length; ii++) {
         this.consult_role_options.push(temp[i].role[ii]);
+      }
+    }
+
+    for (i = 0; i < this.consult_experience_other.length; i++) {
+      for (ii = 0; ii < this.consult_experience_other_list.length; ii++) {
+        if (
+          this.consult_experience_other[i].id ===
+          this.consult_experience_other_list[ii].id
+        ) {
+          this.consult_experience_other[i] = this.consult_experience_other_list[
+            ii
+          ];
+        }
       }
     }
 
@@ -576,6 +598,66 @@ export default {
   },
   created() {},
   methods: {
+    getInfoByID(what, id) {
+      for (var i = 0; i < this.consult_experience_options.length; i++) {
+        if (this.consult_experience_options[i].id === id) {
+          var temp = this.consult_experience_options[i];
+          switch (what) {
+            case "title":
+              return temp.title;
+            case "startDate":
+              return temp.startDate;
+            case "endDate":
+              return temp.endDate;
+            case "software":
+              return temp.software;
+            case "language":
+              return temp.language;
+            case "checked":
+              return this.consult_experience_other[i].isChecked;
+          }
+          break;
+        }
+      }
+    },
+    refreshVars() {
+      for (var i = 0; i < this.consult_experience_other_list.length; i++) {
+        for (var ii = 0; ii < this.consult_experience_other.length; ii++) {
+          if (
+            this.consult_experience_other_list[i].id ===
+            this.consult_experience_other[ii].id
+          ) {
+            this.consult_experience_other_list[
+              i
+            ].description = this.consult_experience_other[ii].description;
+            this.consult_experience_other_list[
+              i
+            ].role = this.consult_experience_other[ii].role;
+            this.consult_experience_other_list[
+              i
+            ].isChecked = this.consult_experience_other[ii].isChecked;
+            continue;
+          }
+        }
+      }
+    },
+    handleOtherList(index) {
+      if (this.consult_experience_other[index].isChecked) {
+        this.consult_experience_other_list.push(
+          this.consult_experience_other[index]
+        );
+      } else {
+        for (var i = 0; i < this.consult_experience_other_list.length; i++) {
+          if (
+            this.consult_experience_other_list[i].id ===
+            this.consult_experience_other[index].id
+          ) {
+            this.consult_experience_other_list.splice(i, 1);
+            break;
+          }
+        }
+      }
+    },
     setFocusExperience(input) {
       for (var i = 0; i < this.consult_experience_options.length; i++) {
         if (this.consult_experience_options[i].title === input) {
@@ -583,10 +665,6 @@ export default {
           return;
         }
       }
-    },
-    toggleExport() {
-      this.exportMenu = !this.exportMenu;
-      console.log("exportMenu=", this.exportMenu);
     },
     editMethod() {
       this.$router.push("ConsultantExperience/");
@@ -613,7 +691,8 @@ export default {
             .consult_experience_focus_description,
           sale_name: this.sale_name,
           sale_email: this.sale_email,
-          sale_phone: this.sale_phone
+          sale_phone: this.sale_phone,
+          consult_experience_other_list: this.consult_experience_other_list,
         },
       });
     },
@@ -755,6 +834,15 @@ div {
   color: #006166;
 }
 
+.icon-click-next {
+  margin: 15px;
+  cursor: pointer;
+}
+
+.icon-click-next:hover {
+  color: #006166;
+}
+
 .icon-clickmiddle {
   margin: 15px;
   width: 200px;
@@ -828,7 +916,7 @@ div {
 }
 
 .editBox {
-  width: 35vw;
+  width: 25vw;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: auto;
@@ -1048,5 +1136,11 @@ button:hover {
 
 .marginleftIcon {
   margin-left: 5px;
+}
+
+.centerrow {
+  width: 145px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

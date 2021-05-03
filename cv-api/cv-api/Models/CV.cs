@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 
 namespace cv_api.Models
 {
+    public class otherListItem
+    {
+        public string id { get; set; }
+        public string role { get; set; }
+        public string description { get; set; }
+        public bool isChecked { get; set; }
+    }
     public class CV
     {
         public string color { get; set; }
@@ -23,6 +30,7 @@ namespace cv_api.Models
         public string sale_email { get; set; }
         public string sale_name { get; set; }
         public string sale_phone { get; set; }
+        public List<otherListItem> consult_experience_other_list { get; set; }
     }
 
     public class CVDTO
@@ -44,5 +52,6 @@ namespace cv_api.Models
         public string sale_email { get; set; }
         public string sale_name { get; set; }
         public string sale_phone { get; set; }
+        public List<otherListItem> consult_experience_other_list { get; set; }
     }
 }
