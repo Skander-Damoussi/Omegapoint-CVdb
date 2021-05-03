@@ -44,9 +44,13 @@ export default {
   name: "DisableUser",
   data() {
     return {
-      searchString: "",
-      searchList: []
+      searchString: ""
     };
+  },
+  computed: {
+    searchList() {
+      return this.$store.getters.getConsultantList;
+    }
   },
   methods: {
     disableUser() {
@@ -73,6 +77,11 @@ export default {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+h3 {
+  margin-top: 1vh;
+  margin-bottom: 5vh;
 }
 
 .main {
@@ -109,6 +118,7 @@ export default {
 
 .table {
   margin-top: 5vh;
+  overflow-y: scroll;
 }
 
 table {
@@ -123,5 +133,9 @@ th {
   text-align: left;
   padding-top: 2vh;
   padding-bottom: 1vh;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 </style>
