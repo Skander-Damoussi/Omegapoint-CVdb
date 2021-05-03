@@ -8,7 +8,17 @@
             v-on:click="editMethod()"
             title="Tryck för att redigera"
           ></i>
-          <p>Redigera innehåll</p>
+          <p class="marginleftIcon">Redigera innehåll</p>
+        </div>
+      </div>
+      <div class="icon-clickmiddle" v-on:click="saveMethod()">
+        <div class="row">
+          <i
+            class="fas fa-save fa-2x"
+            v-on:click="saveMethod()"
+            title="Tryck för att redigera"
+          ></i>
+          <p class="marginleftIcon">Spara CV</p>
         </div>
       </div>
       <div class="icon-click row" v-on:click="exportToPDF">
@@ -16,7 +26,7 @@
           class="btn fas fa-file-export fa-2x"
           title="Tryck för att exportera"
         ></i>
-        <p>Exportera till PDF</p>
+        <p class="marginleftIcon">Exportera till PDF</p>
       </div>
     </div>
     <div class="wrapper row">
@@ -335,7 +345,9 @@
                           >{{ option }}</option
                         >
                       </select>
-                      <p class="textInput textSpaceUpper">Välj en uppdragsbeskrivning</p>
+                      <p class="textInput textSpaceUpper">
+                        Välj en uppdragsbeskrivning
+                      </p>
                       <div
                         class="focusDescription"
                         v-for="(assignments, indexx) in obj.assignments"
@@ -490,33 +502,28 @@ export default {
   data() {
     return {
       show: 0,
-      company_name: "OmegaPoint AB",
-      color: "#006d86",
+      company_name: "",
+      color: "",
       company_logo: "",
-      contact_phoneNumber: "0702-232325",
-      contact_website: "www.omegapoint.se",
-      contact_email: "magnus.nilsson@omegapoint.se",
+      contact_phoneNumber: "",
+      contact_website: "",
+      contact_email: "",
       consult_picture: "",
-      consult_name: "Magnus Nilsson",
-      consult_experience_focus_title: "Thage i Skåne AB",
-      consult_experience_focus_role: "Utvecklare",
-      consult_experience_focus_description:
-        "Thage vill skicka viktig kommunikation till sina samrbetspartners. För att säkerställa att sådan kommunikation hittar rätt är det centralt att alla uppgifter hålls aktuella. Leverantörsportalen är en webbportal dit Thage bjuder in sina partners. Resultatet blir en högre kvalitet på kontaktuppgifterna och därför högre träffsäkerhet gällande utskickade förfrågningar, offerter med mera.",
+      consult_name: "",
+      consult_experience_focus_title: "",
+      consult_experience_focus_role: "",
+      consult_experience_focus_description: "",
       consult_experience_focus: [],
       consult_experience: [],
       consult_experience_options: [],
-      consult_role: "Utvecklare",
+      consult_role: "",
       consult_role_options: [],
-      consult_presentations: [
-        "I grunden utbildad interaktionsdesigner, men har i min yrkesroll jobbat väldigt brett inom webb. Jag i alla de olika aspekterna av webben, både design och teknik, men även det sociala och affärsmässiga. Har under mina 10+ år i branschen bidragit med affärsnytta till både stora och små kunder och upphör aldrig att fascineras av den stora skillnad som bra webb kan göra. Minadrivkrafter är nyfikenhet och kunskapstörst.",
-        "Av omgivningen ses jag som ödmjuk och prestigelös. Jag trivs med att verka i en öppen miljö, där jag inspireras av duktiga kollegor, och utbyta kunskaper och erfarenheter. Upplevs som tydlig, kunnig och hjälpsam av kunder.",
-        "Mikaels erfarenheter inom webbutveckling har gett honom en bred kompetens som kommer väl till pass i de flest projekt. En vana av att ta projekt från ax till limpa med bra förmåga att kommunicer, planera, dokumentera och utveckla.",
-      ],
+      consult_presentations: [],
       consult_presentations_options: [],
       consult_experience_other: [],
-      sale_name: "Nicklas Söderberg",
-      sale_email: "nicklas.soderberg@omegapoint.se",
-      sale_phone: "0702-624556",
+      sale_name: "",
+      sale_email: "",
+      sale_phone: "",
       role_freeEdit: false,
     };
   },
@@ -524,6 +531,27 @@ export default {
     let user = await this.$store.getters.getLoggedInUser;
     await this.$store.dispatch("getUserExperience", user.id);
     await this.$store.dispatch("getUserPresentation", user.id);
+    await this.$store.dispatch("getCV", user.id);
+    let cv = await this.$store.getters.getCV;
+
+    this.company_name = cv.company_name;
+    this.color = cv.color;
+    this.company_logo = cv.company_logo;
+    this.contact_phoneNumber = cv.contact_phoneNumber;
+    this.contact_website = cv.contact_website;
+    this.contact_email = cv.contact_email;
+    this.consult_picture = cv.consult_picture;
+    this.consult_role = cv.consult_role;
+    this.consult_presentations = cv.consult_presentations;
+    this.consult_name = cv.consult_name;
+    this.consult_experience_focus_title = cv.consult_experience_focus_title;
+    this.consult_experience_focus_role = cv.consult_experience_focus_role;
+    this.consult_experience_focus_description =
+      cv.consult_experience_focus_description;
+    this.sale_name = cv.sale_name;
+    this.sale_email = cv.sale_email;
+    this.sale_phone = cv.sale_phone;
+
     var temp = this.$store.getters.getUserExperience;
     this.consult_experience_options = temp;
     var i;
@@ -562,6 +590,32 @@ export default {
     },
     editMethod() {
       this.$router.push("ConsultantExperience/");
+    },
+    async saveMethod() {
+      let user = await this.$store.getters.getLoggedInUser;
+      await this.$store.dispatch("cvSave", {
+        token: this.$store.getters.getUserToken,
+        input: {
+          userID: user.id,
+          company_name: this.company_name,
+          color: this.color,
+          company_logo: this.company_logo,
+          contact_phoneNumber: this.contact_phoneNumber,
+          contact_website: this.contact_website,
+          contact_email: this.contact_email,
+          consult_picture: this.consult_picture,
+          consult_name: this.consult_name,
+          consult_role: this.consult_role,
+          consult_presentations: this.consult_presentations,
+          consult_experience_focus_title: this.consult_experience_focus_title,
+          consult_experience_focus_role: this.consult_experience_focus_role,
+          consult_experience_focus_description: this
+            .consult_experience_focus_description,
+          sale_name: this.sale_name,
+          sale_email: this.sale_email,
+          sale_phone: this.sale_phone
+        },
+      });
     },
     exportToPDF() {
       html2pdf(this.$refs.document, {
@@ -698,6 +752,16 @@ div {
 }
 
 .icon-click:hover {
+  color: #006166;
+}
+
+.icon-clickmiddle {
+  margin: 15px;
+  width: 200px;
+  cursor: pointer;
+}
+
+.icon-clickmiddle:hover {
   color: #006166;
 }
 
@@ -980,5 +1044,9 @@ button:hover {
 
 .barwidth {
   width: 90%;
+}
+
+.marginleftIcon {
+  margin-left: 5px;
 }
 </style>
