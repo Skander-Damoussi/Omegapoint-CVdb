@@ -19,7 +19,18 @@
         </div>
       </div>
     </div>
-    <Modal v-show="isSessionModalVisible" @close="closeSessionModal"> </Modal>
+    <Modal v-show="isSessionModalVisible" @close="closeSessionModal">
+      <template v-slot:header>
+        <p>Du kommer loggas ut.</p>
+      </template>
+
+      <template v-slot:body>
+        <p style="color: black;">
+          Du har varit inaktiv i 45minuter. Du kommer att loggas ut om
+          15minuter.
+        </p>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -37,7 +48,7 @@ export default {
       loggedInUser: false
     };
   },
-  mounted() {
+  async mounted() {
     var timeout;
     var _this = this;
     function refresh() {
@@ -47,6 +58,7 @@ export default {
       if (_this.checkStatus()) {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
+          _this.closeSessionModal();
           _this.showSessionModal();
           close();
         }, 45 * 60 * 1000);
@@ -73,7 +85,7 @@ export default {
     showSessionModal() {
       this.isSessionModalVisible = true;
     },
-    closeSessionModal() {
+    async closeSessionModal() {
       this.isSessionModalVisible = false;
     },
     checkStatus() {
@@ -90,7 +102,7 @@ export default {
     },
     editUser() {
       this.$router.push("/editUser");
-    }
+    },
   },
   computed: {
     loggedIn() {
@@ -98,11 +110,11 @@ export default {
     },
     user() {
       return this.$store.getters.getLoggedInUser;
-    }
+    },
   },
   components: {
-    Modal
-  }
+    Modal,
+  },
 };
 </script>
 

@@ -22,13 +22,86 @@
         <RegisterUser />
       </div>
     </div>
-    <EditCv v-show="isAdminModalVisible" @close="closeAdminModal" />
+    <Modal v-show="isAdminModalVisible" @close="closeAdminModal">
+      <template v-slot:header>
+        Mall för cv
+      </template>
+
+      <template v-slot:body>
+        <div class="a4mall">
+          <div class="sidenote">
+            <div class="grid1"><span>sidenote 1</span></div>
+            <div class="grid2"><span>sidenote 2</span></div>
+            <div class="grid3"><span>sidenote 2</span></div>
+            <div class="grid4"><span>sidenote 3</span></div>
+          </div>
+          <div class="iconsidenote">
+            <div class="grid1">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+            <div class="grid2">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+            <div class="grid3">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+            <div class="grid4">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+          </div>
+          <div>
+            <p style="margin-top: 50px;">
+              What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the
+              printing and typesetting industry. Lorem Ipsum has been the
+              industry's standard dummy text ever since the 1500s, when an
+              unknown printer took a galley of type and scrambled it to make a
+              type specimen book. It has survived not only five centuries, but
+              also the leap into electronic typesetting, remaining essentially
+              unchanged. It was popularised in the 1960s with the release of
+              Letraset sheets containing Lorem Ipsum passages, and more recently
+              with desktop publishing software like Aldus PageMaker including
+              versions of Lorem Ipsum.
+            </p>
+          </div>
+          <div class="iconfootnote">
+            <div class="grid1">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+            <div class="grid2">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+            <div class="grid3">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+            <div class="grid4">
+              <i class="fas fa-edit fa-2x"></i>
+              <i class="fas fa-file-image fa-2x"></i>
+            </div>
+          </div>
+          <div class="footnote">
+            <div class="grid1"><span>footnote 1</span></div>
+            <div class="grid2"><span>footnote 2</span></div>
+            <div class="grid3"><span>footnote 2</span></div>
+            <div class="grid4"><span>footnote 3</span></div>
+          </div>
+        </div>
+      </template>
+
+      <template v-slot:footer> </template>
+    </Modal>
   </div>
 </template>
 
 <script>
 import RegisterUser from "../components/RegisterUser";
-import EditCv from "../components/EditCv";
+import Modal from "../components/Modal";
 
 export default {
   name: "Admin",
@@ -48,7 +121,7 @@ export default {
   },
   components: {
     RegisterUser,
-    EditCv
+    Modal,
   },
   methods: {
     showAdminModal() {
@@ -56,8 +129,8 @@ export default {
     },
     closeAdminModal() {
       this.isAdminModalVisible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
