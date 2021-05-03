@@ -38,12 +38,10 @@ export default {
       isSessionModalVisible: false,
       cv: [
         {
-          name: "Mall 1",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
+          name: "Mall 1"
         },
         {
-          name: "Mall 2",
-          img: "https://angelofshiva.com/resources/assets/images/no-img.jpg",
+          name: "Mall 2"
         }
       ]
     };
@@ -67,13 +65,12 @@ export default {
 .mainDiv {
   border: solid 1px black;
   min-height: 87vh;
-  margin: 25px 2%;
+  margin: 2vh 1vh;
   border-radius: 4px;
 }
 .templateDiv {
-  margin-left: 2%;
+  margin-left: 2vh;
   border-radius: 10px;
-  max-width: 160px;
 }
 .templateDiv:hover {
   cursor: pointer;
@@ -90,10 +87,7 @@ export default {
 }
 .h2Div {
   display: flex;
-  margin: 0px 2%;
-}
-img {
-  max-width: 100%;
+  margin: 0px 2vh;
 }
 .flex {
   display: flex;
@@ -103,11 +97,11 @@ img {
   display: flex;
 }
 .flex-item-left {
-  flex: 75%;
+  flex: 75vw;
 }
 
 .flex-item-right {
-  flex: 25%;
+  flex: 20vw;
 }
 p {
   font-weight: bold;

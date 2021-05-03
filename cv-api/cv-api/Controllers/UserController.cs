@@ -230,7 +230,7 @@ namespace cv_api.Controllers
         {
             var userExists = await userManager.FindByNameAsync(newUser.Email);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest("There is already an user with that email");
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -282,10 +282,6 @@ namespace cv_api.Controllers
             if (user == null)
                 return BadRequest("Invalid confirmation or expired token.");
 
-            if(user.EmailConfirmationToken != code)
-            {
-                return BadRequest("Invalid confirmation or expired token.");
-            }
 
             if(user.EmailConfirmationToken == null)
             {
@@ -293,6 +289,11 @@ namespace cv_api.Controllers
                 {
                     return BadRequest("Email has already been confirmed");
                 }
+            }
+
+            if (user.EmailConfirmationToken != code)
+            {
+                return BadRequest("Invalid confirmation or expired token.");
             }
 
             var result = await userManager.ConfirmEmailAsync(user, user.EmailConfirmationToken);
@@ -383,7 +384,7 @@ namespace cv_api.Controllers
             var user = await userManager.FindByNameAsync(userInput.Email);
 
             if (signInResult.IsNotAllowed)
-                return Unauthorized();
+                return Unauthorized("Wrong login credential");
 
             var userRoles = await userManager.GetRolesAsync(user);
 
