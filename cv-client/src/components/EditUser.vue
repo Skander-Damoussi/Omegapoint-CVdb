@@ -17,16 +17,21 @@
         <EditPassword />
       </div>
     </div>
+    <div v-if="user.role != 'Konsult'">
+      <DisableUser />
+    </div>
   </div>
 </template>
 
 <script>
 import EditPassword from "./EditPassword.vue";
+import DisableUser from "./DisableUser.vue";
 
 export default {
   name: "EditUser",
   components: {
-    EditPassword
+    EditPassword,
+    DisableUser
   },
   computed: {
     user() {
@@ -58,7 +63,7 @@ export default {
 }
 .edit-user {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
 }
 
 h3 {
@@ -73,6 +78,7 @@ h3 {
   border: 1px solid rgb(173, 173, 173);
   padding: 5vw;
   margin-top: 5vh;
+  margin-right: 5vw;
 }
 
 .edit-password {
