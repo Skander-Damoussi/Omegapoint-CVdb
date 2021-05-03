@@ -211,7 +211,7 @@ export default {
 
 <style>
 .formDiv {
-  margin: 0px 2%;
+  margin: 0px 1vh;
 }
 form {
   text-align: left;
@@ -245,13 +245,14 @@ select {
 .mainDiv {
   border: solid 1px black;
   height: 87vh;
-  margin: 0px 2%;
 }
 label {
   text-align: left;
 }
 h3 {
-  margin: 30px 0px;
+  margin: 2vh 0vh;
+  display: flex;
+  justify-content: center;
 }
 .buttonDiv {
   display: flex;
