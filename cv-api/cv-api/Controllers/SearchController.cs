@@ -29,9 +29,17 @@ namespace cv_api.Controllers
         [HttpGet("getSearchResult/{search}")]
         public async Task<IActionResult> GetSearchResult(string search) 
         {
-            var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
-            var result = userSearch.Where(x => x.FirstName.Contains(search)
-                        || x.LastName.Contains(search) || x.Email.Contains(search));      
+            try
+            {
+                var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
+                var result = userSearch.Where(x => x.FirstName.Contains(search)
+                            || x.LastName.Contains(search) || x.Email.Contains(search));  
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
 
             //List<ApplicationUser> result1 = new List<ApplicationUser>();
 
@@ -50,7 +58,7 @@ namespace cv_api.Controllers
 
             //}
 
-            return Ok(result);
+            
         }
     }
 }
