@@ -375,9 +375,13 @@
       </div>
       <div class="wrapperPdfbox mainwrapper">
         <div class="row centerrow">
-          <div @click="page--"><i class="fas fa-arrow-left icon-click-next"></i></div>
-          <p>Sida {{this.page}}</p>
-          <div @click="page++"><i class="fas fa-arrow-right icon-click-next"></i></div>
+          <div @click="page--">
+            <i class="fas fa-arrow-left icon-click-next"></i>
+          </div>
+          <p>Sida {{ this.page }}</p>
+          <div @click="page++">
+            <i class="fas fa-arrow-right icon-click-next"></i>
+          </div>
         </div>
         <div id="pdfBox">
           <div v-if="page === 1" id="pdf" ref="document">
@@ -445,7 +449,7 @@
             </div>
           </div>
           <div v-if="page === 2" id="pdf" ref="document">
-            <h3 class="tidigareTitel">Tidigare projekt och uppdrag</h3>
+            <h3 class="tidigareTitel justify-left">Tidigare projekt och uppdrag</h3>
             <div
               class="blobspace"
               v-for="(obj, index) in consult_experience_other_list"
@@ -466,7 +470,7 @@
                   </p>
                 </div>
                 <div class="rightbox">
-                  <h3>{{ obj.role }}</h3>
+                  <h3 class="justify-left">{{ obj.role }}</h3>
                   <p class="lighterBreadText">
                     {{ obj.description }}
                   </p>
@@ -751,6 +755,10 @@ div {
   height: 297mm;
   margin-right: auto;
   margin-left: auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #pdfBox {
@@ -759,6 +767,7 @@ div {
   width: 250mm;
   border-style: solid;
   border-width: 1px;
+  position: relative;
 }
 
 .row {
@@ -788,7 +797,6 @@ div {
 }
 
 .logo {
-  margin-left: 40px;
   margin-bottom: 60px;
   margin-top: 60px;
 }
@@ -796,7 +804,6 @@ div {
 .introstycke {
   width: 50%;
   font-style: normal;
-  margin-left: 40px;
 }
 
 .stycke {
@@ -808,7 +815,6 @@ div {
 .contactdiv {
   margin-left: auto;
   text-align: right;
-  margin-right: 40px;
 }
 
 .contact {
@@ -854,7 +860,6 @@ div {
 
 .fokusBox {
   width: 50%;
-  margin-left: 40px;
   margin-top: 25px;
 }
 
@@ -862,6 +867,7 @@ div {
   color: #006d86;
   border-bottom: solid;
   border-width: 1px;
+  justify-content: left;
 }
 
 .fokusRoll {
@@ -888,12 +894,14 @@ div {
   padding-top: 10px;
   padding-bottom: 10px;
   margin-left: auto;
-  margin-right: 40px;
-  margin-top: auto;
+  position: absolute;
+  bottom: 10%;
+  left: 60%
 }
 
 .contactFooterTitel {
   font-size: 18px;
+  justify-content: left;
 }
 
 .contactFooterText {
@@ -906,6 +914,10 @@ div {
   width: 100%;
   margin-top: auto;
   margin-bottom: auto;
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  right: 0;
 }
 
 .bottomMidText {
@@ -1085,15 +1097,16 @@ button:hover {
   color: #006d86;
   border-bottom: solid;
   border-width: 1px;
-  margin-left: 40px;
-  margin-right: 40px;
   margin-top: 50px;
   margin-bottom: 20px;
 }
 
+.justify-left {
+  justify-content: left;
+}
+
 .leftbox {
   width: 25%;
-  margin-left: 40px;
   margin-bottom: auto;
 }
 
@@ -1144,5 +1157,9 @@ button:hover {
   width: 145px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.h3 {
+  
 }
 </style>

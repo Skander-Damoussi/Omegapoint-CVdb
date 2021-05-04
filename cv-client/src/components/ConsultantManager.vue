@@ -111,8 +111,8 @@ export default {
       this.displayList = this.consultantList;
     }
   },
-  mounted() {
-    this.$store.dispatch("getConsultantList");
+  async mounted() {
+    await this.$store.dispatch("getConsultantList");
     this.displayList = this.consultantList;
   }
 };
