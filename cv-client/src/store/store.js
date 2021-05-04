@@ -257,6 +257,14 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUserPresentation", this.userPresentation);
+    },
+    async updateActiveUser({ commit }, email) {
+      await Axios.put(`user/updateActiveConsultant/${email}`)
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
+      commit("setSearchList", this.searchList);
     }
   },
   getters: {

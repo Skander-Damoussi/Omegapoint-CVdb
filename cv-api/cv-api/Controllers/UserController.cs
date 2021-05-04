@@ -422,5 +422,35 @@ namespace cv_api.Controllers
             });
         }
 
+        [HttpPut("disableConsultant/{email}")]
+        public async Task<IActionResult> UpdateActiveConsultant (string email)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user.Active != null)
+                {
+                   if(user.Active != false)
+                    {
+                        user.Active = false;
+                    }
+                    else
+                    {
+                        user.Active = true;
+                    }
+                }
+                
+                var result = userManager.UpdateAsync(user);
+
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
+            
+        }
+
     }
 }

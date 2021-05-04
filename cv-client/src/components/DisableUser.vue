@@ -46,11 +46,6 @@ export default {
       displayList: []
     };
   },
-  //   computed: {
-  //     searchList() {
-  //       return this.$store.getters.getSearchList;
-  //     }
-  //   },
   methods: {
     disableUser() {
       console.log("disable");

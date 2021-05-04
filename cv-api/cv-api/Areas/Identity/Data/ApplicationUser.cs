@@ -18,6 +18,8 @@ namespace cv_api.Areas.Identity.Data
 		public string EmailConfirmationToken { get; set; }
 		public string ResetPasswordToken { get; set; }
 
+		public bool? Active { get; set; }
+
 		public List<Experience>? Experiences { get; set; }
 
 		public List<Presentation>? Presentations { get; set; }
