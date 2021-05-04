@@ -461,7 +461,7 @@
                 </p>
               </div>
             </div>
-            <div class="contactFooterBox">
+            <div v-if="sale_name !== null && sale_name !== ''" class="contactFooterBox">
               <h3 class="contactFooterTitel">Säljkontakt</h3>
               <p class="contactFooterText">{{ sale_name }}</p>
               <p class="contactFooterText">{{ sale_email }}</p>
@@ -469,7 +469,7 @@
             </div>
             <div v-if="company_name !== null" class="footer">
               <p class="bottomMidText">
-                {{ company_name }} <span v-if="consult_name !== null">-</span>
+                {{ company_name }} <span v-if="consult_name !== null && consult_name !== ''">-</span>
                 {{ consult_name }}
               </p>
             </div>
@@ -922,8 +922,9 @@ div {
   color: white;
   border-style: none;
   border-radius: 10px;
-  width: 25%;
+  min-width: 25%;
   padding-left: 8px;
+  padding-right: 8px;
   padding-top: 10px;
   padding-bottom: 10px;
   margin-left: auto;
