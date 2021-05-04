@@ -138,7 +138,7 @@
             </div>
             <div class="container" id="container" v-if="show === 5">
               <div class="">
-                <p>Titel</p>
+                <p>Namn</p>
                 <input type="text" class="textInput" v-model="consult_name" />
                 <div class="row">
                   <p class="inputSpace">Roll</p>
@@ -177,7 +177,14 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 6">
-              <div class=""></div>
+              <div v-if="consult_presentations_options.length === 0" class="">
+                <p>
+                  <button @click="AddClickPresentation()" id="nomargin">
+                    Lägg till <i class="fas fa-plus"></i>
+                  </button>
+                  Var vänlig lägg till presentationer.
+                </p>
+              </div>
               <div
                 class="wrapper"
                 v-for="(obj, Arrindex) in consult_presentations_options"
@@ -229,7 +236,7 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 7">
-              <div class="">
+              <div v-if="consult_experience_options.length > 0" class="">
                 <p>
                   Välj ett uppdrag i fokus
                 </p>
@@ -275,6 +282,14 @@
                   </div>
                 </div>
               </div>
+              <div v-else>
+                <p>
+                  <button @click="AddClick()" id="nomargin">
+                    Lägg till <i class="fas fa-plus"></i>
+                  </button>
+                  Var vänlig lägg till uppdrag.
+                </p>
+              </div>
             </div>
           </div>
           <div class="wrapper">
@@ -307,6 +322,14 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 9">
+              <div v-if="consult_experience_options.length === 0">
+                <p>
+                  <button @click="AddClick()" id="nomargin">
+                    Lägg till <i class="fas fa-plus"></i>
+                  </button>
+                  Var vänlig lägg till uppdrag.
+                </p>
+              </div>
               <div
                 class="row"
                 v-for="(obj, index) in consult_experience_options"
@@ -411,10 +434,12 @@
                 {{ text }}
               </p>
             </div>
-            <div class="fokusBox">
+            <div v-if="consult_experience_focus.length != 0" class="fokusBox">
               <h2 class="fokusTitel">Uppdrag i fokus</h2>
               <div>
-                <h3 class="fokusRoll justify-left">{{ consult_experience_focus_role }}</h3>
+                <h3 class="fokusRoll justify-left">
+                  {{ consult_experience_focus_role }}
+                </h3>
                 <p
                   v-if="consult_experience_focus.endDate === ''"
                   class="fokusFöretag"
@@ -442,14 +467,17 @@
               <p class="contactFooterText">{{ sale_email }}</p>
               <p class="contactFooterText">{{ sale_phone }}</p>
             </div>
-            <div class="footer">
+            <div v-if="company_name !== null" class="footer">
               <p class="bottomMidText">
-                {{ company_name }} - {{ consult_name }}
+                {{ company_name }} <span v-if="consult_name !== null">-</span>
+                {{ consult_name }}
               </p>
             </div>
           </div>
           <div v-if="page === 2" id="pdf" ref="document">
-            <h3 class="tidigareTitel justify-left">Tidigare projekt och uppdrag</h3>
+            <h3 class="tidigareTitel justify-left">
+              Tidigare projekt och uppdrag
+            </h3>
             <div
               class="blobspace"
               v-for="(obj, index) in consult_experience_other_list"
@@ -623,6 +651,12 @@ export default {
           break;
         }
       }
+    },
+    AddClick() {
+      this.$router.push({ name: "ConsultantExperienceEdit" });
+    },
+    AddClickPresentation() {
+      this.$router.push({ name: "ConsultantPresentationEdit" });
     },
     refreshVars() {
       for (var i = 0; i < this.consult_experience_other_list.length; i++) {
@@ -895,16 +929,18 @@ div {
   margin-left: auto;
   position: absolute;
   bottom: 10%;
-  left: 60%
+  left: 60%;
+  height: 100px;
 }
 
 .contactFooterTitel {
   font-size: 18px;
   justify-content: left;
+  margin-bottom: 5px;
 }
 
 .contactFooterText {
-  font-size: 10px;
+  font-size: 15px;
   font-weight: lighter;
   margin-bottom: 3px;
 }
@@ -1158,7 +1194,8 @@ button:hover {
   margin-right: auto;
 }
 
-.h3 {
-  
+#nomargin {
+  margin: 0px;
+  margin-right: 15px;
 }
 </style>
