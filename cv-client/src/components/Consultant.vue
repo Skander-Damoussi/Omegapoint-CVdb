@@ -759,7 +759,6 @@ div {
   width: 250mm;
   border-style: solid;
   border-width: 1px;
-  margin-bottom: 10vh;
 }
 
 .row {
@@ -890,6 +889,7 @@ div {
   padding-bottom: 10px;
   margin-left: auto;
   margin-right: 40px;
+  margin-top: auto;
 }
 
 .contactFooterTitel {
@@ -903,7 +903,9 @@ div {
 }
 
 .footer {
-  margin-top: 20px;
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .bottomMidText {
