@@ -386,7 +386,7 @@
         <div id="pdfBox">
           <div v-if="page === 1" id="pdf" ref="document">
             <div class="row">
-              <img src="../assets/templogo.png" height="23px" class="logo" />
+              <img src="../assets/templogo.png" height="53px" class="logo" />
               <div class="contactdiv">
                 <p class="contact contactTitel">{{ this.company_name }}</p>
                 <p class="contact">{{ this.contact_phoneNumber }}</p>
@@ -396,7 +396,7 @@
             </div>
 
             <div class="row">
-              <img src="../assets/temp.png" height="150px" class="selfie" />
+              <img src="../assets/temp.png" height="200px" class="selfie" />
               <div class="cvTitelDiv">
                 <h1 class="cvTitel">{{ consult_name }}</h1>
                 <p class="cvTitelRoll">{{ consult_role }}</p>
@@ -412,9 +412,9 @@
               </p>
             </div>
             <div class="fokusBox">
-              <h3 class="fokusTitel">Uppdrag i fokus</h3>
+              <h2 class="fokusTitel">Uppdrag i fokus</h2>
               <div>
-                <h4 class="fokusRoll">{{ consult_experience_focus_role }}</h4>
+                <h3 class="fokusRoll justify-left">{{ consult_experience_focus_role }}</h3>
                 <p
                   v-if="consult_experience_focus.endDate === ''"
                   class="fokusFöretag"
@@ -793,23 +793,23 @@ div {
 }
 
 .selfie {
-  margin-left: 18px;
+  margin-top: 25px;
+  margin-left: -25px;
 }
 
 .logo {
-  margin-bottom: 60px;
-  margin-top: 60px;
 }
 
 .introstycke {
-  width: 50%;
+  width: 65%;
   font-style: normal;
+  height: 340px;
 }
 
 .stycke {
   margin-top: 15px;
   font-weight: normal;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .contactdiv {
@@ -859,8 +859,7 @@ div {
 }
 
 .fokusBox {
-  width: 50%;
-  margin-top: 25px;
+  width: 65%;
 }
 
 .fokusTitel {
@@ -876,8 +875,8 @@ div {
 
 .fokusFöretag {
   margin-top: 5px;
-  font-size: 13px;
-  margin-bottom: 3px;
+  font-size: 16px;
+  margin-bottom: 5px;
 }
 
 .förstaStycke {
