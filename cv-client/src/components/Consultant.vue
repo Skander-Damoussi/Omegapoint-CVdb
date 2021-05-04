@@ -475,7 +475,7 @@
             </div>
           </div>
           <div v-if="page === 2" id="pdf" ref="document">
-            <h3 class="tidigareTitel justify-left">
+            <h3 v-if="consult_experience_other_list.length > 0" class="tidigareTitel justify-left">
               Tidigare projekt och uppdrag
             </h3>
             <div
@@ -835,15 +835,15 @@ div {
 }
 
 .introstycke {
-  width: 65%;
+  width: 75%;
   font-style: normal;
   height: 340px;
+  overflow: hidden;
 }
 
 .stycke {
   margin-top: 15px;
   font-weight: normal;
-  font-size: 16px;
 }
 
 .contactdiv {
@@ -894,6 +894,8 @@ div {
 
 .fokusBox {
   width: 65%;
+  overflow: hidden;
+  height: 260px;
 }
 
 .fokusTitel {

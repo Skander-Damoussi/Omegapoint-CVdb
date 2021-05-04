@@ -498,6 +498,7 @@ h3 {
 
 #h3space {
   margin-top: 25px;
+  justify-content: left;
 }
 
 .container {
