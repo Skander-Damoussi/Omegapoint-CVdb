@@ -20,14 +20,12 @@
       <div class="table">
         <table>
           <tr>
-            <th>Förnamn</th>
-            <th>Efternamn</th>
+            <th>Namn</th>
             <th>Email</th>
             <th></th>
           </tr>
-          <tr v-for="(i, index) in searchList" :key="index">
-            <th>{{ i.firstName }}</th>
-            <th>{{ i.lastName }}</th>
+          <tr v-for="(i, index) in displayList" :key="index">
+            <th>{{ i.firstName }} {{ i.lastName }}</th>
             <th>{{ i.email }}</th>
             <th>
               <p v-on:click="disableUser()"><i class="fas fa-times"></i></p>
@@ -44,14 +42,15 @@ export default {
   name: "DisableUser",
   data() {
     return {
-      searchString: ""
+      searchString: "",
+      displayList: []
     };
   },
-  computed: {
-    searchList() {
-      return this.$store.getters.getConsultantList;
-    }
-  },
+  //   computed: {
+  //     searchList() {
+  //       return this.$store.getters.getSearchList;
+  //     }
+  //   },
   methods: {
     disableUser() {
       console.log("disable");
@@ -61,12 +60,13 @@ export default {
       if (this.searchString.length > 0) {
         console.log(this.searchString);
         this.$store.dispatch("searchConsultant", this.searchString);
+        this.displayList = this.$store.getters.getSearchList;
       }
     },
     resetSearch() {
       console.log("reset");
       this.searchString = "";
-      this.searchList = [];
+      this.displayList = [];
     }
   }
 };
@@ -80,22 +80,23 @@ export default {
 }
 
 h3 {
-  margin-top: 1vh;
   margin-bottom: 5vh;
 }
 
 .main {
-  width: 40vw;
+  width: 55vw;
+  overflow-y: scroll;
+  height: 87vh;
+  border: 1px solid rgb(173, 173, 173);
+  border-radius: 1%;
 }
 
 .search {
   display: flex;
   flex-direction: column;
   align-self: center;
-  border: 1px solid rgb(173, 173, 173);
   padding: 5vw;
-  margin-top: 5vh;
-  margin-right: 5vw;
+  margin-top: 2vh;
 }
 
 .searchBox {
@@ -105,7 +106,7 @@ h3 {
   -webkit-border-radius: 15px;
   border-radius: 15px;
   font-size: 20px;
-  padding: 0.5%;
+  padding: 1%;
   outline: 0;
   -webkit-appearance: none;
 }
@@ -118,7 +119,6 @@ h3 {
 
 .table {
   margin-top: 5vh;
-  overflow-y: scroll;
 }
 
 table {
@@ -131,8 +131,13 @@ td,
 th {
   border-bottom: 1px solid #dddddd;
   text-align: left;
-  padding-top: 2vh;
+  padding: 2vh;
   padding-bottom: 1vh;
+  padding-left: 0;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: inset 0 0 0px 9999px white;
 }
 
 ::-webkit-scrollbar {

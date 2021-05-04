@@ -16,7 +16,8 @@ const getDefaultState = () => {
     userPresentation: [],
     token: null,
     role: null,
-    verified: null
+    verified: null,
+    searchList: []
   };
 };
 
@@ -60,6 +61,9 @@ export default new Vuex.Store({
     },
     setUserPresentation(state, token) {
       state.userPresentation = token;
+    },
+    setSearchList(state, list) {
+      state.searchList = list;
     }
   },
   actions: {
@@ -124,10 +128,10 @@ export default new Vuex.Store({
     async searchConsultant({ commit }, searchString) {
       await Axios.get(`search/getSearchResult/${searchString}`)
         .then(async resp => {
-          this.consultantList = resp.data;
+          this.searchList = resp.data;
         })
         .catch(err => console.log(err));
-      commit("setConsultantList", this.consultantList);
+      commit("setSearchList", this.searchList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
@@ -276,6 +280,9 @@ export default new Vuex.Store({
     },
     getUserPresentation(state) {
       return state.userPresentation;
+    },
+    getSearchList(state) {
+      return state.searchList;
     }
   }
 });

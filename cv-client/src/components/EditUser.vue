@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-user">
+  <div class="edit">
     <div class="edit-box">
       <h3>Ändra namn</h3>
       <div class="section">
@@ -61,9 +61,10 @@ export default {
   padding: 0;
   margin: 0;
 }
-.edit-user {
+.edit {
   display: flex;
   justify-content: center;
+  margin-top: 5vh;
 }
 
 h3 {
@@ -74,10 +75,9 @@ h3 {
 .edit-box {
   display: flex;
   flex-direction: column;
-  align-self: center;
   border: 1px solid rgb(173, 173, 173);
+  border-radius: 1%;
   padding: 5vw;
-  margin-top: 5vh;
   margin-right: 5vw;
 }
 

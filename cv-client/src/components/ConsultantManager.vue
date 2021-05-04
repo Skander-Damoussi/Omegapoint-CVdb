@@ -111,8 +111,8 @@ export default {
       this.displayList = this.consultantList;
     }
   },
-  mounted() {
-    this.$store.dispatch("getConsultantList");
+  async mounted() {
+    await this.$store.dispatch("getConsultantList");
     this.displayList = this.consultantList;
   }
 };
@@ -121,16 +121,18 @@ export default {
 <style scoped>
 .cons-manager {
   display: flex;
+  justify-content: center;
 }
 
 .list-table {
   padding: 3%;
   border: solid 1px black;
   height: 87vh;
-  margin: 1.3% 5%;
   border-radius: 1%;
   width: 50vw;
   overflow-y: scroll;
+  margin-top: 2vh;
+  margin-right: 3vw;
 }
 
 .search {
@@ -146,7 +148,7 @@ export default {
   -webkit-border-radius: 15px;
   border-radius: 15px;
   font-size: 20px;
-  padding: 0.5%;
+  padding: 1%;
   outline: 0;
   -webkit-appearance: none;
 }
