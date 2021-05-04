@@ -5,6 +5,9 @@
         <button @click="BackClick()">
           <i class="fas fa-chevron-circle-left"></i> Tillbaka
         </button>
+        <button class="homebutton" @click="HomeClick()">
+          <i class="fas fa-home "></i>
+        </button>
         <h2 id="addButton">{{ this.title }}</h2>
         <div
           class="editTitle"
@@ -48,7 +51,7 @@
             </button>
             {{ list }}
           </li>
-          <div class="rownomargin">
+          <div v-if="col.title != 'Arbetsbeskrivningar'" class="rownomargin">
             <input
               type="text"
               v-model="col.listInput"
@@ -56,6 +59,16 @@
               @keyup.enter="AddClick(col.title)"
             />
             <button @click="AddClick(col.title)" id="listAdd">
+              <i class="fas fa-plus-square"></i>
+            </button>
+          </div>
+          <div v-else class="rownomargin">
+            <textarea
+              v-model="col.listInput"
+              class="listInput"
+              @keyup.enter="AddClick(col.title)"
+            />
+            <button @click="AddClick(col.title)" id="listAddPresentation">
               <i class="fas fa-plus-square"></i>
             </button>
           </div>
@@ -95,25 +108,25 @@ export default {
       collection: [
         {
           show: true,
-          title: "Programmeringsspårk",
+          title: "Programeringsspråk & tekniker",
           list: [],
           listInput: "",
         },
         {
-          show: false,
-          title: "Software",
+          show: true,
+          title: "Mjukvara",
           list: [],
           listInput: "",
         },
         {
-          show: false,
-          title: "Assignments",
+          show: true,
+          title: "Arbetsbeskrivningar",
           list: [],
           listInput: "",
         },
         {
-          show: false,
-          title: "Role",
+          show: true,
+          title: "Arbetsroller",
           list: [],
           listInput: "",
         },
@@ -135,10 +148,10 @@ export default {
       this.collection[1].list = this.$route.params.software;
       this.collection[2].list = this.$route.params.assignments;
       this.collection[3].list = this.$route.params.role;
-      this.collection[0].show = true;
-      this.collection[1].show = true;
-      this.collection[2].show = true;
-      this.collection[3].show = true;
+      this.collection[0].show = false;
+      this.collection[1].show = false;
+      this.collection[2].show = false;
+      this.collection[3].show = false;
     }
   },
   mounted() {
@@ -159,6 +172,9 @@ export default {
     },
     BackClick() {
       this.$router.push({ name: "ConsultantExperience" });
+    },
+    HomeClick() {
+      this.$router.push({ name: "Consultant" });
     },
     RemoveClick(title, index) {
       this.collection.forEach(function(entry) {
@@ -293,14 +309,12 @@ export default {
 .row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   margin-bottom: 10px;
 }
 
 .rownomargin {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
 }
 
 li {
@@ -373,7 +387,13 @@ button:hover {
 }
 
 #inboxText {
-  font-size: 12px;
+  font-size: 16px;
+  width: 500px;
+}
+
+#inboxTextArea {
+  font-size: 16px;
+  width: 400px;
 }
 
 h3 {
@@ -458,5 +478,27 @@ h2 {
 .clickNull:hover {
   color: black;
   cursor: pointer;
+}
+
+.homebutton {
+  margin-left: 15px;
+}
+
+textarea {
+  height: 150px;
+  width: 30vw;
+  padding: 6px 6px;
+  margin: 10px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none;
+}
+
+#listAddPresentation {
+  margin-top: auto;
+  padding: 5px;
+  margin-right: auto;
 }
 </style>

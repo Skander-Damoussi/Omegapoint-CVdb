@@ -207,6 +207,43 @@ namespace cv_api.Controllers
             return BadRequest();
         }
 
+        [HttpGet("getUserCV/{userId}")]
+        public async Task<IActionResult> getUserCV(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return Ok(user.CV);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updateCV")]
+        public async Task<IActionResult> updateCV(CVDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            if(user.CV == null)
+            {
+                user.CV = new CV();
+            }
+            user.CV.company_name = input.company_name;
+            user.CV.color = input.color;
+            user.CV.company_logo = input.company_logo;
+            user.CV.contact_phoneNumber = input.contact_phoneNumber;
+            user.CV.contact_website = input.contact_website;
+            user.CV.contact_email = input.contact_email;
+            user.CV.consult_picture = input.consult_picture;
+            user.CV.consult_name = input.consult_name;
+            user.CV.consult_role = input.consult_role;
+            user.CV.consult_presentations = input.consult_presentations;
+            user.CV.consult_experience_focus_title = input.consult_experience_focus_title;
+            user.CV.consult_experience_focus_role = input.consult_experience_focus_role;
+            user.CV.consult_experience_focus_description = input.consult_experience_focus_description;
+            user.CV.sale_name = input.sale_name;
+            user.CV.sale_email = input.sale_email;
+            user.CV.sale_phone = input.sale_phone;
+            user.CV.consult_experience_other_list = input.consult_experience_other_list;
+            await userManager.UpdateAsync(user);
+            return Ok(user.CV);
+        }
+
         //[Authorize(Roles = "Konsult")]
         [HttpPost("removePresentation")]
         public async Task<IActionResult> removePresentation(PresentationDTO input)

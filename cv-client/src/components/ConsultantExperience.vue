@@ -2,15 +2,15 @@
   <div>
     <div class="tasks">
       <div class="row">
-        <button @click="CVClick()">
-          <i class="fas fa-chevron-circle-left"></i> Tillbaka
+        <button class="homebutton" @click="CVClick()">
+          <i class="fas fa-home "></i>
         </button>
-          <input
-            type="text"
-            v-model="searchText"
-            v-on:input="search()"
-            @keyup.enter="search()"
-          />
+        <input
+          type="text"
+          v-model="searchText"
+          v-on:input="search()"
+          @keyup.enter="search()"
+        />
       </div>
       <div class="rownomargin" v-if="experienceList.length > 0">
         <div
@@ -20,12 +20,8 @@
         >
           <i class="fas fa-sort"></i>
         </div>
-        <h2 id="addButton">Erfarenheter</h2>
-        <div
-          class="sort sortdate"
-          title="Sort by date"
-          @click="sortListDate()"
-        >
+        <h2 id="addButton">Uppdrag</h2>
+        <div class="sort sortdate" title="Sort by date" @click="sortListDate()">
           <i class="fas fa-sort"></i>
         </div>
         <button @click="AddClick()" id="addButton">
@@ -33,7 +29,7 @@
         </button>
       </div>
       <div v-else>
-        <p id="textcenter">Var vänlig lägg till erfarenheter.</p>
+        <p id="textcenter">Var vänlig lägg till dina uppdrag.</p>
       </div>
       <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
         <div class="title" @click="col.show = !col.show">
@@ -51,7 +47,9 @@
         </div>
         <div class="container" id="container" v-if="col.show">
           <div class="rownomargin">
-            <h3>Programming languages</h3>
+            <h3 v-if="col.language.length > 0">
+              Programeringsspråk & tekniker
+            </h3>
             <div class="stickright">
               <div
                 class="stickright experienceedit"
@@ -72,15 +70,17 @@
           <li id="inboxText" v-for="language in col.language" :key="language">
             {{ language }}
           </li>
-          <h3 id="h3space">Software</h3>
+          <h3 id="h3space" v-if="col.software.length > 0">Mjukvara</h3>
           <li id="inboxText" v-for="software in col.software" :key="software">
             {{ software }}
           </li>
-          <h3 id="h3space">Assignments</h3>
-          <li id="inboxText" v-for="assign in col.assignments" :key="assign">
+          <h3 id="h3space" v-if="col.assignments.length > 0">
+            Arbetsbeskrivningar
+          </h3>
+          <li id="inboxTextArea" v-for="assign in col.assignments" :key="assign">
             {{ assign }}
           </li>
-          <h3 id="h3space">Roles</h3>
+          <h3 id="h3space" v-if="col.role.length > 0">Arbetsroller</h3>
           <li id="inboxText" v-for="role in col.role" :key="role">
             {{ role }}
           </li>
@@ -88,8 +88,7 @@
       </div>
     </div>
     <div class="tasks">
-      <div class="row">
-      </div>
+      <div class="row"></div>
       <div class="rownomargin" v-if="presentationList.length > 0">
         <div
           class="sort stickleft sorttitle"
@@ -306,8 +305,8 @@ export default {
         );
       }
       this.sortTitle = !this.sortTitle;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -463,13 +462,19 @@ button:hover {
 }
 
 #inboxText {
-  font-size: 12px;
+  font-size: 16px;
+}
+
+#inboxTextArea {
+  width: 500px;
 }
 
 #inboxTextPresentation {
-  font-size: 12px;
+  font-size: 16px;
   margin-bottom: 10px;
   margin-top: 10px;
+  width: 400px;
+  list-style-type: none;
 }
 
 h3 {
