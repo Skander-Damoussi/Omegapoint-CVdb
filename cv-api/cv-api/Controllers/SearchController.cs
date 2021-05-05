@@ -33,32 +33,23 @@ namespace cv_api.Controllers
             {
                 var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
                 var result = userSearch.Where(x => x.FirstName.Contains(search)
-                            || x.LastName.Contains(search) || x.Email.Contains(search));  
-                return Ok(result);
+                            || x.LastName.Contains(search) || x.Email.Contains(search));
+
+                List<ApplicationUser> res = new List<ApplicationUser>();
+
+                foreach(var user in result)
+                {
+                    if(user.Active == true || user.Active == null)
+                    {
+                        res.Add(user);
+                    }
+                }
+                return Ok(res);
             }
             catch
             {
                 return BadRequest();
-            }
-
-            //List<ApplicationUser> result1 = new List<ApplicationUser>();
-
-            //foreach (var user in userSearch)
-            //{
-            //    if(user.Experiences != null)
-            //    {
-            //        foreach (var exp in user.Experiences)
-            //        {
-            //            if (exp.Software.Contains(search) || exp.Title.Contains(search) || exp.Language.Contains(search) || exp.Assignments.Contains(search))
-            //            {
-            //                result1.Add(user);
-            //            }
-            //        }
-            //    }
-
-            //}
-
-            
+            }            
         }
     }
 }

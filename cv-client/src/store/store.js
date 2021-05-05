@@ -290,6 +290,15 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setCV", this.CV);
+    },
+    async getDeactivatedConsultants({ commit }) {
+      await Axios.get(`user/getDeactivatedConsultants`)
+        .then(async resp => {
+          this.searchList = resp.data;
+          console.log(resp.data);
+        })
+        .catch(err => console.log(err));
+      commit("setSearchList", this.searchList);
     }
   },
   getters: {

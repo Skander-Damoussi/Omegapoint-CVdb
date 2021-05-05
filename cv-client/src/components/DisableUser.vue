@@ -11,11 +11,15 @@
           id="searchInput"
           class="searchInput"
           v-model="searchString"
-          v-on:input="search()"
           @keyup.enter="search()"
           placeholder="Sök"
         />
         <p v-on:click="resetSearch()"><i class="fas fa-times"></i></p>
+      </div>
+      <div class="section">
+        <button class="submit bttn" v-on:click="getDeactivatedConsultants()">
+          Hämta deaktiverade konsulter
+        </button>
       </div>
       <div class="table">
         <table>
@@ -25,12 +29,22 @@
             <th></th>
           </tr>
           <tr v-for="(user, index) in displayList" :key="index">
-            <th>{{ user.firstName }} {{ i.lastName }}</th>
+            <th>{{ user.firstName }} {{ user.lastName }}</th>
             <th>{{ user.email }}</th>
             <th>
-              <p v-on:click="disableUser(user.email)">
-                <i class="fas fa-times"></i>
-              </p>
+              <div v-if="icon">
+                <p v-on:click="updateActiveUser(user.email)">
+                  <i class="fas fa-times"></i>
+                </p>
+              </div>
+              <div class="section" v-if="!icon">
+                <button
+                  class="submit bttn"
+                  v-on:click="updateActiveUser(user.email)"
+                >
+                  Återaktivera
+                </button>
+              </div>
             </th>
           </tr>
         </table>
@@ -45,18 +59,21 @@ export default {
   data() {
     return {
       searchString: "",
-      displayList: []
+      displayList: [],
+      icon: true
     };
   },
   methods: {
-    disableUser(email) {
+    updateActiveUser(email) {
       console.log(email);
+      this.$store.dispatch("updateActiveUser", email);
+      this.displayList = [];
     },
-    search() {
-      console.log("search");
+    async search() {
+      this.icon = true;
+      this.displayList = [];
       if (this.searchString.length > 0) {
-        console.log(this.searchString);
-        this.$store.dispatch("searchConsultant", this.searchString);
+        await this.$store.dispatch("searchConsultant", this.searchString);
         this.displayList = this.$store.getters.getSearchList;
       }
     },
@@ -64,6 +81,12 @@ export default {
       console.log("reset");
       this.searchString = "";
       this.displayList = [];
+    },
+    async getDeactivatedConsultants() {
+      this.icon = false;
+      console.log(this.icon);
+      await this.$store.dispatch("getDeactivatedConsultants");
+      this.displayList = this.$store.getters.getSearchList;
     }
   }
 };
@@ -115,7 +138,7 @@ h3 {
 }
 
 .table {
-  margin-top: 5vh;
+  margin-top: 2vh;
 }
 
 table {
@@ -139,5 +162,10 @@ input:-webkit-autofill {
 
 ::-webkit-scrollbar {
   display: none;
+}
+
+.section > button {
+  width: fit-content;
+  margin-top: 1vh;
 }
 </style>
