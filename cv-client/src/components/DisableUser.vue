@@ -24,11 +24,11 @@
             <th>Email</th>
             <th></th>
           </tr>
-          <tr v-for="(i, index) in displayList" :key="index">
-            <th>{{ i.firstName }} {{ i.lastName }}</th>
-            <th>{{ i.email }}</th>
+          <tr v-for="(user, index) in displayList" :key="index">
+            <th>{{ user.firstName }} {{ i.lastName }}</th>
+            <th>{{ user.email }}</th>
             <th>
-              <p v-on:click="disableUser()"><i class="fas fa-times"></i></p>
+              <p v-on:click="disableUser(user.email)"><i class="fas fa-times"></i></p>
             </th>
           </tr>
         </table>
@@ -47,8 +47,8 @@ export default {
     };
   },
   methods: {
-    disableUser() {
-      console.log("disable");
+    disableUser(email) {
+      console.log(email);
     },
     search() {
       console.log("search");

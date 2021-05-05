@@ -422,7 +422,7 @@ namespace cv_api.Controllers
             });
         }
 
-        [HttpPut("disableConsultant/{email}")]
+        [HttpPut("updateActiveConsultant/{email}")]
         public async Task<IActionResult> UpdateActiveConsultant (string email)
         {
             try
