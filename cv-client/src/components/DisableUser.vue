@@ -33,15 +33,12 @@
             <th>{{ user.email }}</th>
             <th>
               <div v-if="icon">
-                <p v-on:click="updateActiveUser(user.email)">
+                <p v-on:click="showModal(user.email)">
                   <i class="fas fa-times"></i>
                 </p>
               </div>
               <div class="section" v-if="!icon">
-                <button
-                  class="submit bttn"
-                  v-on:click="updateActiveUser(user.email)"
-                >
+                <button class="submit bttn" v-on:click="showModal(user.email)">
                   Återaktivera
                 </button>
               </div>
@@ -50,24 +47,60 @@
         </table>
       </div>
     </div>
+    <Modal v-show="isModalVisible" @close="cancel()">
+      <template v-slot:header>
+        Avaktivering av användare
+      </template>
+
+      <template v-slot:body>
+        <p>
+          Är du säker på att du vill ändra status på denna användaren?
+        </p>
+        <div class="section">
+          <button class="submit bttn cancel" v-on:click="cancel()">
+            Avbryt
+          </button>
+          <button class="submit bttn" v-on:click="updateActiveUser()">
+            OK
+          </button>
+        </div>
+      </template>
+
+      <template v-slot:footer> </template>
+    </Modal>
   </div>
 </template>
 
 <script>
+import Modal from "./Modal";
+
 export default {
   name: "DisableUser",
+  components: {
+    Modal
+  },
   data() {
     return {
       searchString: "",
       displayList: [],
-      icon: true
+      icon: true,
+      isModalVisible: false,
+      selectedUser: ""
     };
   },
   methods: {
-    updateActiveUser(email) {
-      console.log(email);
-      this.$store.dispatch("updateActiveUser", email);
-      this.displayList = [];
+    showModal(user) {
+      this.isModalVisible = true;
+      this.selectedUser = user;
+    },
+    cancel() {
+      this.selectedUser = "";
+      this.isModalVisible = false;
+    },
+    async updateActiveUser() {
+      console.log("selected", this.selectedUser);
+      await this.$store.dispatch("updateActiveUser", this.selectedUser);
+      this.cancel();
     },
     async search() {
       this.icon = true;
@@ -167,5 +200,10 @@ input:-webkit-autofill {
 .section > button {
   width: fit-content;
   margin-top: 1vh;
+}
+
+.cancel {
+    background-color: red;
+    margin-right: 1vw;
 }
 </style>
