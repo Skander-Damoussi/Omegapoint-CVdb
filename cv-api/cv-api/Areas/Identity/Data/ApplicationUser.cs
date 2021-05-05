@@ -17,8 +17,8 @@ namespace cv_api.Areas.Identity.Data
 		public string? LastName { get; set; }
 		public string EmailConfirmationToken { get; set; }
 		public string ResetPasswordToken { get; set; }
-
 		public bool? Active { get; set; }
+		public CV CV { get; set; }
 
 		public List<Experience>? Experiences { get; set; }
 

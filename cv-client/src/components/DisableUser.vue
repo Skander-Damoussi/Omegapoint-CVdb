@@ -28,7 +28,9 @@
             <th>{{ user.firstName }} {{ i.lastName }}</th>
             <th>{{ user.email }}</th>
             <th>
-              <p v-on:click="disableUser(user.email)"><i class="fas fa-times"></i></p>
+              <p v-on:click="disableUser(user.email)">
+                <i class="fas fa-times"></i>
+              </p>
             </th>
           </tr>
         </table>

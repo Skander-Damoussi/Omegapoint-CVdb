@@ -17,7 +17,8 @@ const getDefaultState = () => {
     token: null,
     role: null,
     verified: null,
-    searchList: []
+    searchList: [],
+    CV: []
   };
 };
 
@@ -64,6 +65,9 @@ export default new Vuex.Store({
     },
     setSearchList(state, list) {
       state.searchList = list;
+    },
+    setCV(state, token) {
+      state.CV = token;
     }
   },
   actions: {
@@ -153,6 +157,19 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUsers", this.users);
+    },
+    async cvSave({ commit }, { token, input }) {
+      await Axios.post("user/updateCV/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.CV = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setCV", this.CV);
     },
     async addExperience({ commit }, { token, input }) {
       await Axios.post("user/postexperience/", input, {
@@ -265,6 +282,14 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
+    },
+    async getCV({ commit }, userId) {
+      await Axios.get(`user/getUserCV/${userId}`)
+        .then(async resp => {
+          this.CV = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setCV", this.CV);
     }
   },
   getters: {
@@ -291,6 +316,9 @@ export default new Vuex.Store({
     },
     getSearchList(state) {
       return state.searchList;
+    },
+    getCV(state) {
+      return state.CV;
     }
   }
 });

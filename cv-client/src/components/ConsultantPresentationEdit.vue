@@ -5,6 +5,9 @@
         <button @click="BackClick()">
           <i class="fas fa-chevron-circle-left"></i> Tillbaka
         </button>
+        <button class="homebutton" @click="HomeClick()">
+          <i class="fas fa-home "></i>
+        </button>
         <h2 id="addButton">{{ this.title }}</h2>
         <div
           class="editTitle"
@@ -46,7 +49,7 @@
             <button @click="RemoveClick(col.title, index)" id="listDelete">
               <i class="fas fa-trash-alt"></i>
             </button>
-            {{ list }}
+            <span class="inboxTextSpan">{{ list }}</span>
           </li>
           <div class="rownomargin">
             <textarea
@@ -104,6 +107,9 @@ export default {
   methods: {
     BackClick() {
       this.$router.push({ name: "ConsultantExperience" });
+    },
+    HomeClick() {
+      this.$router.push({ name: "Consultant" });
     },
     RemoveClick(title, index) {
       this.collection.forEach(function(entry) {
@@ -299,7 +305,8 @@ button:hover {
 }
 
 #inboxText {
-  font-size: 12px;
+  font-size: 16px;
+  width: 500px;
 }
 
 h3 {
@@ -390,5 +397,9 @@ h2 {
 .clickNull:hover {
   color: black;
   cursor: pointer;
+}
+
+.homebutton {
+  margin-left: 15px;
 }
 </style>
