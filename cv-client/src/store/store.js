@@ -17,7 +17,8 @@ const getDefaultState = () => {
     token: null,
     role: null,
     verified: null,
-    CV: [],
+    searchList: [],
+    CV: []
   };
 };
 
@@ -61,6 +62,9 @@ export default new Vuex.Store({
     },
     setUserPresentation(state, token) {
       state.userPresentation = token;
+    },
+    setSearchList(state, list) {
+      state.searchList = list;
     },
     setCV(state, token) {
       state.CV = token;
@@ -128,10 +132,10 @@ export default new Vuex.Store({
     async searchConsultant({ commit }, searchString) {
       await Axios.get(`search/getSearchResult/${searchString}`)
         .then(async resp => {
-          this.consultantList = resp.data;
+          this.searchList = resp.data;
         })
         .catch(err => console.log(err));
-      commit("setConsultantList", this.consultantList);
+      commit("setSearchList", this.searchList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
@@ -271,6 +275,14 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
       commit("setUserPresentation", this.userPresentation);
     },
+    async updateActiveUser({ commit }, email) {
+      await Axios.put(`user/updateActiveConsultant/${email}`)
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
+      commit("setSearchList", this.searchList);
+    },
     async getCV({ commit }, userId) {
       await Axios.get(`user/getUserCV/${userId}`)
         .then(async resp => {
@@ -278,6 +290,15 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setCV", this.CV);
+    },
+    async getDeactivatedConsultants({ commit }) {
+      await Axios.get(`user/getDeactivatedConsultants`)
+        .then(async resp => {
+          this.searchList = resp.data;
+          console.log(resp.data);
+        })
+        .catch(err => console.log(err));
+      commit("setSearchList", this.searchList);
     }
   },
   getters: {
@@ -301,6 +322,9 @@ export default new Vuex.Store({
     },
     getUserPresentation(state) {
       return state.userPresentation;
+    },
+    getSearchList(state) {
+      return state.searchList;
     },
     getCV(state) {
       return state.CV;

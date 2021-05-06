@@ -276,7 +276,8 @@ namespace cv_api.Controllers
                 Email = newUser.Email,
                 PhoneNumber = newUser.PhoneNo,
                 FirstName = newUser.FirstName,
-                LastName = newUser.LastName
+                LastName = newUser.LastName,
+                Active = true
             };
             if(newUser.Role == "Konsult")
             {
@@ -457,6 +458,51 @@ namespace cv_api.Controllers
                 userId = user.Id.ToString(),
                 experiences = user.Experiences
             });
+        }
+
+        [HttpPut("updateActiveConsultant/{email}")]
+        public async Task<IActionResult> UpdateActiveConsultant (string email)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user.Active != null)
+                {
+                   if(user.Active == false)
+                    {
+                        user.Active = true;
+                    }
+                    else
+                    {
+                        user.Active = false;
+                    }
+                }
+                
+                var result = await userManager.UpdateAsync(user);
+
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
+            
+        }
+
+        [HttpGet("getDeactivatedConsultants")]
+        public async Task<IActionResult> GetDeactivatedConsultants()
+        {
+            try
+            {
+                var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
+                var result = userSearch.Where(x => x.Active == false);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
     }
