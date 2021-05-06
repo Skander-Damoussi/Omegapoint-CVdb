@@ -75,7 +75,7 @@
 import Modal from "./Modal";
 
 export default {
-  name: "DisableUser",
+  name: "HandleActiveUser",
   components: {
     Modal
   },
