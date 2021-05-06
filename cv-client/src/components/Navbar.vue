@@ -19,13 +19,79 @@
         </div>
       </div>
     </div>
+    <Modal v-show="isSessionModalVisible" @close="closeSessionModal">
+      <template v-slot:header>
+        <p>Du kommer loggas ut.</p>
+      </template>
+
+      <template v-slot:body>
+        <p style="color: black;">
+          Du har varit inaktiv i 45minuter. Du kommer att loggas ut om
+          15minuter.
+        </p>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
+import store from "../store/store.js";
+import router from "../router/index.js";
+import Modal from "../components/Modal.vue";
+
 export default {
   name: "Navbar",
+  data() {
+    return {
+      isAdminModalVisible: false,
+      isSessionModalVisible: false,
+      loggedInUser: false
+    };
+  },
+  async mounted() {
+    var timeout;
+    var _this = this;
+    function refresh() {
+      if (_this.isSessionModalVisible) {
+        _this.closeSessionModal();
+      }
+      if (_this.checkStatus()) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          _this.closeSessionModal();
+          _this.showSessionModal();
+          close();
+        }, 45 * 60 * 1000);
+      }
+    }
+
+    function close() {
+      if (_this.checkStatus()) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          document.removeEventListener("mousemove", refresh);
+          _this.closeSessionModal();
+          store.dispatch("logOut");
+          router.push("/");
+        }, 15 * 60 * 1000);
+      }
+    }
+    setInterval(function() {
+      document.addEventListener("mousemove", refresh);
+    }, 10000);
+    refresh();
+  },
   methods: {
+    showSessionModal() {
+      this.isSessionModalVisible = true;
+    },
+    async closeSessionModal() {
+      this.isSessionModalVisible = false;
+    },
+    checkStatus() {
+      this.loggedInUser = this.loggedIn;
+      return this.loggedInUser;
+    },
     async signOut() {
       await this.$store.dispatch("logOut");
       if (
@@ -36,7 +102,7 @@ export default {
     },
     editUser() {
       this.$router.push("/editUser");
-    }
+    },
   },
   computed: {
     loggedIn() {
@@ -44,8 +110,11 @@ export default {
     },
     user() {
       return this.$store.getters.getLoggedInUser;
-    }
-  }
+    },
+  },
+  components: {
+    Modal,
+  },
 };
 </script>
 

@@ -20,10 +20,10 @@
           <i class="fas fa-redo"></i>
         </div>
         <button v-if="this.newEntry" @click="SaveClick()" id="addButton">
-          Spara erfarenhet
+          Spara presentation
         </button>
         <button v-else @click="SaveClick()" id="addButton">
-          Uppdatera erfarenhet <i class="fas fa-check"></i>
+          Uppdatera presentation <i class="fas fa-check"></i>
         </button>
       </div>
       <div v-if="editTitle">
@@ -49,21 +49,11 @@
             <button @click="RemoveClick(col.title, index)" id="listDelete">
               <i class="fas fa-trash-alt"></i>
             </button>
-            {{ list }}
+            <span class="inboxTextSpan">{{ list }}</span>
           </li>
-          <div v-if="col.title != 'Arbetsbeskrivningar'" class="rownomargin">
-            <input
-              type="text"
-              v-model="col.listInput"
-              class="listInput"
-              @keyup.enter="AddClick(col.title)"
-            />
-            <button @click="AddClick(col.title)" id="listAdd">
-              <i class="fas fa-plus-square"></i>
-            </button>
-          </div>
-          <div v-else class="rownomargin">
+          <div class="rownomargin">
             <textarea
+              type="text"
               v-model="col.listInput"
               class="listInput"
               @keyup.enter="AddClick(col.title)"
@@ -74,28 +64,13 @@
           </div>
         </div>
       </div>
-      <div class="date rownomargin">
-        <div class="date">
-          <p>Start datum</p>
-          <input type="date" id="startDate" name="startDate" />
-        </div>
-        <div class="date">
-          <div class="rownomargin centertext">
-            <p>Slut datum</p>
-            <div @click="resetEndDate()" class="clickNull" title="Pågående">
-              <i class="fas fa-times-circle"></i>
-            </div>
-          </div>
-          <input type="date" id="endDate" name="endDate" />
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "EditUser",
+  name: "PresentationEdit",
   data: function() {
     return {
       title: "",
@@ -108,25 +83,7 @@ export default {
       collection: [
         {
           show: true,
-          title: "Programeringsspråk & tekniker",
-          list: [],
-          listInput: "",
-        },
-        {
-          show: true,
-          title: "Mjukvara",
-          list: [],
-          listInput: "",
-        },
-        {
-          show: true,
-          title: "Arbetsbeskrivningar",
-          list: [],
-          listInput: "",
-        },
-        {
-          show: true,
-          title: "Arbetsroller",
+          title: "Stycken",
           list: [],
           listInput: "",
         },
@@ -135,41 +92,19 @@ export default {
   },
   created() {
     if (this.$route.params.title === undefined) {
-      this.title = "Ny erfarenhet";
+      this.title = "Ny presentation";
       this.newEntry = true;
       this.editTitle = true;
     } else {
       this.oldList = JSON.parse(JSON.stringify(this.$route.params));
       this.title = this.$route.params.title;
-      this.startDate = this.$route.params.startDate;
-      this.endDate = this.$route.params.endDate;
       this.id = this.$route.params.id;
-      this.collection[0].list = this.$route.params.language;
-      this.collection[1].list = this.$route.params.software;
-      this.collection[2].list = this.$route.params.assignments;
-      this.collection[3].list = this.$route.params.role;
-      this.collection[0].show = false;
-      this.collection[1].show = false;
-      this.collection[2].show = false;
-      this.collection[3].show = false;
+      this.collection[0].list = this.$route.params.paragraph;
     }
   },
   mounted() {
-    if (this.startDate === "") {
-      document.getElementById("startDate").value = this.getTodayDate();
-    } else {
-      document.getElementById("startDate").value = this.startDate;
-      document.getElementById("endDate").value = this.endDate;
-    }
   },
   methods: {
-    getTodayDate() {
-      const today = new Date()
-        .toJSON()
-        .slice(0, 10)
-        .replace(/-/g, "-");
-      return today;
-    },
     BackClick() {
       this.$router.push({ name: "ConsultantExperience" });
     },
@@ -186,12 +121,7 @@ export default {
     async Restart() {
       let temp = JSON.parse(JSON.stringify(this.oldList));
       this.title = temp.title;
-      this.collection[0].list = temp.language;
-      this.collection[1].list = temp.software;
-      this.collection[2].list = temp.assignments;
-      this.collection[3].list = temp.role;
-      document.getElementById("startDate").value = temp.startDate;
-      document.getElementById("endDate").value = temp.endDate;
+      this.collection[0].list = temp.paragraph;
     },
     AddClick(title) {
       this.collection.forEach(function(entry) {
@@ -204,35 +134,25 @@ export default {
     async SaveClick() {
       let userID = this.$store.getters.getLoggedInUser;
       if (this.newEntry) {
-        await this.$store.dispatch("addExperience", {
+        await this.$store.dispatch("addPresentation", {
           token: this.$store.getters.getUserToken,
           input: {
             title: this.title,
-            startDate: this.cutDate(document.getElementById("startDate").value),
-            endDate: this.cutDate(document.getElementById("endDate").value),
-            Language: this.collection[0].list,
-            Software: this.collection[1].list,
-            Assignments: this.collection[2].list,
-            Role: this.collection[3].list,
+            Paragraph: this.collection[0].list,
             userID: userID.id,
-            newExperience: this.newEntry,
+            newPresentation: this.newEntry,
             id: this.MakeId(8),
           },
         });
       } else {
-        await this.$store.dispatch("updateExperience", {
+        await this.$store.dispatch("updatePresentation", {
           token: this.$store.getters.getUserToken,
           input: {
             title: this.title,
-            startDate: this.cutDate(document.getElementById("startDate").value),
-            endDate: this.cutDate(document.getElementById("endDate").value),
-            Language: this.collection[0].list,
-            Software: this.collection[1].list,
-            Assignments: this.collection[2].list,
-            Role: this.collection[3].list,
+            Paragraph: this.collection[0].list,
             userID: userID.id,
             id: this.id,
-            newExperience: this.false,
+            newPresentation: this.false,
           },
         });
       }
@@ -249,12 +169,6 @@ export default {
         );
       }
       return result.join("");
-    },
-    resetEndDate() {
-      document.getElementById("endDate").value = "";
-    },
-    cutDate(date){
-      return date;
     }
   },
 };
@@ -309,16 +223,19 @@ export default {
 .row {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   margin-bottom: 10px;
 }
 
 .rownomargin {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 li {
   list-style-type: none;
+  margin-bottom: 25px;
 }
 
 .box {
@@ -348,15 +265,16 @@ th {
 }
 
 textarea {
-  height: 230px;
-  width: 100%;
-  padding: 12px 20px;
+  height: 150px;
+  width: 30vw;
+  padding: 6px 6px;
   margin: 10px;
   box-sizing: border-box;
   border: 2px solid #ccc;
   border-radius: 4px;
   background-color: #f8f8f8;
   resize: none;
+  margin-left: auto;
 }
 
 .as {
@@ -389,11 +307,6 @@ button:hover {
 #inboxText {
   font-size: 16px;
   width: 500px;
-}
-
-#inboxTextArea {
-  font-size: 16px;
-  width: 400px;
 }
 
 h3 {
@@ -439,6 +352,12 @@ h2 {
   margin: 2px;
 }
 
+#listAddPresentation {
+  margin-top: auto;
+  padding: 5px;
+  margin-right: auto;
+}
+
 #listDelete {
   margin-left: 10px;
   padding: 0px;
@@ -482,23 +401,5 @@ h2 {
 
 .homebutton {
   margin-left: 15px;
-}
-
-textarea {
-  height: 150px;
-  width: 30vw;
-  padding: 6px 6px;
-  margin: 10px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  resize: none;
-}
-
-#listAddPresentation {
-  margin-top: auto;
-  padding: 5px;
-  margin-right: auto;
 }
 </style>

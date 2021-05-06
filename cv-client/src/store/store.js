@@ -13,8 +13,12 @@ const getDefaultState = () => {
     users: [],
     consultantList: [],
     userExperience: [],
+    userPresentation: [],
     token: null,
-    role: null
+    role: null,
+    verified: null,
+    searchList: [],
+    CV: []
   };
 };
 
@@ -52,6 +56,18 @@ export default new Vuex.Store({
     },
     setUserExperience(state, token) {
       state.userExperience = token;
+    },
+    setVerify(state, verified) {
+      state.verified = verified;
+    },
+    setUserPresentation(state, token) {
+      state.userPresentation = token;
+    },
+    setSearchList(state, list) {
+      state.searchList = list;
+    },
+    setCV(state, token) {
+      state.CV = token;
     }
   },
   actions: {
@@ -64,7 +80,7 @@ export default new Vuex.Store({
             lastName: resp.data.lastName,
             role: resp.data.role,
             experiences: resp.data.experiences
-          }
+          };
           await commit("setToken", resp.data.token);
           await commit("setLoggedInUser", respUser);
           await commit("setLoggedIn", true);
@@ -72,13 +88,30 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
     },
     async updateUser({ commit }, user) {
+      console.log(user.password);
       await Axios.put("user/", user)
         .then(async resp => {
           var respUser = {
             id: resp.data.userId,
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
-            role: resp.data.role
+            role: resp.data.role,
+            experiences: resp.data.experiences
+          };
+          await commit("setLoggedInUser", respUser);
+          console.log(this.loggedInUser);
+        })
+        .catch(err => console.log(err));
+    },
+    async updatePassword({ commit }, password) {
+      await Axios.put("user/updatePassword", password)
+        .then(async resp => {
+          var respUser = {
+            id: resp.data.userId,
+            firstName: resp.data.firstName,
+            lastName: resp.data.lastName,
+            role: resp.data.role,
+            experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
           console.log(this.loggedInUser);
@@ -99,17 +132,17 @@ export default new Vuex.Store({
     async searchConsultant({ commit }, searchString) {
       await Axios.get(`search/getSearchResult/${searchString}`)
         .then(async resp => {
-          this.consultantList = resp.data;
+          this.searchList = resp.data;
         })
         .catch(err => console.log(err));
-      commit("setConsultantList", this.consultantList);
+      commit("setSearchList", this.searchList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
-        .then(async (resp) => {
+        .then(async resp => {
           this.users = resp;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUsers", this.users);
     },
     async registerUser({ commit }, { token, input }) {
@@ -124,6 +157,19 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
       commit("setUsers", this.users);
+    },
+    async cvSave({ commit }, { token, input }) {
+      await Axios.post("user/updateCV/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.CV = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setCV", this.CV);
     },
     async addExperience({ commit }, { token, input }) {
       await Axios.post("user/postexperience/", input, {
@@ -172,6 +218,88 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
       commit("setUserExperience", this.userExperience);
     },
+    async verify({ commit }, { userId, token }) {
+      console.log(userId);
+      console.log(token);
+      await Axios.post("user/verify", userId, token)
+        .then(async resp => {
+          this.verified = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserExperience", this.verified);
+    },
+    async addPresentation({ commit }, { token, input }) {
+      await Axios.post("user/postPresentation/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userPresentation = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.presentations);
+    },
+    async updatePresentation({ commit }, { token, input }) {
+      await Axios.post("user/updatepresentation/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userPresentation = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.presentations);
+    },
+    async removePresentation({ commit }, { token, input }) {
+      await Axios.post("user/removepresentation/", input, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+        .then(async resp => {
+          this.userExperience = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.presentations);
+    },
+    async getUserPresentation({ commit }, userId) {
+      await Axios.get(`user/getConsultantPresentationList/${userId}`)
+        .then(async resp => {
+          this.userPresentation = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setUserPresentation", this.userPresentation);
+    },
+    async updateActiveUser({ commit }, email) {
+      await Axios.put(`user/updateActiveConsultant/${email}`)
+        .then(async resp => {
+          console.log(resp);
+        })
+        .catch(err => console.log(err));
+      commit("setSearchList", this.searchList);
+    },
+    async getCV({ commit }, userId) {
+      await Axios.get(`user/getUserCV/${userId}`)
+        .then(async resp => {
+          this.CV = resp.data;
+        })
+        .catch(err => console.log(err));
+      commit("setCV", this.CV);
+    },
+    async getDeactivatedConsultants({ commit }) {
+      await Axios.get(`user/getDeactivatedConsultants`)
+        .then(async resp => {
+          this.searchList = resp.data;
+          console.log(resp.data);
+        })
+        .catch(err => console.log(err));
+      commit("setSearchList", this.searchList);
+    }
   },
   getters: {
     getLoggedIn(state) {
@@ -191,6 +319,15 @@ export default new Vuex.Store({
     },
     getUserExperience(state) {
       return state.userExperience;
+    },
+    getUserPresentation(state) {
+      return state.userPresentation;
+    },
+    getSearchList(state) {
+      return state.searchList;
+    },
+    getCV(state) {
+      return state.CV;
     }
   }
 });

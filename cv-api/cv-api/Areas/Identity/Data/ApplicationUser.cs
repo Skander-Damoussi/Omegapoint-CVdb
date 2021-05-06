@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AspNetCore.Identity.MongoDbCore.Models;
 using cv_api.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace cv_api.Areas.Identity.Data
 {
@@ -13,8 +15,14 @@ namespace cv_api.Areas.Identity.Data
 	{
 		public string? FirstName { get; set; }
 		public string? LastName { get; set; }
+		public string EmailConfirmationToken { get; set; }
+		public string ResetPasswordToken { get; set; }
+		public bool? Active { get; set; }
+		public CV CV { get; set; }
 
 		public List<Experience>? Experiences { get; set; }
+
+		public List<Presentation>? Presentations { get; set; }
 
 		public ApplicationUser() : base()
 		{

@@ -7,6 +7,8 @@ import Admin from "../views/Admin";
 import EditUser from "../components/EditUser.vue";
 import ConsultantExperience from "../components/ConsultantExperience.vue";
 import ConsultantExperienceEdit from "../components/ConsultantExperienceEdit.vue";
+import Verify from "../components/Verify.vue";
+import ConsultantPresentationEdit from "../components/ConsultantPresentationEdit.vue";
 import store from "../store/store.js";
 
 Vue.use(VueRouter);
@@ -43,6 +45,12 @@ const routes = [
     meta: { reqAuth: true, consultAuth: true }
   },
   {
+    path: "/consultantPresentationEdit",
+    name: "ConsultantPresentationEdit",
+    component: ConsultantPresentationEdit,
+    meta: { reqAuth: true, consultAuth: true }
+  },
+  {
     path: "/admin",
     name: "Admin",
     component: Admin,
@@ -58,6 +66,11 @@ const routes = [
       adminAuth: true,
       consultantManagerAuth: true
     }
+  },
+  {
+    path: "/verify/:token/:userId",
+    name: "Verify",
+    component: Verify
   }
 ];
 

@@ -29,11 +29,27 @@ namespace cv_api.Controllers
         [HttpGet("getSearchResult/{search}")]
         public async Task<IActionResult> GetSearchResult(string search) 
         {
-            var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
-            var result = userSearch.Where(x => x.FirstName.Contains(search)
-                        || x.LastName.Contains(search));
+            try
+            {
+                var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
+                var result = userSearch.Where(x => x.FirstName.Contains(search)
+                            || x.LastName.Contains(search) || x.Email.Contains(search));
 
-            return Ok(result);
+                List<ApplicationUser> res = new List<ApplicationUser>();
+
+                foreach(var user in result)
+                {
+                    if(user.Active == true || user.Active == null)
+                    {
+                        res.Add(user);
+                    }
+                }
+                return Ok(res);
+            }
+            catch
+            {
+                return BadRequest();
+            }            
         }
     }
 }

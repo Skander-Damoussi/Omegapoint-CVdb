@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using cv_api.Areas.Identity.Data;
 using Microsoft.AspNetCore.Http;
+using NETCore.MailKit.Core;
 
 namespace cv_api.Controllers
 {
@@ -29,14 +30,24 @@ namespace cv_api.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<ApplicationRole> roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailService _emailService;
 
-        public UserController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ILogger<UserController> logger, IMongoRepository<User> userRepository, IConfiguration configuration)
+        public UserController(UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            RoleManager<ApplicationRole> roleManager, 
+            ILogger<UserController> logger, 
+            IMongoRepository<User> userRepository, 
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _logger = logger;
             _userRepository = userRepository;
             this.userManager = userManager;
             this.roleManager = roleManager;
             _configuration = configuration;
+            _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -48,7 +59,7 @@ namespace cv_api.Controllers
         }
 
         //[Authorize(Roles = "Admin,Konsultchef")]
-        [Authorize(Roles = "Konsultchef")]
+        //[Authorize(Roles = "Konsultchef")]
         [HttpGet("getConsultantList")]
         public async Task<IActionResult> GetConsultantList()
         {
@@ -140,13 +151,123 @@ namespace cv_api.Controllers
             return BadRequest();
         }
 
+        //[Authorize(Roles = "Konsult")]
+        [HttpGet("getConsultantPresentationList/{userId}")]
+        public async Task<IActionResult> getConsultantPresentationList(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return Ok(user.Presentations);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("postPresentation")]
+        public async Task<IActionResult> postPresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+
+            if (input.newPresentation)
+            {
+                if (user.Presentations == null)
+                {
+                    user.Presentations = new List<Presentation>();
+                }
+                user.Presentations.Add(new Presentation
+                {
+                    Title = input.title,
+                    Paragraph = input.Paragraph,
+                    id = input.id
+                });
+            }
+            else
+            {
+                for (int i = 0; i < user.Presentations.Count; i++)
+                {
+
+                }
+            }
+            await userManager.UpdateAsync(user);
+            return Ok(user.Presentations);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updatePresentation")]
+        public async Task<IActionResult> updatePresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Presentations.Count; i++)
+            {
+                if (user.Presentations[i].id == input.id)
+                {
+                    user.Presentations[i].Title = input.title;
+                    user.Presentations[i].Paragraph = input.Paragraph;
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Presentations);
+                }
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("getUserCV/{userId}")]
+        public async Task<IActionResult> getUserCV(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return Ok(user.CV);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("updateCV")]
+        public async Task<IActionResult> updateCV(CVDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            if(user.CV == null)
+            {
+                user.CV = new CV();
+            }
+            user.CV.company_name = input.company_name;
+            user.CV.color = input.color;
+            user.CV.company_logo = input.company_logo;
+            user.CV.contact_phoneNumber = input.contact_phoneNumber;
+            user.CV.contact_website = input.contact_website;
+            user.CV.contact_email = input.contact_email;
+            user.CV.consult_picture = input.consult_picture;
+            user.CV.consult_name = input.consult_name;
+            user.CV.consult_role = input.consult_role;
+            user.CV.consult_presentations = input.consult_presentations;
+            user.CV.consult_experience_focus_title = input.consult_experience_focus_title;
+            user.CV.consult_experience_focus_role = input.consult_experience_focus_role;
+            user.CV.consult_experience_focus_description = input.consult_experience_focus_description;
+            user.CV.sale_name = input.sale_name;
+            user.CV.sale_email = input.sale_email;
+            user.CV.sale_phone = input.sale_phone;
+            user.CV.consult_experience_other_list = input.consult_experience_other_list;
+            await userManager.UpdateAsync(user);
+            return Ok(user.CV);
+        }
+
+        //[Authorize(Roles = "Konsult")]
+        [HttpPost("removePresentation")]
+        public async Task<IActionResult> removePresentation(PresentationDTO input)
+        {
+            var user = await userManager.FindByIdAsync(input.userID);
+            for (int i = 0; i < user.Presentations.Count; i++)
+            {
+                if (user.Presentations[i].id == input.id)
+                {
+                    user.Presentations.RemoveAt(i);
+                    await userManager.UpdateAsync(user);
+                    return Ok(user.Presentations);
+                }
+            }
+            return BadRequest();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post(User newUser)
         {
             var userExists = await userManager.FindByNameAsync(newUser.Email);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest("There is already an user with that email");
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -155,7 +276,8 @@ namespace cv_api.Controllers
                 Email = newUser.Email,
                 PhoneNumber = newUser.PhoneNo,
                 FirstName = newUser.FirstName,
-                LastName = newUser.LastName
+                LastName = newUser.LastName,
+                Active = true
             };
             if(newUser.Role == "Konsult")
             {
@@ -173,12 +295,56 @@ namespace cv_api.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            user.EmailConfirmationToken = code;
+
+            var update = userManager.UpdateAsync(user);
+
+            var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
+
+
             var returnUserId = await userManager.FindByNameAsync(newUser.Email);
 
+             await _emailService.SendAsync("skander_test@hotmail.com", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
             return Ok(new
             {
                 userId = returnUserId.Id
             });
+        }
+
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifyEmail(string userId, string code)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+                return BadRequest("Invalid confirmation or expired token.");
+
+
+            if(user.EmailConfirmationToken == null)
+            {
+                if(user.EmailConfirmed)
+                {
+                    return BadRequest("Email has already been confirmed");
+                }
+            }
+
+            if (user.EmailConfirmationToken != code)
+            {
+                return BadRequest("Invalid confirmation or expired token.");
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, user.EmailConfirmationToken);
+
+            
+            if (!result.Succeeded)
+                return BadRequest("Invalid confirmation or expired token.");
+            
+            user.EmailConfirmationToken = null;
+
+            var update = await userManager.UpdateAsync(user);
+
+            return Ok("Email has been confirmed");
         }
 
         [HttpPut]
@@ -196,9 +362,37 @@ namespace cv_api.Controllers
                 {
                     identityUser.LastName = updatedUser.LastName;
                 }
-                if (updatedUser.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedUser.NewPassword) == false)
+
+                var result = await userManager.UpdateAsync(identityUser);
+
+                var roles = await userManager.GetRolesAsync(identityUser);
+
+                return Ok(new
                 {
-                    var res = await userManager.ChangePasswordAsync(identityUser, updatedUser.CurrentPassword, updatedUser.NewPassword);
+                    role = roles[0],
+                    firstName = identityUser.FirstName,
+                    lastName = identityUser.LastName,
+                    userId = identityUser.Id.ToString(),
+                    experiences = identityUser.Experiences
+                });
+            }
+            catch
+            {
+                return BadRequest(updatedUser);
+            }
+
+        }
+
+        [HttpPut("updatePassword")]
+        public async Task<IActionResult> UpdatePassword(UpdatePassword updatedPassword)
+        {
+            try
+            {
+                var identityUser = await userManager.FindByIdAsync(updatedPassword.Id);
+
+                if (updatedPassword.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedPassword.NewPassword) == false)
+                {
+                    var res = await userManager.ChangePasswordAsync(identityUser, updatedPassword.CurrentPassword, updatedPassword.NewPassword);
                 }
                 var result = await userManager.UpdateAsync(identityUser);
 
@@ -209,42 +403,26 @@ namespace cv_api.Controllers
                     role = roles[0],
                     firstName = identityUser.FirstName,
                     lastName = identityUser.LastName,
-                    userId = identityUser.Id.ToString()
+                    userId = identityUser.Id.ToString(),
+                    experiences = identityUser.Experiences
                 });
             }
             catch
             {
-                return BadRequest(updatedUser);
+                return BadRequest(updatedPassword);
             }
 
         }
 
-        //public UpdateUser CheckIfNull(UpdateUser updatedUser)
-        //{
-        //    var user = _userRepository.FindById(updatedUser.Id);
-        //    foreach (PropertyInfo prop in updatedUser.GetType().GetProperties())
-        //    {
-        //        var res = prop.GetValue(updatedUser, null);
-        //        if (res != "")
-        //        {
-        //            var property = prop.Name;
-                   
-
-        //        }
-        //        Console.WriteLine($"{prop.Name}: {prop.GetValue(updatedUser, null)}");
-
-        //    }
-        //    return updatedUser;
-        //}
-
-
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate(Login userInput)
         {
+            var signInResult = await _signInManager.PasswordSignInAsync(userInput.Email, userInput.Password, false, false);
+
             var user = await userManager.FindByNameAsync(userInput.Email);
 
-            if (user == null || await userManager.CheckPasswordAsync(user, userInput.Password) == false)
-                return Unauthorized();
+            if (signInResult.IsNotAllowed)
+                return Unauthorized("Wrong login credential");
 
             var userRoles = await userManager.GetRolesAsync(user);
 
@@ -282,25 +460,50 @@ namespace cv_api.Controllers
             });
         }
 
+        [HttpPut("updateActiveConsultant/{email}")]
+        public async Task<IActionResult> UpdateActiveConsultant (string email)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user.Active != null)
+                {
+                   if(user.Active == false)
+                    {
+                        user.Active = true;
+                    }
+                    else
+                    {
+                        user.Active = false;
+                    }
+                }
+                
+                var result = await userManager.UpdateAsync(user);
 
-        //[HttpPost("registerUser")]
-        //public async Task<StatusCodeResult> Post(User newUser) //TODO: Skippa try-catch?
-        //{
-        //    try
-        //    {
-        //        await _userRepository.InsertOneAsync(newUser);
-        //        return Ok();
-        //    }
-        //    catch
-        //    {
-        //        // Conflict with the current state of the target resource StatusCode(409);
-        //        return Conflict();
-        //    }
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
+            
+        }
 
-            //repository Users = new repository();
-            //Users.Post("user", newUser);
-            //return Ok();
-        //}
+        [HttpGet("getDeactivatedConsultants")]
+        public async Task<IActionResult> GetDeactivatedConsultants()
+        {
+            try
+            {
+                var userSearch = await userManager.GetUsersInRoleAsync("Konsult");
+                var result = userSearch.Where(x => x.Active == false);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
 
     }
 }
