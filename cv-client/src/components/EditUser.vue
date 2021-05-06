@@ -18,20 +18,20 @@
       </div>
     </div>
     <div v-if="user.role != 'Konsult'">
-      <DisableUser />
+      <HandleActiveUser />
     </div>
   </div>
 </template>
 
 <script>
 import EditPassword from "./EditPassword.vue";
-import DisableUser from "./DisableUser.vue";
+import HandleActiveUser from "./HandleActiveUser.vue";
 
 export default {
   name: "EditUser",
   components: {
     EditPassword,
-    DisableUser
+    HandleActiveUser
   },
   computed: {
     user() {

@@ -2,7 +2,7 @@
   <div class="main">
     <div class="search">
       <h3>
-        Ta bort användare
+        Inaktivera användare
       </h3>
       <div class="searchBox">
         <i class="fas fa-search"></i>
@@ -18,7 +18,7 @@
       </div>
       <div class="section">
         <button class="submit bttn" v-on:click="getDeactivatedConsultants()">
-          Hämta deaktiverade konsulter
+          Hämta inaktiverade konsulter
         </button>
       </div>
       <div class="table">
@@ -101,6 +101,7 @@ export default {
       console.log("selected", this.selectedUser);
       await this.$store.dispatch("updateActiveUser", this.selectedUser);
       this.cancel();
+      this.resetSearch();
     },
     async search() {
       this.icon = true;
@@ -200,10 +201,11 @@ input:-webkit-autofill {
 .section > button {
   width: fit-content;
   margin-top: 1vh;
+  padding: 0.25vw;
 }
 
 .cancel {
-    background-color: red;
-    margin-right: 1vw;
+  background-color: red;
+  margin-right: 1vw;
 }
 </style>
