@@ -46,6 +46,9 @@
         <span class="error" v-if="errorLogin">
           Fel email/lösenord
         </span>
+        <span class="error" v-if="errorVerify">
+          Du har inte verifierad ditt konto än.
+        </span>
       </form>
     </div>
   </div>
@@ -62,7 +65,8 @@ export default {
       password: "",
       emailField: true,
       passwordField: true,
-      errorLogin: false
+      errorLogin: false,
+      errorVerify: false
     };
   },
   validations: {
@@ -87,6 +91,7 @@ export default {
         password: this.password
       });
       if (this.$store.getters.getLoggedIn == false) {
+        console.log(this.$store.getters.getError);
         this.errorLogin = true;
       } else {
         var sUser = this.$store.getters.getLoggedInUser;

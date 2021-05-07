@@ -422,6 +422,9 @@ namespace cv_api.Controllers
             var user = await userManager.FindByNameAsync(userInput.Email);
 
             if (signInResult.IsNotAllowed)
+                return StatusCode(403);
+
+            if (!signInResult.Succeeded)
                 return Unauthorized("Wrong login credential");
 
             var userRoles = await userManager.GetRolesAsync(user);
