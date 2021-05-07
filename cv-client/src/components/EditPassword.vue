@@ -117,7 +117,6 @@ export default {
         console.log("confirm", this.formResponses.confirmPassword);
         this.state = "form submitted";
         this.status = await this.$store.getters.getStatus;
-        console.log(this.status);
       }
     }
   }
