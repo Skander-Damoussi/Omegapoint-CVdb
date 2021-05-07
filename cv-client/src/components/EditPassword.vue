@@ -53,6 +53,11 @@
           Fyll i fälten för att byta lösenord.
         </p>
       </section>
+      <section class="status">
+        <p v-if="status === 200">
+          Lösenord ändrat.
+        </p>
+      </section>
     </main>
   </div>
 </template>
@@ -70,7 +75,8 @@ export default {
         currentPassword: null,
         password: null,
         confirmPassword: null
-      }
+      },
+      status: ""
     };
   },
   computed: {
@@ -94,7 +100,8 @@ export default {
     }
   },
   methods: {
-    submitForm() {
+    async submitForm() {
+      this.status = "";
       this.empty = !this.$v.formResponses.$anyDirty;
       this.errors = this.$v.formResponses.$anyError;
       this.state = "submit clicked";
@@ -109,6 +116,8 @@ export default {
         console.log("password", this.formResponses.password);
         console.log("confirm", this.formResponses.confirmPassword);
         this.state = "form submitted";
+        this.status = await this.$store.getters.getStatus;
+        console.log(this.status);
       }
     }
   }
@@ -167,8 +176,9 @@ p {
   margin-bottom: 1vh;
 }
 
-/* .formContain section {
-  padding-bottom: 1vh;
-  position: relative;
-} */
+.status > p {
+  text-align: left;
+  font-size: small;
+  font-weight: bold;
+}
 </style>
