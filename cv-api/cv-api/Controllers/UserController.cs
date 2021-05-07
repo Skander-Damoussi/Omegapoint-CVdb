@@ -267,7 +267,7 @@ namespace cv_api.Controllers
         {
             var userExists = await userManager.FindByNameAsync(newUser.Email);
             if (userExists != null)
-                return BadRequest("There is already an user with that email");
+                return StatusCode(409);
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -285,6 +285,9 @@ namespace cv_api.Controllers
             }
 
             var result = await userManager.CreateAsync(user, newUser.Password);
+
+            if (!result.Succeeded)
+                return StatusCode(400);            
 
             if (!await roleManager.RoleExistsAsync(newUser.Role))
                 await roleManager.CreateAsync(new ApplicationRole(newUser.Role));
@@ -304,13 +307,8 @@ namespace cv_api.Controllers
             var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
 
 
-            var returnUserId = await userManager.FindByNameAsync(newUser.Email);
-
              await _emailService.SendAsync("skander_test@hotmail.com", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
-            return Ok(new
-            {
-                userId = returnUserId.Id
-            });
+            return Ok();
         }
 
         [HttpGet("verify")]

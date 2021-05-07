@@ -159,14 +159,16 @@ export default new Vuex.Store({
       await Axios.post("user/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
-        .then(async (resp) => {
-          console.log(resp);
+        .then(async resp => {
+          console.log(resp.status);
+          commit("setStatus", resp.status);
         })
-        .catch((err) => console.log(err));
-      commit("setUsers", this.users);
+        .catch(err => {
+          commit("setStatus", err.response.status);
+        });
     },
     async cvSave({ commit }, { token, input }) {
       await Axios.post("user/updateCV/", input, {
