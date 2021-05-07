@@ -425,7 +425,7 @@ namespace cv_api.Controllers
                 return StatusCode(403);
 
             if (!signInResult.Succeeded)
-                return Unauthorized("Wrong login credential");
+                return StatusCode(401);
 
             var userRoles = await userManager.GetRolesAsync(user);
 

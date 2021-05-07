@@ -91,8 +91,16 @@ export default {
         password: this.password
       });
       if (this.$store.getters.getLoggedIn == false) {
-        console.log(this.$store.getters.getError);
-        this.errorLogin = true;
+        var status = this.$store.getters.getStatus;
+        console.log(this.$store.getters.getStatus);
+        if (status == 401) {
+          this.errorVerify = false;
+          this.errorLogin = true;
+        }
+        if (status == 403) {
+          this.errorLogin = false;
+          this.errorVerify = true;
+        }
       } else {
         var sUser = this.$store.getters.getLoggedInUser;
         switch (sUser.role) {
