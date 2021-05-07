@@ -13,20 +13,21 @@ namespace cv_api.DocxCreate
 {
     public class DocxCreator
     {
-        public void CreateDocx(MemoryStream memoryStream)
+        public async Task CreateDocx(MemoryStream memoryStream)
         {
             //Ta emot datan
-            //ReplaceFields(memoryStream);
+            await ReplaceFields(memoryStream);
             //Utkommenterat för felsökning
             AddTechniques(memoryStream, "techniques");//Fixa lista för techniques
-            AddAssignments(memoryStream, "assignments");//Skicka in assignmentslistan
-            //AddLanguage(memoryStream, "language");//Skicka in languagelista
-            //AddEducation(memoryStream, "education");//Skicka in utbildningslistan
-            //ReplaceInternalImage(memoryStream, "profilePicture");//Skicka in bilden
+            await AddAssignments(memoryStream, "assignments");//Skicka in assignmentslistan
+            AddLanguage(memoryStream, "language");//Skicka in languagelista
+            AddEducation(memoryStream, "education");//Skicka in utbildningslistan
+            ReplaceInternalImage(memoryStream, "profilePicture");//Skicka in bilden
+
 
         }
 
-        public void ReplaceFields(MemoryStream memoryStream)
+        public async Task ReplaceFields(MemoryStream memoryStream)
         {
             string story = @"Som många utvecklare trivs Andreas bäst när han får lösa" +
             " komplexa problem och växer med utmaningar. Att ta stort" +
@@ -36,18 +37,18 @@ namespace cv_api.DocxCreate
             " gärna för att inte bara utveckla saker rätt, utan också rätt saker";
 
             ReplaceTextBookmarks(memoryStream, "userName", "Andreas Andreasson");
-            ReplaceTextBookmarks(memoryStream, "userNameFooter", "Andreas Andreasson");
+            //ReplaceTextBookmarks(memoryStream, "userNameFooter", "Andreas Andreasson");
             ReplaceTextBookmarks(memoryStream, "userRole", "Utvecklare");
             //Problem
-            //ReplaceTextBookmarks(memoryStream, "story", story);
+            await ReplaceTextBookmarks(memoryStream, "story", story);
             ReplaceTextBookmarks(memoryStream, "contactName", "Per Persson");
             ReplaceTextBookmarks(memoryStream, "contactEmail", "per.persson@omegapoint.se");
             ReplaceTextBookmarks(memoryStream, "contactPhone", "070-22 33 44");
         }
 
-        public void ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, string input)
+        public async Task ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, string input)
         {
-
+            
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {
                 var mainPart = document.MainDocumentPart;
@@ -67,7 +68,7 @@ namespace cv_api.DocxCreate
                     }
                 }
 
-                document.Close();
+                //document.Close();
             }
         }
 
@@ -186,16 +187,16 @@ namespace cv_api.DocxCreate
 
         }
 
-        public void AddAssignments(MemoryStream memoryStream, string bookmarkName)
+        public async Task AddAssignments(MemoryStream memoryStream, string bookmarkName)
         {
             //Assignmentslistan
             for (int i = 0; i < 10; i++)
             {
-                AddTable(memoryStream, bookmarkName);
+                await AddTable(memoryStream, bookmarkName);
             }
         }
 
-        public void AddTable(MemoryStream memoryStream, string bookmarkName)
+        public async Task AddTable(MemoryStream memoryStream, string bookmarkName)
         {
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {

@@ -77,27 +77,33 @@ namespace cv_api.Controllers
         public async Task<IActionResult> GetCvDocx()
         {
             var cv = _cvRepository.FilterBy(
-            filter => filter.Name == "TestMedUpload2",
+            filter => filter.Name == "TestMedUpload3",
             projection => projection.FileByte).FirstOrDefault();
 
 
             DocxCreator docxCreate = new DocxCreator();
 
-            using MemoryStream memoryStream = new MemoryStream(cv);
+            //Memorystream, byte array, make memorystream resizeable
+            using MemoryStream memoryStream = new MemoryStream(0);
             {
-                docxCreate.CreateDocx(memoryStream);
+                //Make
+                memoryStream.Write(cv,0,cv.Length);
+                //cv.CopyTo(memoryStream);
+                await docxCreate.CreateDocx(memoryStream);
+                cv = memoryStream.ToArray();
 
             }
 
             using (var net = new System.Net.WebClient())
             {
                 //Problem med return Ok()
-                return new FileContentResult(memoryStream.ToArray(), "application/docx")
+                return new FileContentResult(cv, "application/docx")
                 {
                     FileDownloadName = DateTime.Now.ToString() + ".docx"
                 };
 
             }
+
 
         }
 
