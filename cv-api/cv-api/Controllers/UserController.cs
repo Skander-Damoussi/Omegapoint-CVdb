@@ -63,7 +63,7 @@ namespace cv_api.Controllers
         [HttpGet("getConsultantList")]
         public async Task<IActionResult> GetConsultantList()
         {
-            var result = await userManager.GetUsersInRoleAsync("Konsult");
+            var result = await userManager.GetUsersInRoleAsync("Konsult"); //Todo checkifactiv
 
             return Ok(result);
         }
