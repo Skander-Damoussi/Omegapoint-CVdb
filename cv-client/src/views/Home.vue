@@ -34,8 +34,15 @@
           <span class="error" v-if="!passwordField">
             Ange lösenord
           </span>
+          <span class="error" v-if="errorLogin">
+            Fel email/lösenord
+          </span>
+          <span class="error" v-if="errorVerify">
+            Du har inte verifierad ditt konto än.
+          </span>
         </div>
         <div class="formRow">
+          
           <input
             id="loginButton"
             type="submit"
@@ -43,12 +50,6 @@
             @click.prevent="login"
           />
         </div>
-        <span class="error" v-if="errorLogin">
-          Fel email/lösenord
-        </span>
-        <span class="error" v-if="errorVerify">
-          Du har inte verifierad ditt konto än.
-        </span>
       </form>
     </div>
   </div>
@@ -66,29 +67,31 @@ export default {
       emailField: true,
       passwordField: true,
       errorLogin: false,
-      errorVerify: false
+      errorVerify: false,
     };
   },
   validations: {
     email: {
       email,
-      required
+      required,
     },
     password: {
-      required
-    }
+      required,
     },
+  },
   components: {},
   methods: {
     async login() {
       this.$v.$touch();
       this.checkForm();
       if (this.$v.$invalid && !this.$store.getters.getLoggedIn) {
+        this.errorLogin = false;
+        this.errorVerify = false;
         return;
       }
       await this.$store.dispatch("login", {
         email: this.email,
-        password: this.password
+        password: this.password,
       });
       if (this.$store.getters.getLoggedIn == false) {
         var status = this.$store.getters.getStatus;
@@ -120,13 +123,13 @@ export default {
     checkForm() {
       this.emailField = this.$v.email.required;
       this.passwordField = this.$v.password.required;
-    }
+    },
   },
   created() {
     if (this.$store.getters.getLoggedIn) {
       this.login();
     }
-  }
+  },
 };
 </script>
 
