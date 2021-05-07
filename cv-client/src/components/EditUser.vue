@@ -13,6 +13,11 @@
       <div class="section">
         <button class="submit bttn" v-on:click="updateUser()">Ändra</button>
       </div>
+      <div class="status">
+        <p v-if="status === 200">
+          Namn ändrat.
+        </p>
+      </div>
       <div class="edit-password">
         <EditPassword />
       </div>
@@ -33,6 +38,11 @@ export default {
     EditPassword,
     HandleActiveUser
   },
+  data() {
+    return {
+      status: ""
+    };
+  },
   computed: {
     user() {
       return this.$store.getters.getLoggedInUser;
@@ -43,13 +53,15 @@ export default {
     console.log("user", this.user.firstName);
   },
   methods: {
-    updateUser() {
+    async updateUser() {
+      this.status = "";
       var updateUser = {
         Id: this.user.id,
         FirstName: this.user.firstName,
         LastName: this.user.lastName
       };
-      this.$store.dispatch("updateUser", updateUser);
+      await this.$store.dispatch("updateUser", updateUser);
+      this.status = await this.$store.getters.getStatus;
     }
   }
 };
@@ -109,5 +121,10 @@ h3 {
   background-color: #2185d0;
   border: none;
   border-radius: 0.5vw;
+}
+
+.status {
+  text-align: left;
+  font-size: small;
 }
 </style>
