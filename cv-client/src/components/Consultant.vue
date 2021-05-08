@@ -461,7 +461,10 @@
                 </p>
               </div>
             </div>
-            <div v-if="sale_name !== null && sale_name !== ''" class="contactFooterBox">
+            <div
+              v-if="sale_name !== null && sale_name !== ''"
+              class="contactFooterBox"
+            >
               <h3 class="contactFooterTitel">Säljkontakt</h3>
               <p class="contactFooterText">{{ sale_name }}</p>
               <p class="contactFooterText">{{ sale_email }}</p>
@@ -469,13 +472,19 @@
             </div>
             <div v-if="company_name !== null" class="footer">
               <p class="bottomMidText">
-                {{ company_name }} <span v-if="consult_name !== null && consult_name !== ''">-</span>
+                {{ company_name }}
+                <span v-if="consult_name !== null && consult_name !== ''"
+                  >-</span
+                >
                 {{ consult_name }}
               </p>
             </div>
           </div>
           <div v-if="page === 2" id="pdf" ref="document">
-            <h3 v-if="consult_experience_other_list.length > 0" class="tidigareTitel justify-left">
+            <h3
+              v-if="consult_experience_other_list.length > 0"
+              class="tidigareTitel justify-left"
+            >
               Tidigare projekt och uppdrag
             </h3>
             <div
