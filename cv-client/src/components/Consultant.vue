@@ -375,9 +375,13 @@
       </div>
       <div class="wrapperPdfbox mainwrapper">
         <div class="row centerrow">
-          <div @click="page--"><i class="fas fa-arrow-left icon-click-next"></i></div>
-          <p>Sida {{this.page}}</p>
-          <div @click="page++"><i class="fas fa-arrow-right icon-click-next"></i></div>
+          <div @click="page--">
+            <i class="fas fa-arrow-left icon-click-next"></i>
+          </div>
+          <p>Sida {{ this.page }}</p>
+          <div @click="page++">
+            <i class="fas fa-arrow-right icon-click-next"></i>
+          </div>
         </div>
         <div id="pdfBox">
           <div v-if="page === 1" id="pdf" ref="document">
@@ -501,7 +505,7 @@ import html2pdf from "html2pdf.js";
 
 export default {
   name: "Consultant",
-  props: {},
+  props: ["userID"],
 
   data() {
     return {
@@ -531,13 +535,20 @@ export default {
       sale_email: "",
       sale_phone: "",
       role_freeEdit: false,
+      showUserID: '',
     };
   },
   async mounted() {
-    let user = await this.$store.getters.getLoggedInUser;
-    await this.$store.dispatch("getUserExperience", user.id);
-    await this.$store.dispatch("getUserPresentation", user.id);
-    await this.$store.dispatch("getCV", user.id);
+    if (this.userID == null) {
+      this.showUserID = await this.$store.getters.getLoggedInUser.id;
+    } else {
+      this.showUserID = this.userID;
+    }
+    
+
+    await this.$store.dispatch("getUserExperience", this.showUserID);
+    await this.$store.dispatch("getUserPresentation", this.showUserID);
+    await this.$store.dispatch("getCV", this.showUserID);
     let cv = await this.$store.getters.getCV;
 
     this.company_name = cv.company_name;
@@ -667,14 +678,13 @@ export default {
       }
     },
     editMethod() {
-      this.$router.push("ConsultantExperience/");
+      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     async saveMethod() {
-      let user = await this.$store.getters.getLoggedInUser;
       await this.$store.dispatch("cvSave", {
         token: this.$store.getters.getUserToken,
         input: {
-          userID: user.id,
+          userID: this.showUserID,
           company_name: this.company_name,
           color: this.color,
           company_logo: this.company_logo,
@@ -720,6 +730,7 @@ export default {
       });
     },
     EditClickExperience(arr) {
+      arr.keepID = this.showUserID;
       this.$router.push({
         name: "ConsultantExperienceEdit",
         params: arr,

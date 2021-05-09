@@ -105,6 +105,7 @@ export default {
       newEntry: null,
       editTitle: false,
       oldList: {},
+      showUserID: "",
       collection: [
         {
           show: true,
@@ -153,8 +154,13 @@ export default {
       this.collection[2].show = false;
       this.collection[3].show = false;
     }
+    this.showUserID = this.$route.params.keepID;
   },
-  mounted() {
+  async mounted() {
+    if (this.showUserID == null) {
+      this.showUserID = await this.$store.getters.getLoggedInUser.id;
+    }
+
     if (this.startDate === "") {
       document.getElementById("startDate").value = this.getTodayDate();
     } else {
@@ -171,10 +177,10 @@ export default {
       return today;
     },
     BackClick() {
-      this.$router.push({ name: "ConsultantExperience" });
+      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     HomeClick() {
-      this.$router.push({ name: "Consultant" });
+      this.$router.push({ name: "Consultant", params: { userID: this.showUserID } });
     },
     RemoveClick(title, index) {
       this.collection.forEach(function(entry) {
@@ -202,7 +208,6 @@ export default {
       });
     },
     async SaveClick() {
-      let userID = this.$store.getters.getLoggedInUser;
       if (this.newEntry) {
         await this.$store.dispatch("addExperience", {
           token: this.$store.getters.getUserToken,
@@ -214,7 +219,7 @@ export default {
             Software: this.collection[1].list,
             Assignments: this.collection[2].list,
             Role: this.collection[3].list,
-            userID: userID.id,
+            userID: this.showUserID,
             newExperience: this.newEntry,
             id: this.MakeId(8),
           },
@@ -230,13 +235,13 @@ export default {
             Software: this.collection[1].list,
             Assignments: this.collection[2].list,
             Role: this.collection[3].list,
-            userID: userID.id,
+            userID: this.showUserID,
             id: this.id,
             newExperience: this.false,
           },
         });
       }
-      this.$router.push({ name: "ConsultantExperience" });
+      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     MakeId(length) {
       var result = [];
