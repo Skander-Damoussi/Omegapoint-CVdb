@@ -117,6 +117,9 @@
           <p class="typo__p" v-if="submitStatus === 'ERROR'">
             Fyll i formuläret korrekt.
           </p>
+          <p class="typo__p" v-if="submitStatus === 'EMAIL'">
+            Email finns redan registrerat.
+          </p>
           <p class="typo__p" v-if="submitStatus === 'PENDING'">
             Registrerar...
           </p>
@@ -154,7 +157,7 @@ export default {
   validations: {
     password: {
       required,
-      minLength: minLength(6)
+      minLength: minLength(6),
     },
     repeatPassword: {
       sameAsPassword: sameAs("password")
@@ -190,10 +193,19 @@ export default {
           token: this.$store.getters.getUserToken,
           input: newUser
         });
+
+        var status = this.$store.getters.getStatus;
+
         this.submitStatus = "PENDING";
-        setTimeout(() => {
-          this.submitStatus = "OK";
-        }, 500);
+        if (status == 409) {
+          this.submitStatus = "EMAIL";
+        }
+        if (status == 200) {
+          setTimeout(() => {
+            this.submitStatus = "OK";
+          }, 500);
+          Object.assign(this.$data, this.$options.data.apply(this));
+        }
       } else {
         this.submitStatus = "ERROR";
       }

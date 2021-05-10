@@ -80,6 +80,7 @@ export default {
       newEntry: null,
       editTitle: false,
       oldList: {},
+      showUserID: "",
       collection: [
         {
           show: true,
@@ -101,15 +102,19 @@ export default {
       this.id = this.$route.params.id;
       this.collection[0].list = this.$route.params.paragraph;
     }
+    this.showUserID = this.$route.params.keepID;
   },
-  mounted() {
+  async mounted() {
+    if (this.showUserID == null) {
+      this.showUserID = await this.$store.getters.getLoggedInUser.id;
+    }
   },
   methods: {
     BackClick() {
-      this.$router.push({ name: "ConsultantExperience" });
+      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     HomeClick() {
-      this.$router.push({ name: "Consultant" });
+      this.$router.push({ name: "Consultant", params: { userID: this.showUserID } });
     },
     RemoveClick(title, index) {
       this.collection.forEach(function(entry) {
@@ -132,14 +137,13 @@ export default {
       });
     },
     async SaveClick() {
-      let userID = this.$store.getters.getLoggedInUser;
       if (this.newEntry) {
         await this.$store.dispatch("addPresentation", {
           token: this.$store.getters.getUserToken,
           input: {
             title: this.title,
             Paragraph: this.collection[0].list,
-            userID: userID.id,
+            userID: this.showUserID,
             newPresentation: this.newEntry,
             id: this.MakeId(8),
           },
@@ -150,13 +154,13 @@ export default {
           input: {
             title: this.title,
             Paragraph: this.collection[0].list,
-            userID: userID.id,
+            userID: this.showUserID,
             id: this.id,
             newPresentation: this.false,
           },
         });
       }
-      this.$router.push({ name: "ConsultantExperience" });
+      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     MakeId(length) {
       var result = [];
