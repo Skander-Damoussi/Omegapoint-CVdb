@@ -112,9 +112,6 @@ export default {
           newPassword: this.formResponses.password
         };
         this.$store.dispatch("updatePassword", updatePassword);
-        console.log("current", this.formResponses.currentPassword);
-        console.log("password", this.formResponses.password);
-        console.log("confirm", this.formResponses.confirmPassword);
         this.state = "form submitted";
         this.status = await this.$store.getters.getStatus;
       }
