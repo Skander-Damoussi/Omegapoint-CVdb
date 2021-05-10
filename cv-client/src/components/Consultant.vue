@@ -138,7 +138,7 @@
             </div>
             <div class="container" id="container" v-if="show === 5">
               <div class="">
-                <p>Titel</p>
+                <p>Namn</p>
                 <input type="text" class="textInput" v-model="consult_name" />
                 <div class="row">
                   <p class="inputSpace">Roll</p>
@@ -177,7 +177,14 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 6">
-              <div class=""></div>
+              <div v-if="consult_presentations_options.length === 0" class="">
+                <p>
+                  <button @click="AddClickPresentation()" id="nomargin">
+                    Lägg till <i class="fas fa-plus"></i>
+                  </button>
+                  Var vänlig lägg till presentationer.
+                </p>
+              </div>
               <div
                 class="wrapper"
                 v-for="(obj, Arrindex) in consult_presentations_options"
@@ -229,7 +236,7 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 7">
-              <div class="">
+              <div v-if="consult_experience_options.length > 0" class="">
                 <p>
                   Välj ett uppdrag i fokus
                 </p>
@@ -275,6 +282,14 @@
                   </div>
                 </div>
               </div>
+              <div v-else>
+                <p>
+                  <button @click="AddClick()" id="nomargin">
+                    Lägg till <i class="fas fa-plus"></i>
+                  </button>
+                  Var vänlig lägg till uppdrag.
+                </p>
+              </div>
             </div>
           </div>
           <div class="wrapper">
@@ -307,6 +322,14 @@
               </div>
             </div>
             <div class="container" id="container" v-if="show === 9">
+              <div v-if="consult_experience_options.length === 0">
+                <p>
+                  <button @click="AddClick()" id="nomargin">
+                    Lägg till <i class="fas fa-plus"></i>
+                  </button>
+                  Var vänlig lägg till uppdrag.
+                </p>
+              </div>
               <div
                 class="row"
                 v-for="(obj, index) in consult_experience_options"
@@ -375,14 +398,18 @@
       </div>
       <div class="wrapperPdfbox mainwrapper">
         <div class="row centerrow">
-          <div @click="page--"><i class="fas fa-arrow-left icon-click-next"></i></div>
-          <p>Sida {{this.page}}</p>
-          <div @click="page++"><i class="fas fa-arrow-right icon-click-next"></i></div>
+          <div @click="page--">
+            <i class="fas fa-arrow-left icon-click-next"></i>
+          </div>
+          <p>Sida {{ this.page }}</p>
+          <div @click="page++">
+            <i class="fas fa-arrow-right icon-click-next"></i>
+          </div>
         </div>
         <div id="pdfBox">
           <div v-if="page === 1" id="pdf" ref="document">
             <div class="row">
-              <img src="../assets/templogo.png" height="23px" class="logo" />
+              <img src="../assets/templogo.png" height="53px" class="logo" />
               <div class="contactdiv">
                 <p class="contact contactTitel">{{ this.company_name }}</p>
                 <p class="contact">{{ this.contact_phoneNumber }}</p>
@@ -392,7 +419,7 @@
             </div>
 
             <div class="row">
-              <img src="../assets/temp.png" height="150px" class="selfie" />
+              <img src="../assets/temp.png" height="200px" class="selfie" />
               <div class="cvTitelDiv">
                 <h1 class="cvTitel">{{ consult_name }}</h1>
                 <p class="cvTitelRoll">{{ consult_role }}</p>
@@ -407,10 +434,12 @@
                 {{ text }}
               </p>
             </div>
-            <div class="fokusBox">
-              <h3 class="fokusTitel">Uppdrag i fokus</h3>
+            <div v-if="consult_experience_focus.length != 0" class="fokusBox">
+              <h2 class="fokusTitel">Uppdrag i fokus</h2>
               <div>
-                <h4 class="fokusRoll">{{ consult_experience_focus_role }}</h4>
+                <h3 class="fokusRoll justify-left">
+                  {{ consult_experience_focus_role }}
+                </h3>
                 <p
                   v-if="consult_experience_focus.endDate === ''"
                   class="fokusFöretag"
@@ -432,20 +461,32 @@
                 </p>
               </div>
             </div>
-            <div class="contactFooterBox">
+            <div
+              v-if="sale_name !== null && sale_name !== ''"
+              class="contactFooterBox"
+            >
               <h3 class="contactFooterTitel">Säljkontakt</h3>
               <p class="contactFooterText">{{ sale_name }}</p>
               <p class="contactFooterText">{{ sale_email }}</p>
               <p class="contactFooterText">{{ sale_phone }}</p>
             </div>
-            <div class="footer">
+            <div v-if="company_name !== null" class="footer">
               <p class="bottomMidText">
-                {{ company_name }} - {{ consult_name }}
+                {{ company_name }}
+                <span v-if="consult_name !== null && consult_name !== ''"
+                  >-</span
+                >
+                {{ consult_name }}
               </p>
             </div>
           </div>
           <div v-if="page === 2" id="pdf" ref="document">
-            <h3 class="tidigareTitel">Tidigare projekt och uppdrag</h3>
+            <h3
+              v-if="consult_experience_other_list.length > 0"
+              class="tidigareTitel justify-left"
+            >
+              Tidigare projekt och uppdrag
+            </h3>
             <div
               class="blobspace"
               v-for="(obj, index) in consult_experience_other_list"
@@ -466,7 +507,7 @@
                   </p>
                 </div>
                 <div class="rightbox">
-                  <h3>{{ obj.role }}</h3>
+                  <h3 class="justify-left">{{ obj.role }}</h3>
                   <p class="lighterBreadText">
                     {{ obj.description }}
                   </p>
@@ -501,7 +542,7 @@ import html2pdf from "html2pdf.js";
 
 export default {
   name: "Consultant",
-  props: {},
+  props: ["userID"],
 
   data() {
     return {
@@ -531,13 +572,20 @@ export default {
       sale_email: "",
       sale_phone: "",
       role_freeEdit: false,
+      showUserID: '',
     };
   },
   async mounted() {
-    let user = await this.$store.getters.getLoggedInUser;
-    await this.$store.dispatch("getUserExperience", user.id);
-    await this.$store.dispatch("getUserPresentation", user.id);
-    await this.$store.dispatch("getCV", user.id);
+    if (this.userID == null) {
+      this.showUserID = await this.$store.getters.getLoggedInUser.id;
+    } else {
+      this.showUserID = this.userID;
+    }
+    
+
+    await this.$store.dispatch("getUserExperience", this.showUserID);
+    await this.$store.dispatch("getUserPresentation", this.showUserID);
+    await this.$store.dispatch("getCV", this.showUserID);
     let cv = await this.$store.getters.getCV;
 
     this.company_name = cv.company_name;
@@ -620,6 +668,12 @@ export default {
         }
       }
     },
+    AddClick() {
+      this.$router.push({ name: "ConsultantExperienceEdit" });
+    },
+    AddClickPresentation() {
+      this.$router.push({ name: "ConsultantPresentationEdit" });
+    },
     refreshVars() {
       for (var i = 0; i < this.consult_experience_other_list.length; i++) {
         for (var ii = 0; ii < this.consult_experience_other.length; ii++) {
@@ -667,14 +721,13 @@ export default {
       }
     },
     editMethod() {
-      this.$router.push("ConsultantExperience/");
+      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     async saveMethod() {
-      let user = await this.$store.getters.getLoggedInUser;
       await this.$store.dispatch("cvSave", {
         token: this.$store.getters.getUserToken,
         input: {
-          userID: user.id,
+          userID: this.showUserID,
           company_name: this.company_name,
           color: this.color,
           company_logo: this.company_logo,
@@ -720,6 +773,7 @@ export default {
       });
     },
     EditClickExperience(arr) {
+      arr.keepID = this.showUserID;
       this.$router.push({
         name: "ConsultantExperienceEdit",
         params: arr,
@@ -751,6 +805,10 @@ div {
   height: 297mm;
   margin-right: auto;
   margin-left: auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #pdfBox {
@@ -759,6 +817,7 @@ div {
   width: 250mm;
   border-style: solid;
   border-width: 1px;
+  position: relative;
 }
 
 .row {
@@ -784,31 +843,28 @@ div {
 }
 
 .selfie {
-  margin-left: 18px;
+  margin-top: 25px;
+  margin-left: -25px;
 }
 
 .logo {
-  margin-left: 40px;
-  margin-bottom: 60px;
-  margin-top: 60px;
 }
 
 .introstycke {
-  width: 50%;
+  width: 75%;
   font-style: normal;
-  margin-left: 40px;
+  height: 340px;
+  overflow: hidden;
 }
 
 .stycke {
   margin-top: 15px;
   font-weight: normal;
-  font-size: 13px;
 }
 
 .contactdiv {
   margin-left: auto;
   text-align: right;
-  margin-right: 40px;
 }
 
 .contact {
@@ -853,15 +909,16 @@ div {
 }
 
 .fokusBox {
-  width: 50%;
-  margin-left: 40px;
-  margin-top: 25px;
+  width: 65%;
+  overflow: hidden;
+  height: 260px;
 }
 
 .fokusTitel {
   color: #006d86;
   border-bottom: solid;
   border-width: 1px;
+  justify-content: left;
 }
 
 .fokusRoll {
@@ -870,8 +927,8 @@ div {
 
 .fokusFöretag {
   margin-top: 5px;
-  font-size: 13px;
-  margin-bottom: 3px;
+  font-size: 16px;
+  margin-bottom: 5px;
 }
 
 .förstaStycke {
@@ -883,21 +940,26 @@ div {
   color: white;
   border-style: none;
   border-radius: 10px;
-  width: 25%;
+  min-width: 25%;
   padding-left: 8px;
+  padding-right: 8px;
   padding-top: 10px;
   padding-bottom: 10px;
   margin-left: auto;
-  margin-right: 40px;
-  margin-top: auto;
+  position: absolute;
+  bottom: 10%;
+  left: 60%;
+  height: 100px;
 }
 
 .contactFooterTitel {
   font-size: 18px;
+  justify-content: left;
+  margin-bottom: 5px;
 }
 
 .contactFooterText {
-  font-size: 10px;
+  font-size: 15px;
   font-weight: lighter;
   margin-bottom: 3px;
 }
@@ -906,6 +968,10 @@ div {
   width: 100%;
   margin-top: auto;
   margin-bottom: auto;
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  right: 0;
 }
 
 .bottomMidText {
@@ -1085,15 +1151,16 @@ button:hover {
   color: #006d86;
   border-bottom: solid;
   border-width: 1px;
-  margin-left: 40px;
-  margin-right: 40px;
   margin-top: 50px;
   margin-bottom: 20px;
 }
 
+.justify-left {
+  justify-content: left;
+}
+
 .leftbox {
   width: 25%;
-  margin-left: 40px;
   margin-bottom: auto;
 }
 
@@ -1144,5 +1211,10 @@ button:hover {
   width: 145px;
   margin-left: auto;
   margin-right: auto;
+}
+
+#nomargin {
+  margin: 0px;
+  margin-right: 15px;
 }
 </style>

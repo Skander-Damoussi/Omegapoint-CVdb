@@ -28,7 +28,7 @@
           <th>{{ i.firstName }}</th>
           <th>{{ i.lastName }}</th>
           <th>
-            <p class="icon-click" v-on:click="showCV(i.index)">
+            <p class="icon-click" v-on:click="showCV(i.id)">
               <i class="fas fa-eye"></i>
             </p>
           </th>
@@ -46,22 +46,22 @@ import RegisterUser from "./RegisterUser.vue";
 export default {
   name: "ConsultantManager",
   components: {
-    RegisterUser
+    RegisterUser,
   },
   data() {
     return {
       searchString: "",
-      displayList: []
+      displayList: [],
     };
   },
   computed: {
     consultantList() {
       return this.$store.getters.getConsultantList;
-    }
+    },
   },
   methods: {
     showCV(index) {
-      console.log("click", index);
+      this.$router.push({ name: "Consultant", params: { userID: index } });
     },
     search() {
       this.displayList = [];
@@ -109,12 +109,12 @@ export default {
     resetSearch() {
       this.searchString = "";
       this.displayList = this.consultantList;
-    }
+    },
   },
   async mounted() {
     await this.$store.dispatch("getConsultantList");
     this.displayList = this.consultantList;
-  }
+  },
 };
 </script>
 

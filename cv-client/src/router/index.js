@@ -18,43 +18,51 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
-    meta: {}
+    meta: {},
   },
   {
     path: "/consultantmanager",
     name: "ConsultantManager",
     component: ConsultantManager,
-    meta: { reqAuth: true, consultantManagerAuth: true }
+    meta: { reqAuth: true, consultantManagerAuth: true },
   },
   {
     path: "/consultant",
     name: "Consultant",
     component: Consultant,
-    meta: { reqAuth: true, consultAuth: true }
+    meta: {
+      reqAuth: true,
+      consultAuth: true,
+      consultantManagerAuth: true
+    },
+    props: true
   },
   {
     path: "/consultantExperience",
     name: "ConsultantExperience",
     component: ConsultantExperience,
-    meta: { reqAuth: true, consultAuth: true }
+    meta: { reqAuth: true, consultAuth: true, consultantManagerAuth: true },
+    props: true
   },
   {
     path: "/consultantExperienceEdit",
     name: "ConsultantExperienceEdit",
     component: ConsultantExperienceEdit,
-    meta: { reqAuth: true, consultAuth: true }
+    meta: { reqAuth: true, consultAuth: true, consultantManagerAuth: true },
+    props: true
   },
   {
     path: "/consultantPresentationEdit",
     name: "ConsultantPresentationEdit",
     component: ConsultantPresentationEdit,
-    meta: { reqAuth: true, consultAuth: true }
+    meta: { reqAuth: true, consultAuth: true, consultantManagerAuth: true },
+    props: true
   },
   {
     path: "/admin",
     name: "Admin",
     component: Admin,
-    meta: { reqAuth: true, adminAuth: true }
+    meta: { reqAuth: true, adminAuth: true },
   },
   {
     path: "/edituser",
@@ -64,22 +72,22 @@ const routes = [
       reqAuth: true,
       consultAuth: true,
       adminAuth: true,
-      consultantManagerAuth: true
-    }
+      consultantManagerAuth: true,
+    },
   },
   {
     path: "/verify/:token/:userId",
     name: "Verify",
-    component: Verify
-  }
+    component: Verify,
+  },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.reqAuth)) {
+  if (to.matched.some((record) => record.meta.reqAuth)) {
     if (store.getters.getLoggedIn) {
       switch (store.getters.getLoggedInUser.role) {
         case "Admin":
