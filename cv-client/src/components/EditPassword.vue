@@ -57,6 +57,16 @@
         <p v-if="status === 200">
           Lösenord ändrat.
         </p>
+        <p v-if="status === 500">
+          Något gick fel, vänligen försök igen eller kontakta ansvarig.
+        </p>
+        <p v-if="status === 400">
+          Vänligen fyll i fält med nytt lösenord om du önskar uppdatera.
+        </p>
+        <p v-if="status === 403">
+          Inkorrekt inmatning av nuvarande lösenord, vänligen försök igen.
+        </p>
+
       </section>
     </main>
   </div>
@@ -111,9 +121,10 @@ export default {
           currentPassword: this.formResponses.currentPassword,
           newPassword: this.formResponses.password
         };
-        this.$store.dispatch("updatePassword", updatePassword);
+        await this.$store.dispatch("updatePassword", updatePassword);
         this.state = "form submitted";
         this.status = await this.$store.getters.getStatus;
+        console.log("passwordstatus", this.status);
       }
     }
   }

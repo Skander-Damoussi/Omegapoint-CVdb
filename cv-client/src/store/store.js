@@ -110,7 +110,9 @@ export default new Vuex.Store({
           await commit("setLoggedInUser", respUser);
           await commit("setStatus", this.status);
         })
-        .catch((err) => console.log(err));
+        .catch(err => {
+          commit("setStatus", err.response.status);
+        });
     },
     async updatePassword({ commit }, password) {
       await Axios.put("user/updatePassword", password)
@@ -126,7 +128,9 @@ export default new Vuex.Store({
           await commit("setLoggedInUser", respUser);
           await commit("setStatus", this.status);
         })
-        .catch((err) => console.log(err));
+        .catch(err => {
+          commit("setStatus", err.response.status);
+        });
     },
     async logOut({ commit }) {
       commit("resetState");

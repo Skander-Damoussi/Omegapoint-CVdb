@@ -357,6 +357,7 @@ namespace cv_api.Controllers
                 {
                     identityUser.FirstName = updatedUser.FirstName;
                 }
+
                 if(updatedUser.LastName != "" && identityUser.LastName != updatedUser.LastName)
                 {
                     identityUser.LastName = updatedUser.LastName;
@@ -377,7 +378,7 @@ namespace cv_api.Controllers
             }
             catch
             {
-                return BadRequest(updatedUser);
+                return StatusCode(500);
             }
 
         }
@@ -389,9 +390,18 @@ namespace cv_api.Controllers
             {
                 var identityUser = await userManager.FindByIdAsync(updatedPassword.Id);
 
+                if(await userManager.CheckPasswordAsync(identityUser, updatedPassword.CurrentPassword) == false) //Skrivit in fel lösenord
+                {
+                    return StatusCode(403);
+                }
+
                 if (updatedPassword.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedPassword.NewPassword) == false)
                 {
                     var res = await userManager.ChangePasswordAsync(identityUser, updatedPassword.CurrentPassword, updatedPassword.NewPassword);
+                }
+                else
+                {
+                    return StatusCode(400);
                 }
                 var result = await userManager.UpdateAsync(identityUser);
 
@@ -408,7 +418,7 @@ namespace cv_api.Controllers
             }
             catch
             {
-                return BadRequest(updatedPassword);
+                return StatusCode(500);
             }
 
         }
