@@ -362,6 +362,14 @@ namespace cv_api.Controllers
                 {
                     identityUser.LastName = updatedUser.LastName;
                 }
+                if(updatedUser.FirstName == "" && updatedUser.LastName == "")
+                {
+                    return StatusCode(403);
+                }
+                if(updatedUser.FirstName == identityUser.FirstName && updatedUser.LastName == identityUser.LastName)
+                {
+                    return StatusCode(400);
+                }
 
                 var result = await userManager.UpdateAsync(identityUser);
 
@@ -390,7 +398,7 @@ namespace cv_api.Controllers
             {
                 var identityUser = await userManager.FindByIdAsync(updatedPassword.Id);
 
-                if(await userManager.CheckPasswordAsync(identityUser, updatedPassword.CurrentPassword) == false) //Skrivit in fel lösenord
+                if(await userManager.CheckPasswordAsync(identityUser, updatedPassword.CurrentPassword) == false) //Skrivit in fel nuvarande lösenord
                 {
                     return StatusCode(403);
                 }

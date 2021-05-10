@@ -66,7 +66,6 @@
         <p v-if="status === 403">
           Inkorrekt inmatning av nuvarande lösenord, vänligen försök igen.
         </p>
-
       </section>
     </main>
   </div>

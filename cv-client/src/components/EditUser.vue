@@ -20,9 +20,12 @@
         <p v-if="status === 500">
           Något gick fel, vänligen försök igen eller kontakta ansvarig.
         </p>
-        <!-- <p v-if="status === 400">
-          Vänligen fyll i fält med nytt namn om du önskar uppdatera.
-        </p> -->
+        <p v-if="status === 403">
+          Gick ej att ändra namn, vänligen fyll i båda fälten.
+        </p>
+        <p v-if="status === 400">
+          Skriv in nytt namn om du önskar ändra.
+        </p>
       </div>
       <div class="edit-password">
         <EditPassword />
