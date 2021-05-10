@@ -92,8 +92,8 @@ export default new Vuex.Store({
           await commit("setLoggedIn", true);
         })
         .catch(error => {
-          console.log(error);
-          commit("setStatus", error.response.status);
+          //console.log(error.response.data);
+          commit("setStatus", error.response);
         });
     },
     async updateUser({ commit }, user) {
