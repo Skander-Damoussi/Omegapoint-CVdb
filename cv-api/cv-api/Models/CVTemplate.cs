@@ -15,10 +15,8 @@ namespace cv_api.Models
         [Required]
         //[BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string Name { get; set; }
+        public bool Active { get; set; }
         public byte[] FileByte { get; set; }
-
-
-
         
 
     }

@@ -36,14 +36,16 @@ namespace cv_api.DocxCreate
             " nyikenhet, prestigelöshet och en positiv attityd lyssnar Andreas" +
             " gärna för att inte bara utveckla saker rätt, utan också rätt saker";
 
-            ReplaceTextBookmarks(memoryStream, "userName", "Andreas Andreasson");
-            //ReplaceTextBookmarks(memoryStream, "userNameFooter", "Andreas Andreasson");
-            ReplaceTextBookmarks(memoryStream, "userRole", "Utvecklare");
-            //Problem
+            await ReplaceTextBookmarks(memoryStream, "userName", "Andreas Andreasson");
+            await ReplaceTextBookmarks(memoryStream, "userRole", "Utvecklare");            
             await ReplaceTextBookmarks(memoryStream, "story", story);
-            ReplaceTextBookmarks(memoryStream, "contactName", "Per Persson");
-            ReplaceTextBookmarks(memoryStream, "contactEmail", "per.persson@omegapoint.se");
-            ReplaceTextBookmarks(memoryStream, "contactPhone", "070-22 33 44");
+            await ReplaceTextBookmarks(memoryStream, "contactName", "Per Persson");
+            await ReplaceTextBookmarks(memoryStream, "contactEmail", "per.persson@omegapoint.se");
+            await ReplaceTextBookmarks(memoryStream, "contactPhone", "070-22 33 44");
+            //focusassignment
+            await ReplaceTextBookmarks(memoryStream, "focusAssignmentRole", "Utvecklare");
+            await ReplaceTextBookmarks(memoryStream, "focusAssignmentCompany", "Volvo");
+            await ReplaceTextBookmarks(memoryStream, "focusAssignmentText", "På volvo deltog Andreas i ett utvecklingarbete för självkörande bilar.");
         }
 
         public async Task ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, string input)

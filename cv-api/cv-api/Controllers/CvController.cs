@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using cv_api.DocxCreate;
+using Microsoft.AspNetCore.Identity;
+using cv_api.Areas.Identity.Data;
+
 
 namespace cv_api.Controllers
 {
@@ -21,14 +24,20 @@ namespace cv_api.Controllers
     {
         private readonly ILogger<CvController> _logger;
         private readonly IMongoRepository<CVTemplate> _cvRepository;
-        //private readonly IMongoRepository<User> _userRepository;
+        private readonly IMongoRepository<User> _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public CvController(ILogger<CvController> logger, IMongoRepository<CVTemplate> cvRepository, IConfiguration configuration)
+        public CvController(ILogger<CvController> logger, 
+            IMongoRepository<CVTemplate> cvRepository, 
+            IMongoRepository<User> userRepository, 
+            UserManager<ApplicationUser> userManager, 
+            IConfiguration configuration)
         {
             _logger = logger;
             _cvRepository = cvRepository;
-            //_userRepository = userRepository;
+            _userRepository = userRepository;
+            this.userManager = userManager;
             _configuration = configuration;
 
         }
@@ -40,9 +49,10 @@ namespace cv_api.Controllers
         {
 
             CVTemplate cvTemplate = new CVTemplate();
-            cvTemplate.Name = "TestMedUpload3";
+            cvTemplate.Name = "TestMedUpload5";
+            cvTemplate.Active = true;
 
-            string filePath = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\upload.docx";
+            string filePath = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\testmedupload5.docx";
 
             cvTemplate.FileByte = System.IO.File.ReadAllBytes(filePath);
 
@@ -58,8 +68,10 @@ namespace cv_api.Controllers
             //CVTemplate cvTemplate = new CVTemplate();
 
             var cv = _cvRepository.FilterBy(
-            filter => filter.Name == "TestMedUpload3",
+            filter => filter.Name == "TestMedUpload5",
             projection => projection.FileByte).FirstOrDefault();
+
+            
 
             using (var net = new System.Net.WebClient())
             {
@@ -73,13 +85,20 @@ namespace cv_api.Controllers
         }
 
         //Test, download populate cv template
-        [HttpGet("GetCvDocx")]
-        public async Task<IActionResult> GetCvDocx()
+        [HttpGet("GetCvDocx/{userId}")]
+        public async Task<IActionResult> GetCvDocx(string userId)
         {
             var cv = _cvRepository.FilterBy(
-            filter => filter.Name == "TestMedUpload3",
+            filter => filter.Name == "TestMedUpload5",
             projection => projection.FileByte).FirstOrDefault();
 
+            //Where active == true
+
+            //var user = _userRepository.FilterBy(
+            //    filter => filter.FirstName == "konsult",
+            //    projection => projection.LastName).FirstOrDefault();
+
+            var user = await userManager.FindByIdAsync(userId);
 
             DocxCreator docxCreate = new DocxCreator();
 
@@ -101,7 +120,6 @@ namespace cv_api.Controllers
                 {
                     FileDownloadName = DateTime.Now.ToString() + ".docx"
                 };
-
             }
 
 
