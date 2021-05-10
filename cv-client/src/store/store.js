@@ -18,7 +18,8 @@ const getDefaultState = () => {
     role: null,
     verified: null,
     searchList: [],
-    CV: []
+    CV: [],
+    status: ""
   };
 };
 
@@ -26,6 +27,9 @@ export default new Vuex.Store({
   plugins: [createPersistedState()],
   state: getDefaultState(),
   mutations: {
+    setStatus(state, status) {
+      state.status = status;
+    },
     resetState(state) {
       let defaultState = getDefaultState();
       for (let key in state) state[key] = defaultState[key];
@@ -88,9 +92,9 @@ export default new Vuex.Store({
         .catch(err => console.log(err));
     },
     async updateUser({ commit }, user) {
-      console.log(user.password);
       await Axios.put("user/", user)
         .then(async resp => {
+          this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
             firstName: resp.data.firstName,
@@ -99,13 +103,14 @@ export default new Vuex.Store({
             experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
-          console.log(this.loggedInUser);
+          await commit("setStatus", this.status);
         })
         .catch(err => console.log(err));
     },
     async updatePassword({ commit }, password) {
       await Axios.put("user/updatePassword", password)
         .then(async resp => {
+          this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
             firstName: resp.data.firstName,
@@ -114,7 +119,7 @@ export default new Vuex.Store({
             experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
-          console.log(this.loggedInUser);
+          await commit("setStatus", this.status);
         })
         .catch(err => console.log(err));
     },
@@ -302,6 +307,9 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    getStatus(state) {
+      return state.status;
+    },
     getLoggedIn(state) {
       return state.loggedIn;
     },
