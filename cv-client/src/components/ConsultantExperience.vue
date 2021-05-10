@@ -7,6 +7,7 @@
         </button>
         <input
           type="text"
+          v-if="experienceList.length > 0 || presentationList.length > 0"
           v-model="searchText"
           v-on:input="search()"
           @keyup.enter="search()"
@@ -29,7 +30,12 @@
         </button>
       </div>
       <div v-else>
-        <p id="textcenter">Var vänlig lägg till dina uppdrag.</p>
+        <p id="textcenter">
+          Var vänlig lägg till dina uppdrag.
+          <button @click="AddClick()" id="addButton">
+            Lägg till <i class="fas fa-plus"></i>
+          </button>
+        </p>
       </div>
       <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
         <div class="title" @click="col.show = !col.show">
@@ -77,7 +83,11 @@
           <h3 id="h3space" v-if="col.assignments.length > 0">
             Arbetsbeskrivningar
           </h3>
-          <li id="inboxTextArea" v-for="assign in col.assignments" :key="assign">
+          <li
+            id="inboxTextArea"
+            v-for="assign in col.assignments"
+            :key="assign"
+          >
             {{ assign }}
           </li>
           <h3 id="h3space" v-if="col.role.length > 0">Arbetsroller</h3>
@@ -103,7 +113,12 @@
         </button>
       </div>
       <div v-else>
-        <p id="textcenter">Var vänlig lägg till presentationer.</p>
+        <p id="textcenter">
+          Var vänlig lägg till presentationer.
+          <button @click="AddClickPresentation()" id="addButton">
+            Lägg till <i class="fas fa-plus"></i>
+          </button>
+        </p>
       </div>
       <div
         class="wrapperPresentation"
@@ -489,6 +504,7 @@ h3 {
 
 #h3space {
   margin-top: 25px;
+  justify-content: left;
 }
 
 .container {
