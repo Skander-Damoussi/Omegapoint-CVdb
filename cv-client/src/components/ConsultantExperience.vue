@@ -7,6 +7,7 @@
         </button>
         <input
           type="text"
+          v-if="experienceList.length > 0 || presentationList.length > 0"
           v-model="searchText"
           v-on:input="search()"
           @keyup.enter="search()"
@@ -29,7 +30,12 @@
         </button>
       </div>
       <div v-else>
-        <p id="textcenter">Var vänlig lägg till dina uppdrag.</p>
+        <p id="textcenter">
+          Var vänlig lägg till dina uppdrag.
+          <button @click="AddClick()" id="addButton">
+            Lägg till <i class="fas fa-plus"></i>
+          </button>
+        </p>
       </div>
       <div class="wrapper" v-for="(col, index) in experienceList" :key="index">
         <div class="title" @click="col.show = !col.show">
@@ -77,7 +83,11 @@
           <h3 id="h3space" v-if="col.assignments.length > 0">
             Arbetsbeskrivningar
           </h3>
-          <li id="inboxTextArea" v-for="assign in col.assignments" :key="assign">
+          <li
+            id="inboxTextArea"
+            v-for="assign in col.assignments"
+            :key="assign"
+          >
             {{ assign }}
           </li>
           <h3 id="h3space" v-if="col.role.length > 0">Arbetsroller</h3>
@@ -103,7 +113,12 @@
         </button>
       </div>
       <div v-else>
-        <p id="textcenter">Var vänlig lägg till presentationer.</p>
+        <p id="textcenter">
+          Var vänlig lägg till presentationer.
+          <button @click="AddClickPresentation()" id="addButton">
+            Lägg till <i class="fas fa-plus"></i>
+          </button>
+        </p>
       </div>
       <div
         class="wrapperPresentation"
@@ -153,6 +168,7 @@
 <script>
 export default {
   name: "EditUser",
+  props: ["userID"],
   data: function() {
     return {
       sortTitle: false,
@@ -160,20 +176,26 @@ export default {
       searchText: "",
       experienceList: {},
       presentationList: {},
+      showUserID: '',
     };
   },
   async mounted() {
-    let user = await this.$store.getters.getLoggedInUser;
-    await this.$store.dispatch("getUserExperience", user.id);
+    if (this.userID == null) {
+      this.showUserID = await this.$store.getters.getLoggedInUser.id;
+    } else {
+      this.showUserID = this.userID;
+    }
+    await this.$store.dispatch("getUserExperience", this.showUserID);
     this.experienceList = this.$store.getters.getUserExperience;
-    await this.$store.dispatch("getUserPresentation", user.id);
+    await this.$store.dispatch("getUserPresentation", this.showUserID);
     this.presentationList = this.$store.getters.getUserPresentation;
   },
   methods: {
     CVClick() {
-      this.$router.push({ name: "Consultant" });
+      this.$router.push({ name: "Consultant", params: { userID: this.showUserID } });
     },
     EditClick(index) {
+      this.experienceList[index].keepID = this.showUserID;
       this.$router.push({
         name: "ConsultantExperienceEdit",
         params: this.experienceList[index],
@@ -220,13 +242,12 @@ export default {
       }
     },
     AddClick() {
-      this.$router.push({ name: "ConsultantExperienceEdit" });
+      this.$router.push({ name: "ConsultantExperienceEdit", params: { keepID: this.showUserID } });
     },
     async RemoveClick(index) {
       if (!confirm("Are you sure?")) {
         return;
       }
-      let user = await this.$store.getters.getLoggedInUser;
       await this.$store.dispatch("removeExperience", {
         token: this.$store.getters.getUserToken,
         input: {
@@ -237,7 +258,7 @@ export default {
           Software: null,
           Assignments: null,
           Role: null,
-          userID: user.id,
+          userID: this.showUserID,
           newExperience: false,
           id: this.experienceList[index].id,
         },
@@ -269,25 +290,25 @@ export default {
       this.sortDate = !this.sortDate;
     },
     EditClickPresentation(index) {
+      this.presentationList[index].keepID = this.showUserID;
       this.$router.push({
         name: "ConsultantPresentationEdit",
         params: this.presentationList[index],
       });
     },
     AddClickPresentation() {
-      this.$router.push({ name: "ConsultantPresentationEdit" });
+      this.$router.push({ name: "ConsultantPresentationEdit", params: { keepID: this.showUserID } });
     },
     async RemoveClickPresentation(index) {
       if (!confirm("Are you sure?")) {
         return;
       }
-      let user = await this.$store.getters.getLoggedInUser;
       await this.$store.dispatch("removePresentation", {
         token: this.$store.getters.getUserToken,
         input: {
           title: this.presentationList[index].title,
           paragraph: null,
-          userID: user.id,
+          userID: this.showUserID,
           newExperience: false,
           id: this.presentationList[index].id,
         },
@@ -483,6 +504,7 @@ h3 {
 
 #h3space {
   margin-top: 25px;
+  justify-content: left;
 }
 
 .container {
