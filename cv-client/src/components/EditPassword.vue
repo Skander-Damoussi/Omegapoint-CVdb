@@ -53,20 +53,11 @@
           Fyll i fälten för att byta lösenord.
         </p>
       </section>
-      <section class="status">
-        <p v-if="status === 200">
-          Lösenord ändrat.
+      <div class="status">
+        <p>
+          {{ status }}
         </p>
-        <p v-if="status === 500">
-          Något gick fel, vänligen försök igen eller kontakta ansvarig.
-        </p>
-        <p v-if="status === 400">
-          Vänligen fyll i fält med nytt lösenord om du önskar uppdatera.
-        </p>
-        <p v-if="status === 403">
-          Inkorrekt inmatning av nuvarande lösenord, vänligen försök igen.
-        </p>
-      </section>
+      </div>
     </main>
   </div>
 </template>
@@ -123,7 +114,9 @@ export default {
         await this.$store.dispatch("updatePassword", updatePassword);
         this.state = "form submitted";
         this.status = await this.$store.getters.getStatus;
-        console.log("passwordstatus", this.status);
+        if (this.status == 200) {
+          this.status = "Lösenord ändrat.";
+        }
       }
     }
   }

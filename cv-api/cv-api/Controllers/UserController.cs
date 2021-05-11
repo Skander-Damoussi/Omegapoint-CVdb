@@ -355,11 +355,11 @@ namespace cv_api.Controllers
 
                 if (updatedUser.FirstName == identityUser.FirstName && updatedUser.LastName == identityUser.LastName)
                 {
-                    return StatusCode(400);
+                    return BadRequest("Vänligen, skriv in nytt namn för att byta.");
                 }
                 if (updatedUser.FirstName == "" && updatedUser.LastName == "")
                 {
-                    return StatusCode(403);
+                    return StatusCode(403, "Gick ej att ändra namn, vänligen fyll i båda fälten.");
                 }
 
                 if (updatedUser.FirstName != "" && identityUser.FirstName != updatedUser.FirstName)
@@ -387,7 +387,7 @@ namespace cv_api.Controllers
             }
             catch
             {
-                return StatusCode(500);
+                return StatusCode(500, "Något gick fel, vänligen försök igen eller kontakta ansvarig.");
             }
 
         }
@@ -401,7 +401,7 @@ namespace cv_api.Controllers
 
                 if(await userManager.CheckPasswordAsync(identityUser, updatedPassword.CurrentPassword) == false) //Skrivit in fel nuvarande lösenord
                 {
-                    return StatusCode(403);
+                    return StatusCode(403, "Inkorrekt inmatning av nuvarande lösenord, vänligen försök igen.");
                 }
 
                 if (updatedPassword.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedPassword.NewPassword) == false)
@@ -410,7 +410,7 @@ namespace cv_api.Controllers
                 }
                 else
                 {
-                    return StatusCode(400);
+                    return BadRequest("Vänligen fyll i fält med nytt lösenord om du önskar uppdatera.");
                 }
                 var result = await userManager.UpdateAsync(identityUser);
 
@@ -427,7 +427,7 @@ namespace cv_api.Controllers
             }
             catch
             {
-                return StatusCode(500);
+                return StatusCode(500, "Något gick fel, vänligen försök igen eller kontakta ansvarig.");
             }
 
         }

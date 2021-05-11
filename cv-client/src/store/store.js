@@ -99,6 +99,7 @@ export default new Vuex.Store({
     async updateUser({ commit }, user) {
       await Axios.put("user/", user)
         .then(async (resp) => {
+          console.log("store", resp);
           this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
@@ -111,7 +112,8 @@ export default new Vuex.Store({
           await commit("setStatus", this.status);
         })
         .catch(err => {
-          commit("setStatus", err.response.status);
+          console.log("err resp", err.response.data);
+          commit("setStatus", err.response.data);
         });
     },
     async updatePassword({ commit }, password) {
@@ -129,7 +131,8 @@ export default new Vuex.Store({
           await commit("setStatus", this.status);
         })
         .catch(err => {
-          commit("setStatus", err.response.status);
+          console.log("err resp", err.response);
+          commit("setStatus", err.response.data);
         });
     },
     async logOut({ commit }) {
