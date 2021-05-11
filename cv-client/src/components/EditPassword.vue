@@ -53,11 +53,11 @@
           Fyll i fälten för att byta lösenord.
         </p>
       </section>
-      <section class="status">
-        <p v-if="status === 200">
-          Lösenord ändrat.
+      <div class="status">
+        <p>
+          {{ status }}
         </p>
-      </section>
+      </div>
     </main>
   </div>
 </template>
@@ -111,9 +111,12 @@ export default {
           currentPassword: this.formResponses.currentPassword,
           newPassword: this.formResponses.password
         };
-        this.$store.dispatch("updatePassword", updatePassword);
+        await this.$store.dispatch("updatePassword", updatePassword);
         this.state = "form submitted";
         this.status = await this.$store.getters.getStatus;
+        if (this.status == 200) {
+          this.status = "Lösenord ändrat.";
+        }
       }
     }
   }

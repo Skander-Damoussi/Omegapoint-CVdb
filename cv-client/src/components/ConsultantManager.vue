@@ -46,18 +46,18 @@ import RegisterUser from "./RegisterUser.vue";
 export default {
   name: "ConsultantManager",
   components: {
-    RegisterUser,
+    RegisterUser
   },
   data() {
     return {
       searchString: "",
-      displayList: [],
+      displayList: []
     };
   },
   computed: {
     consultantList() {
       return this.$store.getters.getConsultantList;
-    },
+    }
   },
   methods: {
     showCV(index) {
@@ -109,12 +109,12 @@ export default {
     resetSearch() {
       this.searchString = "";
       this.displayList = this.consultantList;
-    },
+    }
   },
   async mounted() {
     await this.$store.dispatch("getConsultantList");
     this.displayList = this.consultantList;
-  },
+  }
 };
 </script>
 
