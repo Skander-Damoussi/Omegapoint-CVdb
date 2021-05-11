@@ -92,6 +92,9 @@ export default {
     };
   },
   created() {
+    if(this.$store.getters.getLoggedInUser.role === 'Konsultchef' && typeof this.$route.params.keepID === "undefined"){
+      this.$router.push({ name: "ConsultantManager" });
+    }
     if (this.$route.params.title === undefined) {
       this.title = "Ny presentation";
       this.newEntry = true;

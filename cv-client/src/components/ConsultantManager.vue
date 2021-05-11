@@ -69,7 +69,6 @@ export default {
         this.$store.dispatch("getConsultantList");
       } else {
         for (var i = 0; i < this.consultantList.length; i++) {
-          console.log(this.consultantList[i]);
           if (
             this.consultantList[i].firstName.includes(this.searchString) ||
             this.consultantList[i].lastName.includes(this.searchString)
