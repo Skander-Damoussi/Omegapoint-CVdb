@@ -63,10 +63,11 @@ export default {
     showCV(index) {
       this.$router.push({ name: "Consultant", params: { userID: index } });
     },
-    search() {
+    async search() {
       this.displayList = [];
       if (this.searchString.length < 1) {
-        this.$store.dispatch("getConsultantList");
+        await this.$store.dispatch("getConsultantList");
+        this.displayList = this.consultantList;
       } else {
         for (var i = 0; i < this.consultantList.length; i++) {
           if (
@@ -99,6 +100,7 @@ export default {
                 )
               ) {
                 this.displayList.push(this.consultantList[i]);
+                break;
               }
             }
           }
