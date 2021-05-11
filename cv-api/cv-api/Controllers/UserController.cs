@@ -440,10 +440,14 @@ namespace cv_api.Controllers
             var user = await userManager.FindByNameAsync(userInput.Email);
 
             if (signInResult.IsNotAllowed)
-                return StatusCode(403);
+                return Forbid("Email is not confirmed"); //Email is not confirmed status
 
             if (!signInResult.Succeeded)
-                return StatusCode(401);
+                return Unauthorized("Wrong login"); //Login failed status
+
+            if (user.Active.HasValue) // Måste kolla så att dett finns ett true/false värde annars kraschar api om det är null. Tillfällig lösning tills db är helt klart
+                if ((bool)!user.Active)
+                    return Unauthorized("Inactive account");
 
             var userRoles = await userManager.GetRolesAsync(user);
 

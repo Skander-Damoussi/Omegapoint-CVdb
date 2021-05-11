@@ -40,9 +40,11 @@
           <span class="error" v-if="errorVerify">
             Du har inte verifierad ditt konto än.
           </span>
+          <span class="error" v-if="errorInactive">
+            Ditt konto är inaktiverat kontakta OmegaPoint.
+          </span>
         </div>
         <div class="formRow">
-          
           <input
             id="loginButton"
             type="submit"
@@ -68,6 +70,7 @@ export default {
       passwordField: true,
       errorLogin: false,
       errorVerify: false,
+      errorInactive: false
     };
   },
   validations: {
@@ -95,13 +98,22 @@ export default {
       });
       if (this.$store.getters.getLoggedIn == false) {
         var status = this.$store.getters.getStatus;
-        console.log(this.$store.getters.getStatus);
-        if (status == 401) {
-          this.errorVerify = false;
-          this.errorLogin = true;
+        console.log(this.$store.getters.getStatus + "getstatus");
+        if (status.status == 401) {
+          if (status.data == "Wrong login") {
+            this.errorVerify = false;
+            this.errorInactive = false;
+            this.errorLogin = true;
+          }
+          if (status.data == "Inactive account") {
+            this.errorVerify = false;
+            this.errorLogin = false;
+            this.errorInactive = true;
+          }
         }
-        if (status == 403) {
+        if (status.status == 403) {
           this.errorLogin = false;
+          this.errorInactive = false;
           this.errorVerify = true;
         }
       } else {
