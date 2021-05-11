@@ -2,7 +2,7 @@
   <div class="main">
     <div class="search">
       <h3>
-        Inaktivera användare
+        Hantera användare
       </h3>
       <div class="searchBox">
         <i class="fas fa-search"></i>
