@@ -28,6 +28,13 @@
         ></i>
         <p class="marginleftIcon">Exportera till PDF</p>
       </div>
+      <div class="row icon-clickHome" v-on:click="goManagerHome">
+        <i
+          class="btn fas fa-home fa-2x"
+          title="Hem"
+        ></i>
+        <p class="marginleftIcon marginright">Hem</p>
+      </div>
     </div>
     <div class="wrapper row">
       <div class="editBox mainwrapper">
@@ -644,7 +651,11 @@ export default {
 
     this.setFocusExperience(this.consult_experience_focus_title);
   },
-  created() {},
+  created() {
+    if(this.$store.getters.getLoggedInUser.role === 'Konsultchef' && typeof this.userID === "undefined"){
+      this.$router.push({ name: "ConsultantManager" });
+    }
+  },
   methods: {
     getInfoByID(what, id) {
       for (var i = 0; i < this.consult_experience_options.length; i++) {
@@ -670,6 +681,9 @@ export default {
     },
     AddClick() {
       this.$router.push({ name: "ConsultantExperienceEdit" });
+    },
+    goManagerHome() {
+      this.$router.push({ name: "ConsultantManager" });
     },
     AddClickPresentation() {
       this.$router.push({ name: "ConsultantPresentationEdit" });
@@ -886,6 +900,14 @@ div {
 }
 
 .icon-click:hover {
+  color: #006166;
+}
+
+.icon-clickHome {
+  cursor: pointer;
+}
+
+.icon-clickHome:hover {
   color: #006166;
 }
 
@@ -1166,6 +1188,10 @@ button:hover {
 
 .rightbox {
   width: 66%;
+}
+
+.marginright{
+  margin-right: 20px;
 }
 
 .blob {

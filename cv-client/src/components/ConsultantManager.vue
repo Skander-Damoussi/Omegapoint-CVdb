@@ -21,7 +21,7 @@
           <th>#</th>
           <th>Förnamn</th>
           <th>Efternamn</th>
-          <th></th>
+          <th>CV</th>
         </tr>
         <tr v-for="(i, index) in displayList" :key="index">
           <th>{{ index }}</th>
@@ -63,13 +63,13 @@ export default {
     showCV(index) {
       this.$router.push({ name: "Consultant", params: { userID: index } });
     },
-    search() {
+    async search() {
       this.displayList = [];
       if (this.searchString.length < 1) {
-        this.$store.dispatch("getConsultantList");
+        await this.$store.dispatch("getConsultantList");
+        this.displayList = this.consultantList;
       } else {
         for (var i = 0; i < this.consultantList.length; i++) {
-          console.log(this.consultantList[i]);
           if (
             this.consultantList[i].firstName.includes(this.searchString) ||
             this.consultantList[i].lastName.includes(this.searchString)
@@ -100,6 +100,7 @@ export default {
                 )
               ) {
                 this.displayList.push(this.consultantList[i]);
+                break;
               }
             }
           }
