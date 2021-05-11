@@ -64,13 +64,21 @@ export default {
   methods: {
     async updateUser() {
       this.status = "";
-      var updateUser = {
-        Id: this.user.id,
-        FirstName: this.user.firstName,
-        LastName: this.user.lastName
-      };
-      await this.$store.dispatch("updateUser", updateUser);
-      this.status = await this.$store.getters.getStatus;
+      console.log(this.user.firstName);
+      if (this.user.firstName == "" || this.user.lastName == "") {
+        this.status = 403;
+      } else if (this.user.firstName != "" && this.user.lastName != "") {
+        var updateUser = {
+          Id: this.user.id,
+          FirstName: this.user.firstName,
+          LastName: this.user.lastName
+        };
+        await this.$store.dispatch("updateUser", updateUser);
+        this.status = await this.$store.getters.getStatus;
+        console.log(this.status);
+      } else {
+        this.status = 500;
+      }
     }
   }
 };

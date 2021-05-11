@@ -353,6 +353,15 @@ namespace cv_api.Controllers
             {
                 var identityUser = await userManager.FindByIdAsync(updatedUser.Id);
 
+                if (updatedUser.FirstName == identityUser.FirstName && updatedUser.LastName == identityUser.LastName)
+                {
+                    return StatusCode(400);
+                }
+                if (updatedUser.FirstName == "" && updatedUser.LastName == "")
+                {
+                    return StatusCode(403);
+                }
+
                 if (updatedUser.FirstName != "" && identityUser.FirstName != updatedUser.FirstName)
                 {
                     identityUser.FirstName = updatedUser.FirstName;
@@ -361,14 +370,6 @@ namespace cv_api.Controllers
                 if(updatedUser.LastName != "" && identityUser.LastName != updatedUser.LastName)
                 {
                     identityUser.LastName = updatedUser.LastName;
-                }
-                if(updatedUser.FirstName == "" && updatedUser.LastName == "")
-                {
-                    return StatusCode(403);
-                }
-                if(updatedUser.FirstName == identityUser.FirstName && updatedUser.LastName == identityUser.LastName)
-                {
-                    return StatusCode(400);
                 }
 
                 var result = await userManager.UpdateAsync(identityUser);
