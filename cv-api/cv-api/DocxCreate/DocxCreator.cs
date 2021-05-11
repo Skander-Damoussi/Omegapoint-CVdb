@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml;
+﻿using cv_api.Models;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -13,11 +14,11 @@ namespace cv_api.DocxCreate
 {
     public class DocxCreator
     {
-        public async Task CreateDocx(MemoryStream memoryStream)
+        public async Task CreateDocx(MemoryStream memoryStream, CV cv)
         {
             //Ta emot datan
-            await ReplaceFields(memoryStream);
-            //Utkommenterat för felsökning
+            await ReplaceFields(memoryStream, cv);
+
             AddTechniques(memoryStream, "techniques");//Fixa lista för techniques
             await AddAssignments(memoryStream, "assignments");//Skicka in assignmentslistan
             AddLanguage(memoryStream, "language");//Skicka in languagelista
@@ -27,25 +28,33 @@ namespace cv_api.DocxCreate
 
         }
 
-        public async Task ReplaceFields(MemoryStream memoryStream)
+        public async Task ReplaceFields(MemoryStream memoryStream, CV cv)
         {
-            string story = @"Som många utvecklare trivs Andreas bäst när han får lösa" +
-            " komplexa problem och växer med utmaningar. Att ta stort" +
-            " ansvar som ensam utvecklare i projekt eller vara en dynamisk" +
-            " del av ett större team gör Michal bra vilket som. Med stor" +
-            " nyikenhet, prestigelöshet och en positiv attityd lyssnar Andreas" +
-            " gärna för att inte bara utveckla saker rätt, utan också rätt saker";
+            //string story = @"Som många utvecklare trivs Andreas bäst när han får lösa" +
+            //" komplexa problem och växer med utmaningar. Att ta stort" +
+            //" ansvar som ensam utvecklare i projekt eller vara en dynamisk" +
+            //" del av ett större team gör Michal bra vilket som. Med stor" +
+            //" nyikenhet, prestigelöshet och en positiv attityd lyssnar Andreas" +
+            //" gärna för att inte bara utveckla saker rätt, utan också rätt saker";
 
-            await ReplaceTextBookmarks(memoryStream, "userName", "Andreas Andreasson");
-            await ReplaceTextBookmarks(memoryStream, "userRole", "Utvecklare");            
-            await ReplaceTextBookmarks(memoryStream, "story", story);
-            await ReplaceTextBookmarks(memoryStream, "contactName", "Per Persson");
-            await ReplaceTextBookmarks(memoryStream, "contactEmail", "per.persson@omegapoint.se");
-            await ReplaceTextBookmarks(memoryStream, "contactPhone", "070-22 33 44");
+            //Bygg sträng
+            string userStory = null;
+            foreach (var item in cv.consult_presentations)
+            {
+                userStory += item;
+            }
+
+            await ReplaceTextBookmarks(memoryStream, "userName", cv.consult_name);
+            await ReplaceTextBookmarks(memoryStream, "userRole", cv.consult_role);
+            //await ReplaceTextBookmarks(memoryStream, "story", userStory);
+            await ReplaceTextBookmarks(memoryStream, "story", cv.consult_presentations);
+            await ReplaceTextBookmarks(memoryStream, "contactName", cv.sale_name);
+            await ReplaceTextBookmarks(memoryStream, "contactEmail", cv.sale_email);
+            await ReplaceTextBookmarks(memoryStream, "contactPhone", cv.sale_phone);
             //focusassignment
-            await ReplaceTextBookmarks(memoryStream, "focusAssignmentRole", "Utvecklare");
-            await ReplaceTextBookmarks(memoryStream, "focusAssignmentCompany", "Volvo");
-            await ReplaceTextBookmarks(memoryStream, "focusAssignmentText", "På volvo deltog Andreas i ett utvecklingarbete för självkörande bilar.");
+            await ReplaceTextBookmarks(memoryStream, "focusAssignmentRole", cv.consult_experience_focus_role);
+            await ReplaceTextBookmarks(memoryStream, "focusAssignmentCompany", cv.consult_experience_focus_title);
+            await ReplaceTextBookmarks(memoryStream, "focusAssignmentText", cv.consult_experience_focus_description);
         }
 
         public async Task ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, string input)
@@ -70,6 +79,57 @@ namespace cv_api.DocxCreate
                     }
                 }
 
+                //document.Close();
+            }
+        }
+
+        public async Task ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, List<string> input)
+        {
+
+            using (var document = WordprocessingDocument.Open(memoryStream, true))
+            {
+                var mainPart = document.MainDocumentPart;
+
+                var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
+                          where bm.Name == bookmarkName
+                          select bm;
+                var bookmark = res.FirstOrDefault();
+
+                if (bookmark != null)
+                {
+                    Run bookmarkText = bookmark.NextSibling<Run>();
+
+                    if (bookmarkText != null)
+                    {
+                        bookmarkText.GetFirstChild<Text>().Text = input[input.Count-1];
+                    }
+                }
+                //Försöka med mellanslag
+                for (int i = input.Count-2; i >= 0; i--)
+                {
+                    Run run = bookmark.NextSibling<Run>();
+
+                    Run bookmarkText = bookmark.NextSibling<Run>();
+
+                    //Clone bookmarkparent
+                    var p = bookmark.Parent.CloneNode(true);
+                    Run bookmarkText2 = bookmark.NextSibling<Run>();
+
+                    //Leta upp bookmark i clone
+                    var res2 = from bm in p.Descendants<BookmarkStart>()
+                               where bm.Name == bookmarkName
+                               select bm;
+
+                    var bookmark3 = res2.FirstOrDefault();
+                    //Leta upp Texten i bookmark-clone
+                    Run bookmarkText3 = bookmark.NextSibling<Run>();
+
+                    if (bookmarkText != null)
+                    {
+                        bookmarkText3.GetFirstChild<Text>().Text = "Test" + input[i] + "Test";
+                    }
+                    bookmark.Parent.InsertAfterSelf(p);
+                }
                 //document.Close();
             }
         }
@@ -139,7 +199,7 @@ namespace cv_api.DocxCreate
 
                             if (bookmarkText != null)
                             {
-                                bookmarkText.GetFirstChild<Text>().Text = techniques[i];
+                                bookmarkText.GetFirstChild<Text>().Text = techniques[i];                                
                             }
                         }
                         else

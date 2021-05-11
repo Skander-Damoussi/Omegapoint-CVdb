@@ -49,10 +49,10 @@ namespace cv_api.Controllers
         {
 
             CVTemplate cvTemplate = new CVTemplate();
-            cvTemplate.Name = "TestMedUpload5";
+            cvTemplate.Name = "TestMedUpload6";
             cvTemplate.Active = true;
 
-            string filePath = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\testmedupload5.docx";
+            string filePath = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\testmedupload6.docx";
 
             cvTemplate.FileByte = System.IO.File.ReadAllBytes(filePath);
 
@@ -68,7 +68,7 @@ namespace cv_api.Controllers
             //CVTemplate cvTemplate = new CVTemplate();
 
             var cv = _cvRepository.FilterBy(
-            filter => filter.Name == "TestMedUpload5",
+            filter => filter.Name == "TestMedUpload6",
             projection => projection.FileByte).FirstOrDefault();
 
             
@@ -89,7 +89,7 @@ namespace cv_api.Controllers
         public async Task<IActionResult> GetCvDocx(string userId)
         {
             var cv = _cvRepository.FilterBy(
-            filter => filter.Name == "TestMedUpload5",
+            filter => filter.Name == "TestMedUpload6",
             projection => projection.FileByte).FirstOrDefault();
 
             //Where active == true
@@ -97,18 +97,19 @@ namespace cv_api.Controllers
             //var user = _userRepository.FilterBy(
             //    filter => filter.FirstName == "konsult",
             //    projection => projection.LastName).FirstOrDefault();
-
+ 
             var user = await userManager.FindByIdAsync(userId);
 
             DocxCreator docxCreate = new DocxCreator();
 
+           
             //Memorystream, byte array, make memorystream resizeable
             using MemoryStream memoryStream = new MemoryStream(0);
             {
-                //Make
+                
                 memoryStream.Write(cv,0,cv.Length);
                 //cv.CopyTo(memoryStream);
-                await docxCreate.CreateDocx(memoryStream);
+                await docxCreate.CreateDocx(memoryStream, user.CV);
                 cv = memoryStream.ToArray();
 
             }
