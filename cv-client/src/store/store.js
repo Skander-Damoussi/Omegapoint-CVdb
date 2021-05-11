@@ -92,7 +92,6 @@ export default new Vuex.Store({
           await commit("setLoggedIn", true);
         })
         .catch(error => {
-          //console.log(error.response.data);
           commit("setStatus", error.response);
         });
     },
@@ -318,6 +317,15 @@ export default new Vuex.Store({
         })
         .catch((err) => console.log(err));
       commit("setSearchList", this.searchList);
+    },
+    async newConfirmationLink({ commit }, email) {
+      console.log(email);
+      await Axios.post(`user/Confirmation/${email}`, email)
+        .then(async resp => {
+          console.log(resp.data);
+          commit("setStatus", resp);
+        })
+        .catch(err => console.log(err));
     }
   },
   getters: {
