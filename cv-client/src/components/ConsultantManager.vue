@@ -21,7 +21,7 @@
           <th>#</th>
           <th>Förnamn</th>
           <th>Efternamn</th>
-          <th></th>
+          <th>CV</th>
         </tr>
         <tr v-for="(i, index) in displayList" :key="index">
           <th>{{ index }}</th>
