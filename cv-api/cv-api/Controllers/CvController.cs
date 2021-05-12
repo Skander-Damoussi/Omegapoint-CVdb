@@ -102,14 +102,15 @@ namespace cv_api.Controllers
 
             DocxCreator docxCreate = new DocxCreator();
 
-           
+
+
             //Memorystream, byte array, make memorystream resizeable
             using MemoryStream memoryStream = new MemoryStream(0);
             {
                 
                 memoryStream.Write(cv,0,cv.Length);
                 //cv.CopyTo(memoryStream);
-                await docxCreate.CreateDocx(memoryStream, user.CV);
+                await docxCreate.CreateDocx(memoryStream, user);
                 cv = memoryStream.ToArray();
 
             }
