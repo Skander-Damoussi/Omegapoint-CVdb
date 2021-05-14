@@ -28,7 +28,8 @@ namespace cv_api.DocxCreate
             await AddAssignments(memoryStream, "assignments", user);//Skicka in assignmentslistan
             AddLanguage(memoryStream, "language");//Skicka in languagelista
             AddEducation(memoryStream, "education");//Skicka in utbildningslistan
-            ReplaceInternalImage(memoryStream, "profilePicture");//Skicka in bilden
+            //ReplaceInternalImage(memoryStream, "profilePicture");//Skicka in bilden
+            ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);//Skicka in bilden
 
 
         }
@@ -216,42 +217,46 @@ namespace cv_api.DocxCreate
             }
         }
 
-        public void ReplaceInternalImage(MemoryStream memoryStream, string oldImagesPlaceholderText)
+        public void ReplaceInternalImage(MemoryStream memoryStream, string oldImagesPlaceholderText, string image)
         {
             //Gör en fil till bytearray
             //Tillfälligt innan det finns på DB
             string imageFilename = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\profilepicture\profilepicture2.jpg";
 
-            var newImageBytes = File.ReadAllBytes(imageFilename);
+            //var newImageBytes = File.ReadAllBytes(imageFilename);
             //newImageBytes = null;
+            string [] splitStringImage = image.Split(",");
 
-            WordprocessingDocument document = WordprocessingDocument.Open(memoryStream, true);
+            var newImageBytes = Convert.FromBase64String(splitStringImage[1]);
 
-            //var imagesToRemove = new List<Drawing>();
-
-            IEnumerable<Drawing> drawings = document.MainDocumentPart.Document.Descendants<Drawing>().ToList();
-            foreach (Drawing drawing in drawings)
+            using (WordprocessingDocument document = WordprocessingDocument.Open(memoryStream, true)) 
             {
-                DocProperties dpr = drawing.Descendants<DocProperties>().FirstOrDefault();
-                if (dpr != null && dpr.Name == oldImagesPlaceholderText)
-                {
-                    foreach (A.Blip b in drawing.Descendants<A.Blip>().ToList())
-                    {
-                        OpenXmlPart imagePart = document.MainDocumentPart.GetPartById(b.Embed);
+                //var imagesToRemove = new List<Drawing>();
 
-                        if (newImageBytes != null)
+                IEnumerable<Drawing> drawings = document.MainDocumentPart.Document.Descendants<Drawing>().ToList();
+                foreach (Drawing drawing in drawings)
+                {
+                    DocProperties dpr = drawing.Descendants<DocProperties>().FirstOrDefault();
+                    if (dpr != null && dpr.Name == oldImagesPlaceholderText)
+                    {
+                        foreach (A.Blip b in drawing.Descendants<A.Blip>().ToList())
                         {
-                            using (var writer = new BinaryWriter(imagePart.GetStream()))
+                            OpenXmlPart imagePart = document.MainDocumentPart.GetPartById(b.Embed);
+
+                            if (newImageBytes != null)
                             {
-                                writer.Write(newImageBytes);
+                                using (var writer = new BinaryWriter(imagePart.GetStream()))
+                                {
+                                    writer.Write(newImageBytes);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            //Stäng streamen
-            document.Close();
+                //Stäng streamen
+                document.Close();
+            }
         }
 
         public void AddTechniques(MemoryStream memoryStream, string bookmarkName)
