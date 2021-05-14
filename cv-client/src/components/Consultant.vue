@@ -80,7 +80,9 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/png, image/jpeg"
+                  accept="image/*"
+                  ref="logo"
+                  @change="PreviewLogo"
                 />
               </div>
             </div>
@@ -129,7 +131,9 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/png, image/jpeg"
+                  accept="image/*"
+                  ref="consult_pic"
+                  @change="PreviewProfilePic"
                 />
               </div>
             </div>
@@ -416,7 +420,7 @@
         <div id="pdfBox">
           <div v-if="page === 1" id="pdf" ref="document">
             <div class="row">
-              <img src="../assets/templogo.png" height="53px" class="logo" />
+              <img :src="company_logo" alt="" height="53px" class="logo" />
               <div class="contactdiv">
                 <p class="contact contactTitel">{{ this.company_name }}</p>
                 <p class="contact">{{ this.contact_phoneNumber }}</p>
@@ -426,7 +430,13 @@
             </div>
 
             <div class="row">
-              <img src="../assets/temp.png" height="200px" class="selfie" />
+              <img
+                :src="consult_picture"
+                height="200px"
+                alt=""
+                v-if="consult_picture"
+                class="selfie"
+              />
               <div class="cvTitelDiv">
                 <h1 class="cvTitel">{{ consult_name }}</h1>
                 <p class="cvTitelRoll">{{ consult_role }}</p>
@@ -561,7 +571,7 @@ export default {
       contact_phoneNumber: "",
       contact_website: "",
       contact_email: "",
-      consult_picture: "",
+      consult_picture: [],
       consult_name: "",
       consult_experience_focus_title: "",
       consult_experience_focus_role: "",
@@ -681,6 +691,30 @@ export default {
     },
     AddClick() {
       this.$router.push({ name: "ConsultantExperienceEdit" });
+    },
+    PreviewProfilePic(e) {
+      let files = e.target.files;
+      if (files.length === 0) {
+        return;
+      }
+      let reader = new FileReader();
+      reader.onload = e => {
+        this.consult_picture = e.target.result;
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    PreviewLogo(e) {
+      console.log("preview logo");
+      //this.company_logo = this.$refs.logo.company_logo;
+      let files = e.target.files;
+      if (files.length === 0) {
+        return;
+      }
+      let reader = new FileReader();
+      reader.onload = e => {
+        this.company_logo = e.target.result;
+      };
+      reader.readAsDataURL(files[0]);
     },
     goManagerHome() {
       this.$router.push({ name: "ConsultantManager" });
