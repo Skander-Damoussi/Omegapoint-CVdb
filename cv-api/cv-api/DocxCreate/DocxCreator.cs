@@ -50,8 +50,8 @@ namespace cv_api.DocxCreate
                     {
                         //assignment.Location = ;
                         assignment.Title = experience.Title;
-                        assignment.StartDate = experience.StartDate;
-                        assignment.EndDate = experience.EndDate;
+                        assignment.StartDate = CreateDateTime(experience.StartDate);
+                        assignment.EndDate = CreateDateTime(experience.EndDate);
 
                         assignment.Experiences = new List<string>();
 
@@ -83,7 +83,30 @@ namespace cv_api.DocxCreate
                 }
                 Assignments.Add(assignment);
             }
-        
+            Assignments = Assignments.OrderBy(x => x.EndDate)
+                                    .ThenBy(x => x.StartDate)
+                                    .ToList();
+        }
+
+        public DateTime CreateDateTime(string date)
+        {
+            DateTime dateTime= dateTime = new DateTime(9999, 01, 01);
+            string [] dateSplit;
+
+            if (date != null)
+            {
+                dateSplit=date.Split("-");
+                try
+                {
+                    dateTime = new DateTime(int.Parse(dateSplit[0]), int.Parse(dateSplit[1]), int.Parse(dateSplit[2]));
+                }
+                catch (Exception ex)
+                { 
+                
+                }
+            }
+
+            return dateTime;
         }
 
         public async Task ReplaceFields(MemoryStream memoryStream, CV cv)
@@ -601,49 +624,49 @@ namespace cv_api.DocxCreate
             }
         }
 
-        public string DateStringBuilder(string fromDate, string toDate)
-        {
-            string dateString;
+        //public string DateStringBuilder(string fromDate, string toDate)
+        //{
+        //    string dateString;
 
-            DateTime FDate = new DateTime(0001, 01, 01);
-            if (fromDate!=null)
-            {
-                try
-                {
-                    string[] splitFD = fromDate.Split("-");
-                    FDate = new DateTime(int.Parse(splitFD[0]), int.Parse(splitFD[1]), int.Parse(splitFD[2]));
-                }
+        //    DateTime FDate = new DateTime(0001, 01, 01);
+        //    if (fromDate!=null)
+        //    {
+        //        try
+        //        {
+        //            string[] splitFD = fromDate.Split("-");
+        //            FDate = new DateTime(int.Parse(splitFD[0]), int.Parse(splitFD[1]), int.Parse(splitFD[2]));
+        //        }
 
-                catch (Exception exeption)
-                { 
-                }
+        //        catch (Exception exeption)
+        //        { 
+        //        }
 
-            }
+        //    }
 
-            DateTime TDate = new DateTime(0001, 01, 01);
-            if (toDate != null)
-            {
-                try
-                {
-                    string[] splitTD = toDate.Split("-");
-                    TDate = new DateTime(int.Parse(splitTD[0]), int.Parse(splitTD[1]), int.Parse(splitTD[2]));
-                }
+        //    DateTime TDate = new DateTime(0001, 01, 01);
+        //    if (toDate != null)
+        //    {
+        //        try
+        //        {
+        //            string[] splitTD = toDate.Split("-");
+        //            TDate = new DateTime(int.Parse(splitTD[0]), int.Parse(splitTD[1]), int.Parse(splitTD[2]));
+        //        }
 
-                catch (Exception exeption)
-                {
-                }
-            }
+        //        catch (Exception exeption)
+        //        {
+        //        }
+        //    }
 
-            dateString = DateStringBuilder(FDate,TDate);
+        //    dateString = DateStringBuilder(FDate,TDate);
 
-                return dateString;
-        }
+        //        return dateString;
+        //}
 
         public string DateStringBuilder(DateTime fromDate, DateTime toDate)
         {
             string dateString;
 
-            if (toDate.Year == 0001)
+            if (toDate.Year == 9999)
             {
                 dateString = fromDate.ToString("MMMM yyyy") + " - pågående";
             }
