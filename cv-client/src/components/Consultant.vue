@@ -598,8 +598,6 @@ export default {
     } else {
       this.showUserID = this.userID;
     }
-    
-
     await this.$store.dispatch("getUserExperience", this.showUserID);
     await this.$store.dispatch("getUserPresentation", this.showUserID);
     await this.$store.dispatch("getCV", this.showUserID);
@@ -662,7 +660,10 @@ export default {
     this.setFocusExperience(this.consult_experience_focus_title);
   },
   created() {
-    if(this.$store.getters.getLoggedInUser.role === 'Konsultchef' && typeof this.userID === "undefined"){
+    if (
+      this.$store.getters.getLoggedInUser.role === "Konsultchef" &&
+      typeof this.userID === "undefined"
+    ) {
       this.$router.push({ name: "ConsultantManager" });
     }
   },
@@ -701,11 +702,10 @@ export default {
       reader.onload = e => {
         this.consult_picture = e.target.result;
       };
+      console.log(this.consult_picture);
       reader.readAsDataURL(files[0]);
     },
     PreviewLogo(e) {
-      console.log("preview logo");
-      //this.company_logo = this.$refs.logo.company_logo;
       let files = e.target.files;
       if (files.length === 0) {
         return;
@@ -772,6 +772,7 @@ export default {
       this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     async saveMethod() {
+      console.log(this.consult_picture);
       await this.$store.dispatch("cvSave", {
         token: this.$store.getters.getUserToken,
         input: {
