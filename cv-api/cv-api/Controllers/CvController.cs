@@ -14,7 +14,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using cv_api.DocxCreate;
 using Microsoft.AspNetCore.Identity;
 using cv_api.Areas.Identity.Data;
-
+using MongoDB.Driver;
 
 namespace cv_api.Controllers
 {
@@ -102,8 +102,6 @@ namespace cv_api.Controllers
 
             DocxCreator docxCreate = new DocxCreator();
 
-
-
             //Memorystream, byte array, make memorystream resizeable
             using MemoryStream memoryStream = new MemoryStream(0);
             {
@@ -123,8 +121,6 @@ namespace cv_api.Controllers
                     FileDownloadName = DateTime.Now.ToString() + ".docx"
                 };
             }
-
-
         }
 
         //Test, download populate cv template, pdf
@@ -153,6 +149,13 @@ namespace cv_api.Controllers
 
         }
 
-    }
-    
+        [HttpGet("GetAllCvTemplate")]
+        public async Task<IActionResult> GetAllCvTemplate()
+        {
+
+            var cvTemplates = _cvRepository.AsQueryable();
+
+            return Ok(cvTemplates);
+        }
+    }    
 }

@@ -221,7 +221,7 @@ namespace cv_api.DocxCreate
         {
             //Gör en fil till bytearray
             //Tillfälligt innan det finns på DB
-            string imageFilename = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\profilepicture\profilepicture2.jpg";
+            //string imageFilename = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\profilepicture\profilepicture2.jpg";
 
             //var newImageBytes = File.ReadAllBytes(imageFilename);
             //newImageBytes = null;
