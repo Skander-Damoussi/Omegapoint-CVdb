@@ -62,8 +62,8 @@ namespace cv_api.Controllers
         }
 
         //Test, download cv template
-        [HttpGet("GetCvTemplate")]
-        public async Task<IActionResult> GetCvTemplate()
+        [HttpGet("GetCvTemplate/{id}")]
+        public async Task<IActionResult> GetCvTemplate(string id)
         {
             //CVTemplate cvTemplate = new CVTemplate();
 
@@ -71,7 +71,9 @@ namespace cv_api.Controllers
             filter => filter.Name == "TestMedUpload6",
             projection => projection.FileByte).FirstOrDefault();
 
-            
+            //var cv = _cvRepository.FilterBy(
+            //filter => filter.Id.ToString() == id,
+            //projection => projection.FileByte).FirstOrDefault();
 
             using (var net = new System.Net.WebClient())
             {
@@ -153,7 +155,23 @@ namespace cv_api.Controllers
         public async Task<IActionResult> GetAllCvTemplate()
         {
 
-            var cvTemplates = _cvRepository.AsQueryable();
+            //var cvTemplates = _cvRepository.AsQueryable();
+
+            var cvTemplates = _cvRepository.FilterBy(
+            filter => filter.Name != "").ToList();
+
+            //foreach (var item in cvTemplates)
+            //{
+            //    //item.StringId = item.Id.ToString();
+
+            //    item.StringId = "Hej";
+
+            //}
+
+            for (int i = 0; i < cvTemplates.Count; i++)
+            {
+                cvTemplates[i].StringId = cvTemplates[i].Id.ToString();
+            }
 
             return Ok(cvTemplates);
         }

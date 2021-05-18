@@ -12,9 +12,9 @@ namespace cv_api.Models
     [BsonCollection("testCv")]
     public class CVTemplate : Document
     {
-        [Required]
+        //[Required]
         //[BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        //public string Id { get; set; }
+        public string StringId { get; set; }
         public string Name { get; set; }
         public bool Active { get; set; }
         public byte[] FileByte { get; set; }
