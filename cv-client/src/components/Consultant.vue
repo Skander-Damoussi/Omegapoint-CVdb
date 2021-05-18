@@ -80,7 +80,7 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   ref="logo"
                   @change="PreviewLogo"
                 />
@@ -131,7 +131,7 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   ref="consult_pic"
                   @change="PreviewProfilePic"
                 />
@@ -703,6 +703,11 @@ export default {
         this.consult_picture = e.target.result;
       };
       console.log(this.consult_picture);
+      let string = this.consult_picture.split(",");
+      console.log("string", string[0]);
+      if (string[0].includes("jpeg")) {
+        console.log("jpeg");
+      }
       reader.readAsDataURL(files[0]);
     },
     PreviewLogo(e) {
