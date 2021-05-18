@@ -469,12 +469,13 @@ namespace cv_api.Controllers
             if (signInResult.IsNotAllowed)
                 return StatusCode(403,"Email is not confirmed"); //Email is not confirmed status
 
-            if (!signInResult.Succeeded)
-                return Unauthorized("Wrong login"); //Login failed status
-
             if (user.Active.HasValue) // Måste kolla så att dett finns ett true/false värde annars kraschar api om det är null. Tillfällig lösning tills db är helt klart
                 if ((bool)!user.Active)
                     return Unauthorized("Inactive account");
+
+            if (!signInResult.Succeeded)
+                return Unauthorized("Wrong login"); //Login failed status
+
 
             var userRoles = await userManager.GetRolesAsync(user);
 
