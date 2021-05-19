@@ -85,7 +85,7 @@
                   @change="PreviewLogo"
                 />
               </div>
-              <div v-if="error">
+              <div class="errorMessage" v-if="errorLogo">
                 <p>{{ errorMessage }}</p>
               </div>
             </div>
@@ -139,7 +139,7 @@
                   @change="PreviewProfilePic"
                 />
               </div>
-              <div v-if="error">
+              <div class="errorMessage" v-if="error">
                 <p>{{ errorMessage }}</p>
               </div>
             </div>
@@ -597,7 +597,8 @@ export default {
       role_freeEdit: false,
       showUserID: '',
       errorMessage: "",
-      error: false
+      error: false,
+      errorLogo: false
     };
   },
   async mounted() {
@@ -745,7 +746,7 @@ export default {
           console.log("jpeg, jpg, png");
         } else {
           this.errorMessage = "Tillåtna filformat: .jpg, .jpeg och .png";
-          this.error = true;
+          this.errorLogo = true;
           this.company_logo = holder;
         }
       };
@@ -1312,5 +1313,11 @@ button:hover {
 #nomargin {
   margin: 0px;
   margin-right: 15px;
+}
+
+.errorMessage > p {
+  font-weight: normal;
+  font-size: 1.5vh;
+  color: red;
 }
 </style>
