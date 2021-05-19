@@ -19,7 +19,10 @@ const getDefaultState = () => {
     verified: null,
     searchList: [],
     CV: [],
-    status: null
+    status: null,
+    //cvtemp
+    cvTempList: [],
+    cvTemp: null
   };
 };
 
@@ -72,6 +75,13 @@ export default new Vuex.Store({
     },
     setCV(state, token) {
       state.CV = token;
+    },
+    // cvtemp
+    setCvTempList(state, list) {
+      state.cvTempList = list;
+    },
+    setCvTemp(state, list) {
+      state.cvTemp = list;
     },
   },
   actions: {
@@ -312,6 +322,74 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setSearchList", this.searchList);
     },
+    // cvtemp
+    async getCvTempList({ commit }) {
+      await Axios.get("cv/GetAllCvTemplate")
+        .then(async (resp) => {
+          this.cvTempList = resp.data;
+          console.log(resp.data)
+        })
+        .catch((err) => console.log(err));
+        console.log("get cv templist", JSON.stringify(this.cvTempList));
+      commit("setCvTempList", this.cvTempList);
+    },
+    // async getCvTemp({ commit }, id) {
+    //   await Axios.get(`cv/GetCvTemplate/${id}`)
+    //     .then(async (resp) => {
+    //       //this.CvTemp = resp.data;
+    //       console.log(resp.data)
+    //     })
+    //     .catch((err) => console.log(err));
+    //   commit("setCvTemp", this.CvTemp);
+    // },
+    //Funkar om response är Ok är borttaget, problem med stringId
+    // async getCvTemp( id) {
+    //   Axios({
+    //     method: 'post',
+    //     url: `cv/PostGetCvTemplate/${id}`,
+    //     responseType: 'arraybuffer',
+    //     //data: dates
+    //   }).then(function(response) {
+    //     let blob = new Blob([response.data], { type: 'application/docx' })
+    //     let link = document.createElement('a')
+    //     link.href = window.URL.createObjectURL(blob)
+    //     link.download = 'Template.docx'
+    //     link.click()
+    //   })
+    // },
+    // // Funkar,senaste, problem med stringId
+    // async getCvTemp( id) {
+    //   Axios({
+    //     method: 'GET',
+    //     url: `cv/GetCvTemplate/${id}`,
+    //     responseType: 'blob',
+    //     //data: dates
+    //   }).then((response) =>{
+    //     var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+    //     var fileLink = document.createElement('a');   
+    //     fileLink.href = fileURL;
+    //     fileLink.setAttribute('download', 'cvTemplate.docx');
+    //     document.body.appendChild(fileLink);   
+    //     fileLink.click();
+    //   })
+    // },
+    async getCvTemp({ commit }, stringId) {
+      console.log("Inne i Get", stringId)
+      Axios({
+        method: 'GET',
+        url: "cv/GetCvTemplate/"+stringId,
+        responseType: 'blob',
+        //data: dates
+      }).then((response) =>{
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement('a');   
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'cvTemplate.docx');
+        document.body.appendChild(fileLink);   
+        fileLink.click();
+        commit("setCvTemp", response.data);
+      })
+    },
   },
   getters: {
     getStatus(state) {
@@ -343,6 +421,13 @@ export default new Vuex.Store({
     },
     getCV(state) {
       return state.CV;
+    },
+    // cvtemp
+    getCvTempList(state) {
+      return state.cvTempList;
+    },
+    getCVTemp(state) {
+      return state.CvTemp;
     },
   },
 });
