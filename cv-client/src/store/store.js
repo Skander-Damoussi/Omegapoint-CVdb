@@ -83,6 +83,7 @@ export default new Vuex.Store({
     setCvTemp(state, list) {
       state.cvTemp = list;
     },
+    
   },
   actions: {
     async login({ commit }, user) {
@@ -102,25 +103,28 @@ export default new Vuex.Store({
           await commit("setLoggedIn", true);
         })
         .catch(error => {
-          console.log(error);
-          commit("setStatus", error.response.status);
+          commit("setStatus", error.response);
         });
     },
     async updateUser({ commit }, user) {
       await Axios.put("user/", user)
         .then(async (resp) => {
+          console.log("store", resp);
           this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
             role: resp.data.role,
-            experiences: resp.data.experiences,
+            experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
           await commit("setStatus", this.status);
         })
-        .catch((err) => console.log(err));
+        .catch(err => {
+          console.log("err resp", err.response.data);
+          commit("setStatus", err.response.data);
+        });
     },
     async updatePassword({ commit }, password) {
       await Axios.put("user/updatePassword", password)
@@ -131,22 +135,25 @@ export default new Vuex.Store({
             firstName: resp.data.firstName,
             lastName: resp.data.lastName,
             role: resp.data.role,
-            experiences: resp.data.experiences,
+            experiences: resp.data.experiences
           };
           await commit("setLoggedInUser", respUser);
           await commit("setStatus", this.status);
         })
-        .catch((err) => console.log(err));
+        .catch(err => {
+          console.log("err resp", err.response);
+          commit("setStatus", err.response.data);
+        });
     },
     async logOut({ commit }) {
       commit("resetState");
     },
     async getConsultantList({ commit }) {
       await Axios.get("user/getConsultantList")
-        .then(async (resp) => {
+        .then(async resp => {
           this.consultantList = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setConsultantList", this.consultantList);
     },
     async searchConsultant({ commit }, searchString) {
@@ -184,8 +191,8 @@ export default new Vuex.Store({
       await Axios.post("user/updateCV/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.CV = resp.data;
@@ -197,8 +204,8 @@ export default new Vuex.Store({
       await Axios.post("user/postexperience/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.userExperience = resp.data;
@@ -210,8 +217,8 @@ export default new Vuex.Store({
       await Axios.post("user/updateexperience/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.userExperience = resp.data;
@@ -223,8 +230,8 @@ export default new Vuex.Store({
       await Axios.post("user/removeexperience/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.userExperience = resp.data;
@@ -254,8 +261,8 @@ export default new Vuex.Store({
       await Axios.post("user/postPresentation/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.userPresentation = resp.data;
@@ -267,8 +274,8 @@ export default new Vuex.Store({
       await Axios.post("user/updatepresentation/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.userPresentation = resp.data;
@@ -280,8 +287,8 @@ export default new Vuex.Store({
       await Axios.post("user/removepresentation/", input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+          Authorization: "Bearer " + token
+        }
       })
         .then(async (resp) => {
           this.userExperience = resp.data;
@@ -390,6 +397,15 @@ export default new Vuex.Store({
         commit("setCvTemp", response.data);
       })
     },
+    async newConfirmationLink({ commit }, email) {
+      console.log(email);
+      await Axios.post(`user/Confirmation/${email}`, email)
+        .then(async resp => {
+          console.log(resp.data);
+          commit("setStatus", resp);
+        })
+        .catch(err => console.log(err));
+    }
   },
   getters: {
     getStatus(state) {

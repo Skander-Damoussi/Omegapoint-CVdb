@@ -28,6 +28,13 @@
         ></i>
         <p class="marginleftIcon">Exportera till PDF</p>
       </div>
+      <div class="row icon-clickHome" v-on:click="goManagerHome">
+        <i
+          class="btn fas fa-home fa-2x"
+          title="Hem"
+        ></i>
+        <p class="marginleftIcon marginright">Hem</p>
+      </div>
     </div>
     <div class="wrapper row">
       <div class="editBox mainwrapper">
@@ -73,8 +80,13 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpg, image/jpeg"
+                  ref="logo"
+                  @change="PreviewLogo"
                 />
+              </div>
+              <div class="errorMessage" v-if="errorLogo">
+                <p>{{ errorMessage }}</p>
               </div>
             </div>
           </div>
@@ -122,8 +134,13 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpg, image/jpeg"
+                  ref="consult_pic"
+                  @change="PreviewProfilePic"
                 />
+              </div>
+              <div class="errorMessage" v-if="error">
+                <p>{{ errorMessage }}</p>
               </div>
             </div>
           </div>
@@ -409,7 +426,7 @@
         <div id="pdfBox">
           <div v-if="page === 1" id="pdf" ref="document">
             <div class="row">
-              <img src="../assets/templogo.png" height="53px" class="logo" />
+              <img :src="company_logo" alt="" height="53px" class="logo" />
               <div class="contactdiv">
                 <p class="contact contactTitel">{{ this.company_name }}</p>
                 <p class="contact">{{ this.contact_phoneNumber }}</p>
@@ -419,7 +436,13 @@
             </div>
 
             <div class="row">
-              <img src="../assets/temp.png" height="200px" class="selfie" />
+              <img
+                :src="consult_picture"
+                height="200px"
+                alt=""
+                v-if="consult_picture"
+                class="selfie"
+              />
               <div class="cvTitelDiv">
                 <h1 class="cvTitel">{{ consult_name }}</h1>
                 <p class="cvTitelRoll">{{ consult_role }}</p>
@@ -554,7 +577,7 @@ export default {
       contact_phoneNumber: "",
       contact_website: "",
       contact_email: "",
-      consult_picture: "",
+      consult_picture: [],
       consult_name: "",
       consult_experience_focus_title: "",
       consult_experience_focus_role: "",
@@ -573,6 +596,9 @@ export default {
       sale_phone: "",
       role_freeEdit: false,
       showUserID: '',
+      errorMessage: "",
+      error: false,
+      errorLogo: false
     };
   },
   async mounted() {
@@ -581,8 +607,6 @@ export default {
     } else {
       this.showUserID = this.userID;
     }
-    
-
     await this.$store.dispatch("getUserExperience", this.showUserID);
     await this.$store.dispatch("getUserPresentation", this.showUserID);
     await this.$store.dispatch("getCV", this.showUserID);
@@ -644,7 +668,14 @@ export default {
 
     this.setFocusExperience(this.consult_experience_focus_title);
   },
-  created() {},
+  created() {
+    if (
+      this.$store.getters.getLoggedInUser.role === "Konsultchef" &&
+      typeof this.userID === "undefined"
+    ) {
+      this.$router.push({ name: "ConsultantManager" });
+    }
+  },
   methods: {
     getInfoByID(what, id) {
       for (var i = 0; i < this.consult_experience_options.length; i++) {
@@ -670,6 +701,59 @@ export default {
     },
     AddClick() {
       this.$router.push({ name: "ConsultantExperienceEdit" });
+    },
+    PreviewProfilePic(e) {
+      this.error = false;
+      let files = e.target.files;
+      if (files.length === 0) {
+        return;
+      }
+      let holder = this.consult_picture;
+      let reader = new FileReader();
+      reader.onload = e => {
+        this.consult_picture = e.target.result;
+        let string = this.consult_picture.split(",");
+        if (
+          string[0].includes("jpeg") ||
+          string[0].includes("jpg") ||
+          string[0].includes("png")
+        ) {
+          console.log("jpeg, jpg, png");
+        } else {
+          this.errorMessage = "Tillåtna filformat: .jpg, .jpeg och .png";
+          this.error = true;
+          this.consult_picture = holder;
+        }
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    PreviewLogo(e) {
+      this.error = false;
+      let files = e.target.files;
+      if (files.length === 0) {
+        return;
+      }
+      let holder = this.company_logo;
+      let reader = new FileReader();
+      reader.onload = e => {
+        this.company_logo = e.target.result;
+        let string = this.company_logo.split(",");
+        if (
+          string[0].includes("jpeg") ||
+          string[0].includes("jpg") ||
+          string[0].includes("png")
+        ) {
+          console.log("jpeg, jpg, png");
+        } else {
+          this.errorMessage = "Tillåtna filformat: .jpg, .jpeg och .png";
+          this.errorLogo = true;
+          this.company_logo = holder;
+        }
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    goManagerHome() {
+      this.$router.push({ name: "ConsultantManager" });
     },
     AddClickPresentation() {
       this.$router.push({ name: "ConsultantPresentationEdit" });
@@ -724,6 +808,7 @@ export default {
       this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
     },
     async saveMethod() {
+      console.log(this.consult_picture);
       await this.$store.dispatch("cvSave", {
         token: this.$store.getters.getUserToken,
         input: {
@@ -886,6 +971,14 @@ div {
 }
 
 .icon-click:hover {
+  color: #006166;
+}
+
+.icon-clickHome {
+  cursor: pointer;
+}
+
+.icon-clickHome:hover {
   color: #006166;
 }
 
@@ -1168,6 +1261,10 @@ button:hover {
   width: 66%;
 }
 
+.marginright{
+  margin-right: 20px;
+}
+
 .blob {
   background: #f1f1f1;
   border: solid;
@@ -1216,5 +1313,11 @@ button:hover {
 #nomargin {
   margin: 0px;
   margin-right: 15px;
+}
+
+.errorMessage > p {
+  font-weight: normal;
+  font-size: 1.5vh;
+  color: red;
 }
 </style>

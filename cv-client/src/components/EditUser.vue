@@ -14,8 +14,8 @@
         <button class="submit bttn" v-on:click="updateUser()">Ändra</button>
       </div>
       <div class="status">
-        <p v-if="status === 200">
-          Namn ändrat.
+        <p>
+          {{ status }}
         </p>
       </div>
       <div class="edit-password">
@@ -55,13 +55,21 @@ export default {
   methods: {
     async updateUser() {
       this.status = "";
-      var updateUser = {
-        Id: this.user.id,
-        FirstName: this.user.firstName,
-        LastName: this.user.lastName
-      };
-      await this.$store.dispatch("updateUser", updateUser);
-      this.status = await this.$store.getters.getStatus;
+      console.log(this.user.firstName);
+      if (this.user.firstName != "" && this.user.lastName != "") {
+        var updateUser = {
+          Id: this.user.id,
+          FirstName: this.user.firstName,
+          LastName: this.user.lastName
+        };
+        await this.$store.dispatch("updateUser", updateUser);
+        this.status = await this.$store.getters.getStatus;
+        if (this.status == 200) {
+          this.status = "Namn ändrat.";
+        }
+      } else {
+        this.status = "Vänligen fyll i fälten för att byta namn";
+      }
     }
   }
 };

@@ -33,11 +33,11 @@ namespace cv_api.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
 
-        public UserController(UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, 
-            RoleManager<ApplicationRole> roleManager, 
-            ILogger<UserController> logger, 
-            IMongoRepository<User> userRepository, 
+        public UserController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<ApplicationRole> roleManager,
+            ILogger<UserController> logger,
+            IMongoRepository<User> userRepository,
             IConfiguration configuration,
             IEmailService emailService)
         {
@@ -85,7 +85,7 @@ namespace cv_api.Controllers
 
             if (input.newExperience)
             {
-                if(user.Experiences == null)
+                if (user.Experiences == null)
                 {
                     user.Experiences = new List<Experience>();
                 }
@@ -103,9 +103,9 @@ namespace cv_api.Controllers
             }
             else
             {
-                for(int i = 0; i < user.Experiences.Count; i++)
+                for (int i = 0; i < user.Experiences.Count; i++)
                 {
-                    
+
                 }
             }
             await userManager.UpdateAsync(user);
@@ -117,9 +117,9 @@ namespace cv_api.Controllers
         public async Task<IActionResult> updateExperience(ExperienceDTO input)
         {
             var user = await userManager.FindByIdAsync(input.userID);
-            for(int i = 0; i < user.Experiences.Count; i++)
+            for (int i = 0; i < user.Experiences.Count; i++)
             {
-                if(user.Experiences[i].id == input.id)
+                if (user.Experiences[i].id == input.id)
                 {
                     user.Experiences[i].Title = input.title;
                     user.Experiences[i].Assignments = input.Assignments;
@@ -220,7 +220,7 @@ namespace cv_api.Controllers
         public async Task<IActionResult> updateCV(CVDTO input)
         {
             var user = await userManager.FindByIdAsync(input.userID);
-            if(user.CV == null)
+            if (user.CV == null)
             {
                 user.CV = new CV();
             }
@@ -230,7 +230,7 @@ namespace cv_api.Controllers
             user.CV.contact_phoneNumber = input.contact_phoneNumber;
             user.CV.contact_website = input.contact_website;
             user.CV.contact_email = input.contact_email;
-            user.CV.consult_picture = input.consult_picture;
+            user.CV.consult_picture = input.consult_picture;         
             user.CV.consult_name = input.consult_name;
             user.CV.consult_role = input.consult_role;
             user.CV.consult_presentations = input.consult_presentations;
@@ -280,7 +280,7 @@ namespace cv_api.Controllers
                 LastName = newUser.LastName,
                 Active = true
             };
-            if(newUser.Role == "Konsult")
+            if (newUser.Role == "Konsult")
             {
                 user.Experiences = new List<Experience>();
             }
@@ -288,7 +288,7 @@ namespace cv_api.Controllers
             var result = await userManager.CreateAsync(user, newUser.Password);
 
             if (!result.Succeeded)
-                return StatusCode(400);            
+                return StatusCode(400);
 
             if (!await roleManager.RoleExistsAsync(newUser.Role))
                 await roleManager.CreateAsync(new ApplicationRole(newUser.Role));
@@ -299,17 +299,44 @@ namespace cv_api.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
+            //var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            //user.EmailConfirmationToken = code;
+
+            //var update = userManager.UpdateAsync(user);
+
+            //var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
+
+
+            // await _emailService.SendAsync("skander_test@hotmail.com", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
+            await Confirmation(newUser.Email);
+
+            return Ok();
+        }
+
+        [HttpPost("Confirmation/{email}")]
+        public async Task<IActionResult> Confirmation(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return NotFound("User with that email not found");
+
+            if (user.EmailConfirmationToken != null)
+                user.EmailConfirmationToken = null;
+
             var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
             user.EmailConfirmationToken = code;
 
             var update = userManager.UpdateAsync(user);
 
-            var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
+            var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id, code }, Request.Scheme, Request.Host.ToString());
 
 
-             await _emailService.SendAsync("skander_test@hotmail.com", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
-            return Ok();
+            await _emailService.SendAsync($"{email}", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
+
+            return Ok("Confirmation link sent.");
         }
 
         [HttpGet("verify")]
@@ -324,7 +351,7 @@ namespace cv_api.Controllers
             {
                 if(user.EmailConfirmed)
                 {
-                    return BadRequest("Email has already been confirmed");
+                    return Forbid("Email has already been confirmed");
                 }
             }
 
@@ -353,10 +380,20 @@ namespace cv_api.Controllers
             {
                 var identityUser = await userManager.FindByIdAsync(updatedUser.Id);
 
+                if (updatedUser.FirstName == identityUser.FirstName && updatedUser.LastName == identityUser.LastName)
+                {
+                    return BadRequest("Vänligen, skriv in nytt namn för att byta.");
+                }
+                if (updatedUser.FirstName == "" && updatedUser.LastName == "")
+                {
+                    return StatusCode(403, "Gick ej att ändra namn, vänligen fyll i båda fälten.");
+                }
+
                 if (updatedUser.FirstName != "" && identityUser.FirstName != updatedUser.FirstName)
                 {
                     identityUser.FirstName = updatedUser.FirstName;
                 }
+
                 if(updatedUser.LastName != "" && identityUser.LastName != updatedUser.LastName)
                 {
                     identityUser.LastName = updatedUser.LastName;
@@ -377,7 +414,7 @@ namespace cv_api.Controllers
             }
             catch
             {
-                return BadRequest(updatedUser);
+                return StatusCode(500, "Något gick fel, vänligen försök igen eller kontakta ansvarig.");
             }
 
         }
@@ -389,9 +426,18 @@ namespace cv_api.Controllers
             {
                 var identityUser = await userManager.FindByIdAsync(updatedPassword.Id);
 
+                if(await userManager.CheckPasswordAsync(identityUser, updatedPassword.CurrentPassword) == false) //Skrivit in fel nuvarande lösenord
+                {
+                    return StatusCode(403, "Inkorrekt inmatning av nuvarande lösenord, vänligen försök igen.");
+                }
+
                 if (updatedPassword.NewPassword != "" && await userManager.CheckPasswordAsync(identityUser, updatedPassword.NewPassword) == false)
                 {
                     var res = await userManager.ChangePasswordAsync(identityUser, updatedPassword.CurrentPassword, updatedPassword.NewPassword);
+                }
+                else
+                {
+                    return BadRequest("Vänligen fyll i fält med nytt lösenord om du önskar uppdatera.");
                 }
                 var result = await userManager.UpdateAsync(identityUser);
 
@@ -408,7 +454,7 @@ namespace cv_api.Controllers
             }
             catch
             {
-                return BadRequest(updatedPassword);
+                return StatusCode(500, "Något gick fel, vänligen försök igen eller kontakta ansvarig.");
             }
 
         }
@@ -421,10 +467,15 @@ namespace cv_api.Controllers
             var user = await userManager.FindByNameAsync(userInput.Email);
 
             if (signInResult.IsNotAllowed)
-                return StatusCode(403);
+                return StatusCode(403,"Email is not confirmed"); //Email is not confirmed status
+
+            if (user.Active.HasValue) // Måste kolla så att dett finns ett true/false värde annars kraschar api om det är null. Tillfällig lösning tills db är helt klart
+                if ((bool)!user.Active)
+                    return Unauthorized("Inactive account");
 
             if (!signInResult.Succeeded)
-                return StatusCode(401);
+                return Unauthorized("Wrong login"); //Login failed status
+
 
             var userRoles = await userManager.GetRolesAsync(user);
 

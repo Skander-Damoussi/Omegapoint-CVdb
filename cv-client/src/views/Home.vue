@@ -38,11 +38,18 @@
             Fel email/lösenord
           </span>
           <span class="error" v-if="errorVerify">
-            Du har inte verifierad ditt konto än.
+            Du har inte verifierad ditt konto än.<br />
+            Vill du ha ny verifierings länk
+            <a href="#" @click="newConfirmationLink">klicka här</a>
+          </span>
+          <span class="error" v-if="errorInactive">
+            Ditt konto är inaktiverat kontakta OmegaPoint.
+          </span>
+          <span v-if="confirmSuccess">
+            Ny verifierings länk har skickat till email.
           </span>
         </div>
         <div class="formRow">
-          
           <input
             id="loginButton"
             type="submit"
@@ -68,6 +75,8 @@ export default {
       passwordField: true,
       errorLogin: false,
       errorVerify: false,
+      errorInactive: false,
+      confirmSuccess: false,
     };
   },
   validations: {
@@ -81,6 +90,15 @@ export default {
   },
   components: {},
   methods: {
+    async newConfirmationLink() {
+      const email = this.email;
+      await this.$store.dispatch("newConfirmationLink", email);
+      var status = this.$store.getters.getStatus;
+      if (status.status == 200) {
+        this.errorVerify = false;
+        this.confirmSuccess = true;
+      }
+    },
     async login() {
       this.$v.$touch();
       this.checkForm();
@@ -95,13 +113,24 @@ export default {
       });
       if (this.$store.getters.getLoggedIn == false) {
         var status = this.$store.getters.getStatus;
-        console.log(this.$store.getters.getStatus);
-        if (status == 401) {
-          this.errorVerify = false;
-          this.errorLogin = true;
+        if (status.status == 401) {
+          if (status.data == "Wrong login") {
+            this.errorVerify = false;
+            this.errorInactive = false;
+            this.confirmSuccess = false;
+            this.errorLogin = true;
+          }
+          if (status.data == "Inactive account") {
+            this.errorVerify = false;
+            this.errorLogin = false;
+            this.confirmSuccess = false;
+            this.errorInactive = true;
+          }
         }
-        if (status == 403) {
+        if (status.status == 403) {
           this.errorLogin = false;
+          this.confirmSuccess = false;
+          this.errorInactive = false;
           this.errorVerify = true;
         }
       } else {

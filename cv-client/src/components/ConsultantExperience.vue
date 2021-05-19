@@ -179,6 +179,11 @@ export default {
       showUserID: '',
     };
   },
+  created () {
+    if(this.$store.getters.getLoggedInUser.role === 'Konsultchef' && typeof this.userID === "undefined"){
+      this.$router.push({ name: "ConsultantManager" });
+    }
+  },
   async mounted() {
     if (this.userID == null) {
       this.showUserID = await this.$store.getters.getLoggedInUser.id;
