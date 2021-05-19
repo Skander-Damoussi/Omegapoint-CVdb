@@ -65,6 +65,42 @@ namespace cv_api.Controllers
         [HttpGet("GetCvTemplate/{id}")]
         public async Task<IActionResult> GetCvTemplate(string id)
         {
+            CVTemplate cv = new CVTemplate();
+
+            var cvTemplates = _cvRepository.FilterBy(
+            filter => filter.Name != "").ToList();
+
+
+            foreach (var item in cvTemplates)
+            {
+                if (item.Id.ToString() == id)
+                {
+                    cv = item;
+                }
+            }
+
+            //var cv = _cvRepository.FilterBy(
+            //filter => filter.Id.ToString() == id).FirstOrDefault();
+
+            //var cv = _cvRepository.FilterBy(
+            //filter => filter.Id.ToString() == id,
+            //projection => projection.FileByte).FirstOrDefault();
+
+            using (var net = new System.Net.WebClient())
+            {
+                //Problem med return OK()
+                return new FileContentResult(cv.FileByte, "application/docx")
+                {
+                    FileDownloadName = DateTime.Now.ToString() + ".docx"
+                };
+            } 
+
+        }
+
+        //Test, download cv template
+        [HttpPost("PostGetCvTemplate/{id}")]
+        public async Task<IActionResult> PostGetCvTemplate(string id)
+        {
             //CVTemplate cvTemplate = new CVTemplate();
 
             var cv = _cvRepository.FilterBy(
@@ -82,7 +118,7 @@ namespace cv_api.Controllers
                 {
                     FileDownloadName = DateTime.Now.ToString() + ".docx"
                 };
-            } 
+            }
 
         }
 
