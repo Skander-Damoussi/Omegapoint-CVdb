@@ -80,10 +80,13 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   ref="logo"
                   @change="PreviewLogo"
                 />
+              </div>
+              <div class="errorMessage" v-if="errorLogo">
+                <p>{{ errorMessage }}</p>
               </div>
             </div>
           </div>
@@ -131,10 +134,13 @@
                   class="textInput"
                   type="file"
                   name="avatar"
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   ref="consult_pic"
                   @change="PreviewProfilePic"
                 />
+              </div>
+              <div class="errorMessage" v-if="error">
+                <p>{{ errorMessage }}</p>
               </div>
             </div>
           </div>
@@ -590,6 +596,9 @@ export default {
       sale_phone: "",
       role_freeEdit: false,
       showUserID: '',
+      errorMessage: "",
+      error: false,
+      errorLogo: false
     };
   },
   async mounted() {
@@ -694,25 +703,52 @@ export default {
       this.$router.push({ name: "ConsultantExperienceEdit" });
     },
     PreviewProfilePic(e) {
+      this.error = false;
       let files = e.target.files;
       if (files.length === 0) {
         return;
       }
+      let holder = this.consult_picture;
       let reader = new FileReader();
       reader.onload = e => {
         this.consult_picture = e.target.result;
+        let string = this.consult_picture.split(",");
+        if (
+          string[0].includes("jpeg") ||
+          string[0].includes("jpg") ||
+          string[0].includes("png")
+        ) {
+          console.log("jpeg, jpg, png");
+        } else {
+          this.errorMessage = "Tillåtna filformat: .jpg, .jpeg och .png";
+          this.error = true;
+          this.consult_picture = holder;
+        }
       };
-      console.log(this.consult_picture);
       reader.readAsDataURL(files[0]);
     },
     PreviewLogo(e) {
+      this.error = false;
       let files = e.target.files;
       if (files.length === 0) {
         return;
       }
+      let holder = this.company_logo;
       let reader = new FileReader();
       reader.onload = e => {
         this.company_logo = e.target.result;
+        let string = this.company_logo.split(",");
+        if (
+          string[0].includes("jpeg") ||
+          string[0].includes("jpg") ||
+          string[0].includes("png")
+        ) {
+          console.log("jpeg, jpg, png");
+        } else {
+          this.errorMessage = "Tillåtna filformat: .jpg, .jpeg och .png";
+          this.errorLogo = true;
+          this.company_logo = holder;
+        }
       };
       reader.readAsDataURL(files[0]);
     },
@@ -1277,5 +1313,11 @@ button:hover {
 #nomargin {
   margin: 0px;
   margin-right: 15px;
+}
+
+.errorMessage > p {
+  font-weight: normal;
+  font-size: 1.5vh;
+  color: red;
 }
 </style>

@@ -230,7 +230,7 @@ namespace cv_api.Controllers
             user.CV.contact_phoneNumber = input.contact_phoneNumber;
             user.CV.contact_website = input.contact_website;
             user.CV.contact_email = input.contact_email;
-            user.CV.consult_picture = input.consult_picture;
+            user.CV.consult_picture = input.consult_picture;         
             user.CV.consult_name = input.consult_name;
             user.CV.consult_role = input.consult_role;
             user.CV.consult_presentations = input.consult_presentations;
