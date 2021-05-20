@@ -337,7 +337,6 @@ export default new Vuex.Store({
           console.log(resp.data)
         })
         .catch((err) => console.log(err));
-        console.log("get cv templist", JSON.stringify(this.cvTempList));
       commit("setCvTempList", this.cvTempList);
     },
     // async getCvTemp({ commit }, id) {
@@ -396,6 +395,22 @@ export default new Vuex.Store({
         fileLink.click();
         commit("setCvTemp", response.data);
       })
+    },
+    async postCvTemplate({ commit }, cvTemplate  ) {
+      console.log("inne i postcvtemplate", cvTemplate)
+      //this.cvTemplate=cvTemplate;
+      console.log("this.cvtemplate", this.cvTemplate);
+      await Axios.post("cv/PostCvTemplate/", cvTemplate, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(async (resp) => {
+          //this.userPresentation = resp.data;
+          console.log(resp)
+        })
+        .catch((err) => console.log(err));
+      commit("setUserPresentation", this.presentations);
     },
     async newConfirmationLink({ commit }, email) {
       console.log(email);

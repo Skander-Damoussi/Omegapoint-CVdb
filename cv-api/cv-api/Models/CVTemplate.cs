@@ -18,6 +18,7 @@ namespace cv_api.Models
         public string Name { get; set; }
         public bool Active { get; set; }
         public byte[] FileByte { get; set; }
+        //public string Base64String { get; set; }
         
 
     }

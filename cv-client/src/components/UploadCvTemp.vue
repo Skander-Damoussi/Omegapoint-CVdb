@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Hellow!!</h1>
+  <div class="main-div">
+
 
     <!-- <h1>{{cvTemp.filename}}</h1> -->
 
@@ -10,20 +10,21 @@
   </div> -->
     <div class="file-container">
       <div class="file">
-        <label
-          >File
-          <p>FileName</p>
+        <h3>Ladda upp fil</h3>
+          
+          <p>Namn</p>
           <input v-model="fileName" />
-          <p>File</p>
-          <input
+
+          <p>Fil</p>
+          <div class="upload">
+          <input          
             accept=".docx"
             type="file"
             id="file"
-            ref="file"
-            v-on:change="handleFileUpload()"
-          />
-        </label>
-        <button v-on:click="submitFile()">Submit</button>
+            ref="cvTemplate"
+            v-on:change="PreviewTemplate"/> 
+        <button class="button" v-on:click="SubmitFile">Upload</button>
+        </div>
       </div>
     </div>
 
@@ -32,8 +33,8 @@
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Aktiv</th>
-          <th></th>
+          <!-- <th>Aktiv</th>
+          <th></th> -->
         </tr>
         <tr v-for="(i, index) in cvTempList" :key="index">
           <th>{{ index }}</th>
@@ -43,11 +44,11 @@
           <!-- <th>{{i.stringId}}</th> -->
           <!-- <th><input type="radio" name="active" value=true @change="updateActiveCv()"></th> -->
 
-          <th><p v-if="i.active" class="fas fa-check" /></th>
+          <!-- <th><p v-if="i.active" class="fas fa-check" /></th> -->
 
           <th>
             <p class="icon-click" v-on:click="showCvTemp(i.stringId)">
-              <i class="fas fa-file-download"></i>
+              <i title="Ladda ner" class="fas fa-file-download" ></i>
             </p>
           </th>
         </tr>
@@ -76,12 +77,13 @@
 // //   },
 // // }
 // }
-import Axios from "@/axios.config.js";
+
 export default {
   name: "UploadCvTemp",
   data() {
     return {
       fileName: "",
+      cvTemplate: "",
     };
   },
 
@@ -103,36 +105,86 @@ export default {
       this.$store.dispatch("getCvTemp", id);
       //this.getCvTemp(id);
     },
-    //Används inte nu
-    async getCvTemp(stringId) {
-      console.log("Inne i Get", stringId);
-      Axios({
-        method: "GET",
-        url: "cv/GetCvTemplate/" + stringId,
-        responseType: "blob",
-        //data: dates
-      }).then((response) => {
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "cvTemplate.docx");
-        document.body.appendChild(fileLink);
-        fileLink.click();
-      });
+    PreviewTemplate(e) {
+      this.error = false;
+      let files = e.target.files;
+      if (files.length === 0) {
+        return;
+      }
+      //let holder = this.consult_picture;
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.cvTemplate = e.target.result;
+
+        // let string = this.consult_picture.split(",");
+        // if (
+        //   string[0].includes("docx")
+        // ) {
+        //   console.log("docx");
+        // } else {
+        //   this.errorMessage = "Tillåtna filformat: .docx";
+        //   this.error = true;
+        //   this.cvTemplate = holder;
+        // }
+      };
+      console.log("1", this.cvTemplate);
+      reader.readAsDataURL(files[0]);
+      console.log("2", this.cvTemplate);
+      console.log(this.fileName);
     },
-    //   toggle () {
-    //     this.active = !this.active
-    //   }
+    async SubmitFile() {
+      var InputObject = {
+        //StringId: "",
+        Name: this.fileName,
+        //Active: true,
+        // FileByte: [],
+        Base64String: this.cvTemplate        
+      };
+      console.log("SubmitFile", this.cvTemplate);
+      await this.$store.dispatch("postCvTemplate", InputObject);
+      await this.$store.dispatch("getCvTempList");
+      this.fileName="";
+      this.$refs.cvTemplate.value=null;
+      console.log("efter clear", this.cvTemplate);
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
+div>p{
+    text-align: left;
+}
+
+.main-div{
+      border: solid 1px black; 
+      border-radius: 4px;
+      padding:3vh;
+      margin:2vh 1vh;
+      height:87vh;
+}
+.list-table {
+  padding: 1vh;
+  
+  height: 40vh;
+    width: 40vw;
+  overflow-y: scroll;
+  margin-top: 2vh;
+  margin-right: 3vw;
+  margin-left: 2vw;
+  
+}
+
 .file-container {
   width: 40vw;
+  margin: 2vw;
 }
 .file {
-  display: flexbox;
+  display: flex;
+  flex-direction: column;
+}
+.upload{
+    display: flex;
 }
 
 .formDiv {
@@ -150,19 +202,23 @@ form {
   border-radius: 4px;
   transition-duration: 0.4s;
   border: 2px solid #2185d0;
+  height: 5vh;
+  margin: 1vh;
+  padding: 1vh;
 }
 input {
-  padding: 0.5em 1em;
+  /* padding: 0.5em 1em;
   border-radius: 4px;
-  margin: 0 auto;
+  margin: 0 auto; */
   width: 100%;
   border: 00.1px solid;
+  align-self: center;
 }
 select {
-  flex: 1 0 auto;
+  /* flex: 1 0 auto;
   padding: 0.5em 1em;
   border-radius: 4px;
-  width: 100%;
+  width: 100%; */
 }
 .error {
   color: red;
@@ -187,5 +243,16 @@ h3 {
 
 .icon-click:hover {
   cursor: pointer;
+}
+td,
+th {
+  border-bottom: 1px solid #dddddd;
+  text-align: left;
+
+}
+.list-table > table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="flex-container">
     <div class="flex-item-left">
-      <div class="mainDiv">
+      <!-- <div class="mainDiv">
         <div class="h2Div">
           <h3>Redigera Mall</h3>
         </div>
@@ -16,6 +16,8 @@
           </div>
         </div>
       </div>
+    </div> -->
+    <UploadCvTemp/>
     </div>
     <div class="flex-item-right">
       <div>
@@ -102,6 +104,8 @@
 <script>
 import RegisterUser from "../components/RegisterUser";
 import Modal from "../components/Modal";
+import UploadCvTemp from "../components/UploadCvTemp";
+
 
 export default {
   name: "Admin",
@@ -122,8 +126,10 @@ export default {
   components: {
     RegisterUser,
     Modal,
+    UploadCvTemp,
   },
   methods: {
+
     showAdminModal() {
       this.isAdminModalVisible = true;
     },

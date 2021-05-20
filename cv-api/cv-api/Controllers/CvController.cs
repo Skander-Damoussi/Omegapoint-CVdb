@@ -44,17 +44,20 @@ namespace cv_api.Controllers
 
 
         //Temporary, upload cv from local
-        [HttpPost]
-        public async Task<IActionResult> PostCvTemplate(CVTemplate test)
+        [HttpPost("PostCvTemplate/")]
+        public async Task<IActionResult> PostCvTemplate(CvUpload cvUpload)
         {
-
             CVTemplate cvTemplate = new CVTemplate();
-            cvTemplate.Name = "TestMedUpload6";
+            cvTemplate.Name = cvUpload.Name;
+            var splitString = cvUpload.Base64String.Split(",");
+            cvTemplate.FileByte = Convert.FromBase64String(splitString[1]);
             cvTemplate.Active = true;
+            //cvTemplate.Name = "TestMedUpload6";
+            //cvTemplate.Active = true;
 
-            string filePath = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\testmedupload6.docx";
+            //string filePath = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\testmedupload6.docx";
 
-            cvTemplate.FileByte = System.IO.File.ReadAllBytes(filePath);
+            //cvTemplate.FileByte = System.IO.File.ReadAllBytes(filePath);
 
             await _cvRepository.InsertOneAsync(cvTemplate);
 
@@ -194,7 +197,7 @@ namespace cv_api.Controllers
             //var cvTemplates = _cvRepository.AsQueryable();
 
             var cvTemplates = _cvRepository.FilterBy(
-            filter => filter.Name != "").ToList();
+            filter => filter.Id != null).ToList();
 
             //foreach (var item in cvTemplates)
             //{
