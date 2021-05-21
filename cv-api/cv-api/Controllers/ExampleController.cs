@@ -40,6 +40,7 @@ namespace cv_api.Controllers
                 filter => filter.FirstName != "Horse",
                 projection => projection.FirstName
             );
+
             return people;
         }
     }

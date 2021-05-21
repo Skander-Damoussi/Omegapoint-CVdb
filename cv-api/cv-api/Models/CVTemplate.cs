@@ -22,4 +22,9 @@ namespace cv_api.Models
         
 
     }
+    public class CvDocxDTO
+    {
+        public string TempId { get; set; }
+        public string UserId { get; set; }
+    }
 }

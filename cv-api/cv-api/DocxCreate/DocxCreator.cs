@@ -225,38 +225,41 @@ namespace cv_api.DocxCreate
 
             //var newImageBytes = File.ReadAllBytes(imageFilename);
             //newImageBytes = null;
-            string [] splitStringImage = image.Split(",");
-
-            var newImageBytes = Convert.FromBase64String(splitStringImage[1]);
-
-            using (WordprocessingDocument document = WordprocessingDocument.Open(memoryStream, true)) 
+            if (image != null)
             {
-                //var imagesToRemove = new List<Drawing>();
+                string[] splitStringImage = image.Split(",");
 
-                IEnumerable<Drawing> drawings = document.MainDocumentPart.Document.Descendants<Drawing>().ToList();
-                foreach (Drawing drawing in drawings)
+                var newImageBytes = Convert.FromBase64String(splitStringImage[1]);
+
+                using (WordprocessingDocument document = WordprocessingDocument.Open(memoryStream, true))
                 {
-                    DocProperties dpr = drawing.Descendants<DocProperties>().FirstOrDefault();
-                    if (dpr != null && dpr.Name == oldImagesPlaceholderText)
+                    //var imagesToRemove = new List<Drawing>();
+                    IEnumerable<Drawing> drawings = document.MainDocumentPart.Document.Descendants<Drawing>().ToList();
+                    foreach (Drawing drawing in drawings)
                     {
-                        foreach (A.Blip b in drawing.Descendants<A.Blip>().ToList())
+                        DocProperties dpr = drawing.Descendants<DocProperties>().FirstOrDefault();
+                        if (dpr != null && dpr.Name == oldImagesPlaceholderText)
                         {
-                            OpenXmlPart imagePart = document.MainDocumentPart.GetPartById(b.Embed);
-
-                            if (newImageBytes != null)
+                            foreach (A.Blip b in drawing.Descendants<A.Blip>().ToList())
                             {
-                                using (var writer = new BinaryWriter(imagePart.GetStream()))
+                                OpenXmlPart imagePart = document.MainDocumentPart.GetPartById(b.Embed);
+
+                                if (newImageBytes != null)
                                 {
-                                    writer.Write(newImageBytes);
+                                    using (var writer = new BinaryWriter(imagePart.GetStream()))
+                                    {
+                                        writer.Write(newImageBytes);
+                                    }
                                 }
                             }
                         }
                     }
+                    //Stäng streamen
+                    document.Close();
                 }
-
-                //Stäng streamen
-                document.Close();
             }
+
+
         }
 
         public void AddTechniques(MemoryStream memoryStream, string bookmarkName)

@@ -393,7 +393,7 @@ export default new Vuex.Store({
         fileLink.setAttribute('download', 'cvTemplate.docx');
         document.body.appendChild(fileLink);   
         fileLink.click();
-        commit("setCvTemp", response.data);
+        commit("setStatus", response.status);
       })
     },
     async postCvTemplate({ commit }, cvTemplate  ) {
@@ -408,10 +408,51 @@ export default new Vuex.Store({
         .then(async (resp) => {
           //this.userPresentation = resp.data;
           console.log(resp)
+          commit("setStatus", this.status);
         })
         .catch((err) => console.log(err));
-      commit("setUserPresentation", this.presentations);
+      
     },
+    async getCvDocx({ commit }, input) {
+      console.log("inne i getCvDocx", input)
+      //this.cvTemplate=cvTemplate;
+      //console.log("this.cvtemplate", this.cvTemplate);
+      await Axios.post("cv/GetCvDocx", input, { responseType: 'blob',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(async (resp) => {
+          var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
+          var fileLink = document.createElement('a');   
+          fileLink.href = fileURL;
+          fileLink.setAttribute('download', 'cvDocx.docx');
+          document.body.appendChild(fileLink);   
+          fileLink.click();
+          console.log("Response", resp.status)
+          this.status=resp.status;
+        })
+        .catch((err) => console.log(err));
+      commit("setStatus", this.status);
+    },
+    //Funkar men tar inte emot fil
+    // async getCvDocx({ commit }, input) {
+    //   console.log("inne i getCvDocx", input)
+    //   //this.cvTemplate=cvTemplate;
+    //   //console.log("this.cvtemplate", this.cvTemplate);
+    //   await Axios.post("cv/GetCvDocx", input, {
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   })
+    //     .then(async (resp) => {
+    //       //this.userPresentation = resp.data;
+    //       console.log(resp)
+    //     })
+    //     .catch((err) => console.log(err));
+    //   commit("setUserPresentation", this.presentations);
+    // },
+
     async newConfirmationLink({ commit }, email) {
       console.log(email);
       await Axios.post(`user/Confirmation/${email}`, email)

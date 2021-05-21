@@ -29,21 +29,24 @@
         <p class="marginleftIcon">Exportera till PDF</p>
       </div>
       <!-- cvdocx -->
-        <div class="icon-click row" v-on:click="exportToDocx">
+        <div class="icon-click row"  v-on:click="exportToDocx">
         <i
           class="btn fas fa-file-export fa-2x"
           title="Tryck för att exportera"
         ></i>
         <p class="marginleftIcon">Exportera till Word</p>
       </div>
+
             <!-- exdocxList -->
-      <div id="exDocx" v-if="exDocxToggle">
+      <div id="exDocx" v-if="exDocxToggle" @mouseleave="exDocxToggle=false">
+      <!-- <div id="exDocx" v-if="exDocxToggle"> -->
       <div class="list-table">
-      <table>
+      <table >
         <p>Välj mall</p>
         <tr v-for="(i, index) in cvTempList" :key="index">
           <th title="exportera till Word" v-on:click="clickCvDocx(i.stringId)">{{ i.name }}</th>
           </tr>
+
           <!-- <th>
             <p class="icon-click" v-on:click="showCvTemp(i.stringId)">
           </th>
@@ -585,7 +588,10 @@
 </template>
 
 <script>
+// import Vue from "vue";
 import html2pdf from "html2pdf.js";
+// import vClickOutside from "v-click-outside";
+// Vue.use(vClickOutside);
 
 export default {
   name: "Consultant",
@@ -881,6 +887,9 @@ export default {
     {
       //Dispatch, med Id och consultId
       //this.$store.dispatch("getCvTemp", id);
+      //this.$store.dispatch("getCvDocx", this.showUserID, CvTempId)
+      this.$store.dispatch("getCvDocx", {UserId:this.showUserID, TempId:CvTempId})
+
       console.log("cvTempId", CvTempId);
       this.exDocxToggle = !this.exDocxToggle;
     },
@@ -1378,7 +1387,7 @@ button:hover {
   right: 200px;
   top: 100px;
   text-align: left;
-  height: 30vh;
+  max-height: 30vh;
   width: 150px;
   align-items: center;
   overflow-y: scroll;

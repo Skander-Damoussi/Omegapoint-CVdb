@@ -125,42 +125,107 @@ namespace cv_api.Controllers
 
         }
 
-        //Test, download populate cv template
-        [HttpGet("GetCvDocx/{userId}")]
-        public async Task<IActionResult> GetCvDocx(string userId)
-        {
-            var cv = _cvRepository.FilterBy(
-            filter => filter.Name == "TestMedUpload6",
-            projection => projection.FileByte).FirstOrDefault();
+        ////Test, download populate cv template
+        //[HttpGet("GetCvDocx/{userId}")]
+        //public async Task<IActionResult> GetCvDocx(string userId)
+        //{
+        //    var cv = _cvRepository.FilterBy(
+        //    filter => filter.Name == "TestMedUpload6",
+        //    projection => projection.FileByte).FirstOrDefault();
 
-            //Where active == true
+        //    //Where active == true
 
-            //var user = _userRepository.FilterBy(
-            //    filter => filter.FirstName == "konsult",
-            //    projection => projection.LastName).FirstOrDefault();
+        //    //var user = _userRepository.FilterBy(
+        //    //    filter => filter.FirstName == "konsult",
+        //    //    projection => projection.LastName).FirstOrDefault();
  
-            var user = await userManager.FindByIdAsync(userId);
+        //    var user = await userManager.FindByIdAsync(userId);
 
-            DocxCreator docxCreate = new DocxCreator();
+        //    DocxCreator docxCreate = new DocxCreator();
 
-            //Memorystream, byte array, make memorystream resizeable
-            using MemoryStream memoryStream = new MemoryStream(0);
-            {
+        //    //Memorystream, byte array, make memorystream resizeable
+        //    using MemoryStream memoryStream = new MemoryStream(0);
+        //    {
                 
-                memoryStream.Write(cv,0,cv.Length);
-                //cv.CopyTo(memoryStream);
-                await docxCreate.CreateDocx(memoryStream, user);
-                cv = memoryStream.ToArray();
+        //        memoryStream.Write(cv,0,cv.Length);
+        //        //cv.CopyTo(memoryStream);
+        //        await docxCreate.CreateDocx(memoryStream, user);
+        //        cv = memoryStream.ToArray();
 
+        //    }
+
+        //    using (var net = new System.Net.WebClient())
+        //    {
+        //        //Problem med return Ok()
+        //        return new FileContentResult(cv, "application/docx")
+        //        {
+        //            FileDownloadName = DateTime.Now.ToString() + ".docx"
+        //        };
+        //    }
+        //}
+
+        //Test, download populate cv template
+        [HttpPost("GetCvDocx")]
+        public async Task<IActionResult> GetCvDocx(CvDocxDTO cvDocxDto)
+        {
+            //var cv = _cvRepository.FilterBy(
+            //filter => filter.Name == "TestMedUpload6",
+            //projection => projection.FileByte).FirstOrDefault();
+
+            try
+            {
+                CVTemplate cv = new CVTemplate();
+
+                var cvTemplates = _cvRepository.FilterBy(
+                filter => filter.Name != "").ToList();
+
+                foreach (var item in cvTemplates)
+                {
+                    if (item.Id.ToString() == cvDocxDto.TempId)
+                    {
+                        cv = item;
+                    }
+                }
+
+                var user = await userManager.FindByIdAsync(cvDocxDto.UserId);
+
+                DocxCreator docxCreate = new DocxCreator();
+
+                if (cv.FileByte != null)
+                {
+                    //Memorystream, byte array, make memorystream resizeable
+                    using MemoryStream memoryStream = new MemoryStream(0);
+                    {
+
+                        memoryStream.Write(cv.FileByte, 0, cv.FileByte.Length);
+                        //cv.CopyTo(memoryStream);
+                        await docxCreate.CreateDocx(memoryStream, user);
+                        cv.FileByte = memoryStream.ToArray();
+
+                    }
+
+                    using (var net = new System.Net.WebClient())
+                    {
+                        //Problem med return Ok()
+                        
+
+                        return new FileContentResult(cv.FileByte, "application/docx")
+                        {
+                            FileDownloadName = DateTime.Now.ToString() + ".docx"
+                        };
+                        //return Ok(returnfile);
+                    }
+                    
+                }
+
+                else
+                {
+                    return StatusCode(409, "Cv kunde inte skapas, mall saknas");
+                }
             }
 
-            using (var net = new System.Net.WebClient())
-            {
-                //Problem med return Ok()
-                return new FileContentResult(cv, "application/docx")
-                {
-                    FileDownloadName = DateTime.Now.ToString() + ".docx"
-                };
+            catch {
+                return BadRequest();
             }
         }
 
@@ -199,6 +264,8 @@ namespace cv_api.Controllers
             var cvTemplates = _cvRepository.FilterBy(
             filter => filter.Id != null).ToList();
 
+            //FÖrsökte med flera projections, null:ade istället filebyte i loopen
+
             //foreach (var item in cvTemplates)
             //{
             //    //item.StringId = item.Id.ToString();
@@ -210,6 +277,7 @@ namespace cv_api.Controllers
             for (int i = 0; i < cvTemplates.Count; i++)
             {
                 cvTemplates[i].StringId = cvTemplates[i].Id.ToString();
+                cvTemplates[i].FileByte = null;
             }
 
             return Ok(cvTemplates);
