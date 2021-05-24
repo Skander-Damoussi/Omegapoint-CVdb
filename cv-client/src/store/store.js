@@ -88,7 +88,7 @@ export default new Vuex.Store({
   actions: {
     async login({ commit }, user) {
       await Axios.post("user/login", user)
-        .then(async (resp) => {
+        .then(async resp => {
           console.log(resp.status + "resp");
           this.status = resp.status;
           var respUser = {
@@ -108,7 +108,7 @@ export default new Vuex.Store({
     },
     async updateUser({ commit }, user) {
       await Axios.put("user/", user)
-        .then(async (resp) => {
+        .then(async resp => {
           console.log("store", resp);
           this.status = resp.status;
           var respUser = {
@@ -128,7 +128,7 @@ export default new Vuex.Store({
     },
     async updatePassword({ commit }, password) {
       await Axios.put("user/updatePassword", password)
-        .then(async (resp) => {
+        .then(async resp => {
           this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
@@ -158,18 +158,18 @@ export default new Vuex.Store({
     },
     async searchConsultant({ commit }, searchString) {
       await Axios.get(`search/getSearchResult/${searchString}`)
-        .then(async (resp) => {
+        .then(async resp => {
           this.searchList = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
     },
     async getUsers({ commit }) {
       await Axios.get("user/")
-        .then(async (resp) => {
+        .then(async resp => {
           this.users = resp;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUsers", this.users);
     },
     async registerUser({ commit }, { token, input }) {
@@ -194,10 +194,10 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.CV = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setCV", this.CV);
     },
     async addExperience({ commit }, { token, input }) {
@@ -207,10 +207,10 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.userExperience = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setExperience", this.experiences);
     },
     async updateExperience({ commit }, { token, input }) {
@@ -220,10 +220,10 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.userExperience = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setExperience", this.experiences);
     },
     async removeExperience({ commit }, { token, input }) {
@@ -233,28 +233,28 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.userExperience = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setExperience", this.experiences);
     },
     async getUserExperience({ commit }, userId) {
       await Axios.get(`user/getConsultantExperienceList/${userId}`)
-        .then(async (resp) => {
+        .then(async resp => {
           this.userExperience = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUserExperience", this.userExperience);
     },
     async verify({ commit }, { userId, token }) {
       console.log(userId);
       console.log(token);
       await Axios.post("user/verify", userId, token)
-        .then(async (resp) => {
+        .then(async resp => {
           this.verified = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUserExperience", this.verified);
     },
     async addPresentation({ commit }, { token, input }) {
@@ -264,10 +264,10 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.userPresentation = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUserPresentation", this.presentations);
     },
     async updatePresentation({ commit }, { token, input }) {
@@ -277,10 +277,10 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.userPresentation = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUserPresentation", this.presentations);
     },
     async removePresentation({ commit }, { token, input }) {
@@ -290,43 +290,43 @@ export default new Vuex.Store({
           Authorization: "Bearer " + token
         }
       })
-        .then(async (resp) => {
+        .then(async resp => {
           this.userExperience = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUserPresentation", this.presentations);
     },
     async getUserPresentation({ commit }, userId) {
       await Axios.get(`user/getConsultantPresentationList/${userId}`)
-        .then(async (resp) => {
+        .then(async resp => {
           this.userPresentation = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setUserPresentation", this.userPresentation);
     },
     async updateActiveUser({ commit }, email) {
       await Axios.put(`user/updateActiveConsultant/${email}`)
-        .then(async (resp) => {
+        .then(async resp => {
           console.log(resp);
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
     },
     async getCV({ commit }, userId) {
       await Axios.get(`user/getUserCV/${userId}`)
-        .then(async (resp) => {
+        .then(async resp => {
           this.CV = resp.data;
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setCV", this.CV);
     },
     async getDeactivatedConsultants({ commit }) {
       await Axios.get(`user/getDeactivatedConsultants`)
-        .then(async (resp) => {
+        .then(async resp => {
           this.searchList = resp.data;
           console.log(resp.data);
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
     },
     async getCvTempList({ commit }) {

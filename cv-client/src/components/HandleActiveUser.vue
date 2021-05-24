@@ -17,7 +17,10 @@
         <p v-on:click="resetSearch()"><i class="fas fa-times"></i></p>
       </div>
       <div class="section">
-        <button class="submit bttn" v-on:click="getDeactivatedConsultants()">
+        <button
+          class="submit bttn getDeactivated"
+          v-on:click="getDeactivatedConsultants()"
+        >
           Hämta inaktiverade konsulter
         </button>
       </div>
@@ -38,7 +41,10 @@
                 </p>
               </div>
               <div class="section" v-if="!icon">
-                <button class="submit bttn" v-on:click="showModal(user.email)">
+                <button
+                  class="submit bttn getDeactivated"
+                  v-on:click="showModal(user.email)"
+                >
                   Återaktivera
                 </button>
               </div>
@@ -98,7 +104,6 @@ export default {
       this.isModalVisible = false;
     },
     async updateActiveUser() {
-      console.log("selected", this.selectedUser);
       await this.$store.dispatch("updateActiveUser", this.selectedUser);
       this.cancel();
       this.resetSearch();
@@ -112,13 +117,11 @@ export default {
       }
     },
     resetSearch() {
-      console.log("reset");
       this.searchString = "";
       this.displayList = [];
     },
     async getDeactivatedConsultants() {
       this.icon = false;
-      console.log(this.icon);
       await this.$store.dispatch("getDeactivatedConsultants");
       this.displayList = this.$store.getters.getSearchList;
     }
@@ -199,9 +202,12 @@ input:-webkit-autofill {
 }
 
 .section > button {
-  width: fit-content;
   margin-top: 1vh;
   padding: 0.25vw;
+}
+
+.getDeactivated {
+  width: fit-content;
 }
 
 .cancel {
