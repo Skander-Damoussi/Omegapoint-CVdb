@@ -15,28 +15,25 @@ namespace cv_api.DocxCreate
 {
     public class DocxCreator
     {
-        private List<Assignment> Assignments= new List<Assignment>();
+        private List<Assignment> Assignments = new List<Assignment>();
         private List<string> Techniques = new List<string>();
 
         public async Task CreateDocx(MemoryStream memoryStream, ApplicationUser user)
         {
             await BuildData(user);
-            //Ta emot datan
             await ReplaceFields(memoryStream, user.CV);
 
-            AddTechniques(memoryStream, "techniques");//Fixa lista för techniques
-            await AddAssignments(memoryStream, "assignments", user);//Skicka in assignmentslistan
-            AddLanguage(memoryStream, "language");//Skicka in languagelista
-            AddEducation(memoryStream, "education");//Skicka in utbildningslistan
-            //ReplaceInternalImage(memoryStream, "profilePicture");//Skicka in bilden
-            ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);//Skicka in bilden
+            await AddTechniques(memoryStream, "techniques");
+            await AddAssignments(memoryStream, "assignments", user);
+            await AddLanguage(memoryStream, "language");
+            await AddEducation(memoryStream, "education");
+            await ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);
 
 
         }
 
         public async Task BuildData(ApplicationUser user)
         {
-            //Assignments = new List<Assignment>();
 
             foreach (var item in user.CV.consult_experience_other_list)
             {
@@ -49,7 +46,6 @@ namespace cv_api.DocxCreate
                 {
                     if(assignment.Id==experience.id)
                     {
-                        //assignment.Location = ;
                         assignment.Title = experience.Title;
                         assignment.StartDate = CreateDateTime(experience.StartDate);
                         assignment.EndDate = CreateDateTime(experience.EndDate);
@@ -61,25 +57,6 @@ namespace cv_api.DocxCreate
 
                         Techniques.AddRange(experience.Language.Where(x => !Techniques.Any(y => y == x)));
                         Techniques.AddRange(experience.Software.Where(x => !Techniques.Any(y => y == x)));
-
-
-                        //foreach (var language in experience.Language)
-                        //{
-                        //    assignment.Experiences.Add(language);
-                        //    //Bygg techniques listan
-                        //    Techniques.Add(language);
-                        //}
-
-                        //foreach (var software in experience.Software)
-                        //{
-                        //    assignment.Experiences.Add(software);
-                        //    //Bygg techniques listan
-                        //    Techniques.Add(software);
-                        //}
-                        //foreach (var assign in experience.Assignments)
-                        //{
-                        //    assignment.Experiences.Add(assign);
-                        //}
                     }                    
                 }
                 Assignments.Add(assignment);
@@ -112,14 +89,7 @@ namespace cv_api.DocxCreate
 
         public async Task ReplaceFields(MemoryStream memoryStream, CV cv)
         {
-            //string story = @"Som många utvecklare trivs Andreas bäst när han får lösa" +
-            //" komplexa problem och växer med utmaningar. Att ta stort" +
-            //" ansvar som ensam utvecklare i projekt eller vara en dynamisk" +
-            //" del av ett större team gör Michal bra vilket som. Med stor" +
-            //" nyikenhet, prestigelöshet och en positiv attityd lyssnar Andreas" +
-            //" gärna för att inte bara utveckla saker rätt, utan också rätt saker";
 
-            //Bygg sträng
             string userStory = null;
             foreach (var item in cv.consult_presentations)
             {
@@ -128,12 +98,10 @@ namespace cv_api.DocxCreate
 
             await ReplaceTextBookmarks(memoryStream, "userName", cv.consult_name);
             await ReplaceTextBookmarks(memoryStream, "userRole", cv.consult_role);
-            //await ReplaceTextBookmarks(memoryStream, "story", userStory);
             await ReplaceTextBookmarks(memoryStream, "story", cv.consult_presentations);
             await ReplaceTextBookmarks(memoryStream, "contactName", cv.sale_name);
             await ReplaceTextBookmarks(memoryStream, "contactEmail", cv.sale_email);
             await ReplaceTextBookmarks(memoryStream, "contactPhone", cv.sale_phone);
-            //focusassignment
             await ReplaceTextBookmarks(memoryStream, "focusAssignmentRole", cv.consult_experience_focus_role);
             await ReplaceTextBookmarks(memoryStream, "focusAssignmentCompany", cv.consult_experience_focus_title);
             await ReplaceTextBookmarks(memoryStream, "focusAssignmentText", cv.consult_experience_focus_description);
@@ -160,14 +128,11 @@ namespace cv_api.DocxCreate
                         bookmarkText.GetFirstChild<Text>().Text = input;
                     }
                 }
-
-                //document.Close();
             }
         }
 
         public async Task ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, List<string> input)
         {
-
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {
                 var mainPart = document.MainDocumentPart;
@@ -183,11 +148,11 @@ namespace cv_api.DocxCreate
 
                     if (bookmarkText != null)
                     {
-                        //Sista först för rätt ordning
+                        //Last first
                         bookmarkText.GetFirstChild<Text>().Text = input[input.Count-1];
                     }
                 }
-                //Försöka med delade stycke, loopa baklänges för rätt ordning
+                //Loop backwards
                 for (int i = input.Count-2; i >= 0; i--)
                 {
                     Run run = bookmark.NextSibling<Run>();
@@ -198,13 +163,13 @@ namespace cv_api.DocxCreate
                     var p = bookmark.Parent.CloneNode(true);
                     Run bookmarkText2 = bookmark.NextSibling<Run>();
 
-                    //Leta upp bookmark i clone
+                    //Find bookmark in clone
                     var res2 = from bm in p.Descendants<BookmarkStart>()
                                where bm.Name == bookmarkName
                                select bm;
 
                     var bookmark3 = res2.FirstOrDefault();
-                    //Leta upp Texten i bookmark-clone
+                    //Find text in bookmark-clone
                     Run bookmarkText3 = bookmark.NextSibling<Run>();
 
                     if (bookmarkText != null)
@@ -213,18 +178,11 @@ namespace cv_api.DocxCreate
                     }
                     bookmark.Parent.InsertAfterSelf(p);
                 }
-                //document.Close();
             }
         }
 
-        public void ReplaceInternalImage(MemoryStream memoryStream, string oldImagesPlaceholderText, string image)
+        public async Task ReplaceInternalImage(MemoryStream memoryStream, string oldImagesPlaceholderText, string image)
         {
-            //Gör en fil till bytearray
-            //Tillfälligt innan det finns på DB
-            //string imageFilename = @"C:\Users\glenn\source\repos\WordProcessing\WordProcessing\profilepicture\profilepicture2.jpg";
-
-            //var newImageBytes = File.ReadAllBytes(imageFilename);
-            //newImageBytes = null;
             if (image != null)
             {
                 string[] splitStringImage = image.Split(",");
@@ -233,7 +191,6 @@ namespace cv_api.DocxCreate
 
                 using (WordprocessingDocument document = WordprocessingDocument.Open(memoryStream, true))
                 {
-                    //var imagesToRemove = new List<Drawing>();
                     IEnumerable<Drawing> drawings = document.MainDocumentPart.Document.Descendants<Drawing>().ToList();
                     foreach (Drawing drawing in drawings)
                     {
@@ -254,7 +211,6 @@ namespace cv_api.DocxCreate
                             }
                         }
                     }
-                    //Stäng streamen
                     document.Close();
                 }
             }
@@ -262,19 +218,15 @@ namespace cv_api.DocxCreate
 
         }
 
-        public void AddTechniques(MemoryStream memoryStream, string bookmarkName)
+        public async Task AddTechniques(MemoryStream memoryStream, string bookmarkName)
         {
-            //List<string> techniques = new List<string>(new string[] { "C#", "JavaScript", "CSS", "Node.js", "Express.JS", "PHP", "Redux", "HTML5", "WooCommerce" });
 
-            //Loopa baklänges
             for (int i = Techniques.Count - 1; i >= 0; i--)
             {
-
                 using (var document = WordprocessingDocument.Open(memoryStream, true))
                 {
 
                     var mainPart = document.MainDocumentPart;
-
 
                     var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
                               where bm.Name == bookmarkName
@@ -292,10 +244,6 @@ namespace cv_api.DocxCreate
                                 bookmarkText.GetFirstChild<Text>().Text = Techniques[i];                                
                             }
                         }
-                        else
-                        {
-                            //Console.WriteLine("Bookmark not found, null, " + bookmarkName);
-                        }
                     }
 
                     else
@@ -310,105 +258,36 @@ namespace cv_api.DocxCreate
                             var p = bookmark.Parent.CloneNode(true);
                             Run bookmarkText2 = bookmark.NextSibling<Run>();
 
-                            //Leta upp bookmarkclone i clone
+                            //Find bookmark in clone
                             var res2 = from bm in p.Descendants<BookmarkStart>()
                                        where bm.Name == bookmarkName
                                        select bm;
                             var bookmark3 = res2.FirstOrDefault();
-                            //Leta upp Texten i bookmark-clone
+                            //Find text in bookmark-clone
                             Run bookmarkText3 = bookmark.NextSibling<Run>();
                             bookmarkText3.GetFirstChild<Text>().Text = Techniques[i];
 
-                            //Lägg till Elementet
+                            //Add element
                             bookmark.Parent.InsertAfterSelf(p);
                         }
 
-                        else
-                        {
-                            //Console.WriteLine("Bookmark not found, null, " + bookmarkName);
-                        }
                     }
-
-
                     document.Save();
                     document.Close();
-
                 }
             }
-
-
         }
 
         public async Task AddAssignments(MemoryStream memoryStream, string bookmarkName, ApplicationUser user)
         {
-            //Assignmentslistan
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    await AddTable(memoryStream, bookmarkName);
-            //}
-
             await AddTable(memoryStream, bookmarkName, user);
         }
 
         public async Task AddTable(MemoryStream memoryStream, string bookmarkName, ApplicationUser user)
-        {
-            //var exList = user.CV.consult_experience_other_list;           
+        {   
             
             for (int i = 0; i < Assignments.Count; i++)
-            {
-                ////Data
-                //string company = "Big Easy Self Storage AB";
-                //string time = "mar 2021 - pågående";
-                ////Test Datetime
-                //DateTime fromDate = new DateTime(2021, 02, 24);
-                //DateTime toDate = new DateTime(2021, 03, 21);
-                //string city = "Älvsjö";
-                //string role = "Utvecklare";
-                //string text = "Andreas hoppade in i projekten för att åtgärda design buggar som uppstod i olika skärmanpassningar. " +
-                //    "Han har också byggd vidare ansöknings formuläret och designad slutliga steget i formuläret vilket var BankID. " +
-                //    "Hans uppgift var att skapa en design som skulle matcha Big Easys nuvarande design.";
-
-                //Experience experience = (Experience)from ex in user.Experiences
-                //                        where ex.id == exList[i].id
-                //                        select ex;
-
-                //Experience x = from ex in user.Experiences
-                //         where ex.id == exList[i].id
-                //        select ex;
-
-                //foreach (Experience item in user.Experiences)
-                //{
-                //    if (item.id==exList[i].id)
-                //    {
-                //        var y = item;
-
-                //    }
-                //}                
-
-
-
-                //string company = experience.Title;
-                //string role = exList[i].role;
-                //string text = exList[i].description;
-                //string city = "N/A";//Ska användas till city, location
-                //string fromDate = experience.StartDate;
-                //string toDate =experience.EndDate;
-
-                //string techniques = "";
-
-                //foreach (var item in experience.Language )
-                //{
-                //    techniques += item + "   ";
-                //}
-                //foreach (var item in experience.Software)
-                //{
-                //    techniques += item + "   ";
-                //}
-                //foreach (var item in experience.Assignments)
-                //{
-                //    techniques += item + "   ";
-                //}               
-
+            {            
                 string techniques="";
                 for (int y = 0; y < Assignments[i].Experiences.Count; y++)
                 {
@@ -441,11 +320,10 @@ namespace cv_api.DocxCreate
                         tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 13, true), new Text(Assignments[i].Role))));
                         tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Assignments[i].Description))));
 
-                        //Lägg till tekniker
-                        //List<string> techniques = new List<string>(new string[] { "C#", "JavaScript", "CSS", "Node.js", "Express.JS", "PHP", "Redux", "HTML5", "WooCommerce" });
+                        //Create Paragraph, Run
                         var p = new Paragraph();
                         var r = new Run(FontStyle("Calibri", 13, true));
-                        //Ändra färg på text
+                        //Text color
                         var rp = new RunProperties();
                         Color c = new Color();
                         c.Val = "777777";
@@ -478,7 +356,7 @@ namespace cv_api.DocxCreate
                 
             }
         }
-        public void AddEducation(MemoryStream memoryStream, string bookmarkName)
+        public async Task AddEducation(MemoryStream memoryStream, string bookmarkName)
         {
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {
@@ -501,16 +379,13 @@ namespace cv_api.DocxCreate
                 //Loopa listan
                 for (int i = 0; i < 5; i++)
                 {
-                    //Workaround för att använda shading flera gånger
+                    //Clone, reuse shading
                     var useTcp1 = tcp.CloneNode(true);
                     var useTcp2 = tcp.CloneNode(true);
 
                     //Create row, CantSplit row between pages
                     var tr = new TableRow(new TableRowProperties(new CantSplit()));
-                    //if (i==0 || i==2)
-                    //{
-                    //    tr.Append(trp);
-                    //}
+
                     //Create tc
                     var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7500" }));
 
@@ -528,7 +403,7 @@ namespace cv_api.DocxCreate
                     tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Yrkeshögskola"))));
                     tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Medieinstitutet Malmö, Sverige"))));
 
-                    //Workaround för bakgrundsfärg
+                    //Backgroundcolor
                     if (i % 2 == 0)
                     {
                         tc1.Append(useTcp1);
@@ -553,10 +428,9 @@ namespace cv_api.DocxCreate
             }
         }
 
-        //Test Språk
-        public void AddLanguage(MemoryStream memoryStream, string bookmarkName)
+        public async Task AddLanguage(MemoryStream memoryStream, string bookmarkName)
         {
-            //Skicka in språklistan
+   
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {
                 var doc = document.MainDocumentPart.Document;
@@ -578,10 +452,9 @@ namespace cv_api.DocxCreate
 
                 for (int i = 0; i < 3; i++)
                 {
-                    //Workaround för att använda shading flera gånger
+                    //Clone shading
                     var useTcp1 = tcp.CloneNode(true);
                     var useTcp2 = tcp.CloneNode(true);
-
 
                     var tr = new TableRow(new TableRowProperties(new CantSplit()));
                     var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7500" }));
@@ -632,44 +505,6 @@ namespace cv_api.DocxCreate
             }
         }
 
-        //public string DateStringBuilder(string fromDate, string toDate)
-        //{
-        //    string dateString;
-
-        //    DateTime FDate = new DateTime(0001, 01, 01);
-        //    if (fromDate!=null)
-        //    {
-        //        try
-        //        {
-        //            string[] splitFD = fromDate.Split("-");
-        //            FDate = new DateTime(int.Parse(splitFD[0]), int.Parse(splitFD[1]), int.Parse(splitFD[2]));
-        //        }
-
-        //        catch (Exception exeption)
-        //        { 
-        //        }
-
-        //    }
-
-        //    DateTime TDate = new DateTime(0001, 01, 01);
-        //    if (toDate != null)
-        //    {
-        //        try
-        //        {
-        //            string[] splitTD = toDate.Split("-");
-        //            TDate = new DateTime(int.Parse(splitTD[0]), int.Parse(splitTD[1]), int.Parse(splitTD[2]));
-        //        }
-
-        //        catch (Exception exeption)
-        //        {
-        //        }
-        //    }
-
-        //    dateString = DateStringBuilder(FDate,TDate);
-
-        //        return dateString;
-        //}
-
         public string DateStringBuilder(DateTime fromDate, DateTime toDate)
         {
             string dateString;
@@ -712,7 +547,6 @@ namespace cv_api.DocxCreate
         {
             //Recalculate size
             size = size * 2;
-
             RunProperties rp = new RunProperties();
             RunFonts runFont = new RunFonts() { Ascii = font };
             FontSize runFontSize = new FontSize { Val = new StringValue(size.ToString()) };
