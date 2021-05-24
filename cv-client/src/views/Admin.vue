@@ -17,7 +17,7 @@
         </div>
       </div>
     </div> -->
-    <UploadCvTemp/>
+    <UploadCvTemp />
     </div>
     <div class="flex-item-right">
       <div>

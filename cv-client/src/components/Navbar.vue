@@ -11,6 +11,9 @@
             <a id="editUser" v-on:click="editUser">
               <i class="far fa-edit"></i>
             </a>
+              <a id="cvEdit" v-if="user.role=='Konsultchef'" v-on:click="cvEdit" title="Ladda upp cv-mall">
+              <i class="far fa-file-word"></i>
+            </a>
             <!-- Needs icon instead, works for now -->
             <a @click="signOut" id="logout" title="Logga ut"
               ><i class="fas fa-sign-out-alt"></i
@@ -103,6 +106,9 @@ export default {
     editUser() {
       this.$router.push("/editUser");
     },
+    cvEdit() {
+      this.$router.push("/uploadCvTemp");
+    },
   },
   computed: {
     loggedIn() {
@@ -172,5 +178,8 @@ export default {
 
 h2 {
   font-size: calc(14px + (18 - 14) * ((100vw - 300px) / (1600 - 300)));
+}
+#cvEdit{
+  margin-left: 0.5vw;
 }
 </style>

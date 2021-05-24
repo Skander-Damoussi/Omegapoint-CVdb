@@ -80,7 +80,7 @@ const routes = [
     path: "/uploadCvTemp",
     name: "UploadCvTemp",
     component: UploadCvTemp,
-    meta: { reqAuth: false, consultAuth: false, consultantManagerAuth: false },
+    meta: { reqAuth: true, consultAuth: false, consultantManagerAuth: true, adminAuth: true },
     props: true
   },
   {

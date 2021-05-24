@@ -5,7 +5,7 @@
         <h3>Ladda upp fil</h3>
           
           <p>Namn</p>
-          <input v-model="fileName" />
+          <input class="fileInput" v-model="fileName" />
           <p>Fil</p>
           <div class="upload">
           <input          
@@ -27,25 +27,56 @@
         </tr>
         <tr v-for="(i, index) in cvTempList" :key="index">
           <th>{{ index }}</th>
-          <th>{{ i.name }}</th>
+          <th>{{ i.name }}</th>          
           <th>
             <p class="icon-click" v-on:click="showCvTemp(i.stringId)">
               <i title="Ladda ner" class="fas fa-file-download" ></i>
             </p>
           </th>
+          <th>
+            <p class="icon-click" v-on:click="showModal(i.stringId)">
+              <i title="Ta bort" i class="fas fa-trash-alt"></i>
+            </p>
+          </th>
         </tr>
       </table>
-    </div>
+    </div>  
+      <Modal v-show="isModalVisible" @close="cancel()">
+      <template v-slot:header>
+        Ta bort Cv-mall
+      </template>
+
+      <template v-slot:body>
+        <p>
+          Är du säker på att du vill ta bort cv-mall?
+        </p>
+        <div class="section">
+          <button class="submit bttn cancel" v-on:click="cancel()">
+            Avbryt
+          </button>
+          <button class="submit bttn" v-on:click="removeCvTemp()">
+            OK
+          </button>
+        </div>
+      </template>
+
+      <template v-slot:footer> </template>
+    </Modal>
   </div>
 </template>
 
 <script>
+import Modal from "./Modal";
 export default {
   name: "UploadCvTemp",
+  components: {
+    Modal
+  },
   data() {
     return {
       fileName: "",
       cvTemplate: "",
+      isModalVisible: false,
     };
   },
 
@@ -61,10 +92,24 @@ export default {
     updateActiveCv() {
       console.log("onchange");
     },
+    showModal(input) {
+      this.isModalVisible = true;
+      this.cvTemplate = input;
+    },
     showCvTemp(id) {
       console.log(id);
       this.$store.dispatch("getCvTemp", id);
     },
+    async removeCvTemp() {
+      console.log(this.cvTemplate);
+      await this.$store.dispatch("removeCvTemp", this.cvTemplate);
+      this.cancel();
+      await this.$store.dispatch("getCvTempList");
+    },
+    cancel(){
+        this.cvTemplate="";
+        this.isModalVisible=false;
+    },    
     PreviewTemplate(e) {
       this.error = false;
       let files = e.target.files;
@@ -194,5 +239,19 @@ th {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
+}
+.fileInput{
+    margin-bottom: 1vh;
+    margin-top: 1vh;
+}
+
+.section > button {
+  margin-top: 1vh;
+  padding: 0.25vw;
+}
+
+.cancel {
+  background-color: red;
+  margin-right: 1vw;
 }
 </style>

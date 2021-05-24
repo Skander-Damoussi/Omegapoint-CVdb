@@ -64,6 +64,27 @@ namespace cv_api.Controllers
             return Ok();
         }
 
+        //Tabort cv
+        [HttpPut("RemoveCvTemp/{id}")]
+        public async Task<IActionResult> RemoveCvTemplate(string id)
+        {
+            try
+            {
+                var cvTemp = await _cvRepository.FindByIdAsync(id);
+
+                cvTemp.Active = false;
+
+                await _cvRepository.ReplaceOneAsync(cvTemp);
+
+                return Ok();
+            }
+            catch {
+                return BadRequest();
+            }
+            
+           
+        }
+
         //Test, download cv template
         [HttpGet("GetCvTemplate/{id}")]
         public async Task<IActionResult> GetCvTemplate(string id)
@@ -261,26 +282,37 @@ namespace cv_api.Controllers
 
             //var cvTemplates = _cvRepository.AsQueryable();
 
-            var cvTemplates = _cvRepository.FilterBy(
-            filter => filter.Id != null).ToList();
+            //var cvTemplates = _cvRepository.FilterBy(
+            //filter => filter.Id != null).ToList();
 
-            //FÖrsökte med flera projections, null:ade istället filebyte i loopen
-
-            //foreach (var item in cvTemplates)
-            //{
-            //    //item.StringId = item.Id.ToString();
-
-            //    item.StringId = "Hej";
-
-            //}
-
-            for (int i = 0; i < cvTemplates.Count; i++)
+            try
             {
-                cvTemplates[i].StringId = cvTemplates[i].Id.ToString();
-                cvTemplates[i].FileByte = null;
+                var cvTemplates = _cvRepository.FilterBy(
+                filter => filter.Active == true).ToList();
+
+                //FÖrsökte med flera projections, null:ade istället filebyte i loopen
+
+                //foreach (var item in cvTemplates)
+                //{
+                //    //item.StringId = item.Id.ToString();
+
+                //    item.StringId = "Hej";
+
+                //}
+
+                for (int i = 0; i < cvTemplates.Count; i++)
+                {
+                    cvTemplates[i].StringId = cvTemplates[i].Id.ToString();
+                    cvTemplates[i].FileByte = null;
+                }
+
+                return Ok(cvTemplates);
+            }
+            catch 
+            {
+                return BadRequest();
             }
 
-            return Ok(cvTemplates);
         }
     }    
 }

@@ -384,6 +384,14 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setStatus", this.status);
     },
+    async removeCvTemp({ commit }, cvTemp) {
+      await Axios.put("cv/removeCvTemp/" +cvTemp)
+        .then(async (resp) => {
+          console.log(resp);
+        })
+        .catch((err) => console.log(err));
+      commit("setCvTempList", this.cvTempList);
+    },
     async newConfirmationLink({ commit }, email) {
       console.log(email);
       await Axios.post(`user/Confirmation/${email}`, email)
