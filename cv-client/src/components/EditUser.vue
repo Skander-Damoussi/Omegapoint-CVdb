@@ -48,14 +48,9 @@ export default {
       return this.$store.getters.getLoggedInUser;
     }
   },
-  mounted() {
-    //this.$store.dispatch("getLoggedInUser");
-    console.log("user", this.user.firstName);
-  },
   methods: {
     async updateUser() {
       this.status = "";
-      console.log(this.user.firstName);
       if (this.user.firstName != "" && this.user.lastName != "") {
         var updateUser = {
           Id: this.user.id,
