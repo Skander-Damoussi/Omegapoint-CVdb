@@ -1,20 +1,11 @@
 <template>
   <div class="main-div">
-
-
-    <!-- <h1>{{cvTemp.filename}}</h1> -->
-
-    <!-- <button @click="toggle">Toggle</button>
-  <div v-if="active">
-    Menu
-  </div> -->
     <div class="file-container">
       <div class="file">
         <h3>Ladda upp fil</h3>
           
           <p>Namn</p>
           <input v-model="fileName" />
-
           <p>Fil</p>
           <div class="upload">
           <input          
@@ -33,19 +24,10 @@
         <tr>
           <th>#</th>
           <th>Name</th>
-          <!-- <th>Aktiv</th>
-          <th></th> -->
         </tr>
         <tr v-for="(i, index) in cvTempList" :key="index">
           <th>{{ index }}</th>
           <th>{{ i.name }}</th>
-          <!-- <th>{{ i.active }}</th> -->
-          <!-- <th v-if="false"> <p class="fas fa-check"></p></th>          -->
-          <!-- <th>{{i.stringId}}</th> -->
-          <!-- <th><input type="radio" name="active" value=true @change="updateActiveCv()"></th> -->
-
-          <!-- <th><p v-if="i.active" class="fas fa-check" /></th> -->
-
           <th>
             <p class="icon-click" v-on:click="showCvTemp(i.stringId)">
               <i title="Ladda ner" class="fas fa-file-download" ></i>
@@ -58,26 +40,6 @@
 </template>
 
 <script>
-// export default {
-//     data() {
-//     return {
-//         cvTemp: {id:"", filename:"", active:false}
-//   }
-// }
-// // computed: {
-// //     consultantList() {
-// //       return this.$store.getters.getCvTempList;
-// //     },
-
-// // },
-// // methods:{
-// //     async mounted() {
-// //     await this.$store.dispatch("getCvTempList");
-// //     this.cvTempList = this.cvTempList;
-// //   },
-// // }
-// }
-
 export default {
   name: "UploadCvTemp",
   data() {
@@ -100,10 +62,8 @@ export default {
       console.log("onchange");
     },
     showCvTemp(id) {
-      //String inputId=id.id;
       console.log(id);
       this.$store.dispatch("getCvTemp", id);
-      //this.getCvTemp(id);
     },
     PreviewTemplate(e) {
       this.error = false;
@@ -111,21 +71,10 @@ export default {
       if (files.length === 0) {
         return;
       }
-      //let holder = this.consult_picture;
       let reader = new FileReader();
       reader.onload = (e) => {
         this.cvTemplate = e.target.result;
 
-        // let string = this.consult_picture.split(",");
-        // if (
-        //   string[0].includes("docx")
-        // ) {
-        //   console.log("docx");
-        // } else {
-        //   this.errorMessage = "Tillåtna filformat: .docx";
-        //   this.error = true;
-        //   this.cvTemplate = holder;
-        // }
       };
       console.log("1", this.cvTemplate);
       reader.readAsDataURL(files[0]);
@@ -134,10 +83,7 @@ export default {
     },
     async SubmitFile() {
       var InputObject = {
-        //StringId: "",
         Name: this.fileName,
-        //Active: true,
-        // FileByte: [],
         Base64String: this.cvTemplate        
       };
       console.log("SubmitFile", this.cvTemplate);
@@ -207,18 +153,12 @@ form {
   padding: 1vh;
 }
 input {
-  /* padding: 0.5em 1em;
-  border-radius: 4px;
-  margin: 0 auto; */
   width: 100%;
   border: 00.1px solid;
   align-self: center;
 }
 select {
-  /* flex: 1 0 auto;
-  padding: 0.5em 1em;
-  border-radius: 4px;
-  width: 100%; */
+
 }
 .error {
   color: red;

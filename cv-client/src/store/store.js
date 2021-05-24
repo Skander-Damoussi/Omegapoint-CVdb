@@ -329,7 +329,6 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setSearchList", this.searchList);
     },
-    // cvtemp
     async getCvTempList({ commit }) {
       await Axios.get("cv/GetAllCvTemplate")
         .then(async (resp) => {
@@ -339,53 +338,11 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setCvTempList", this.cvTempList);
     },
-    // async getCvTemp({ commit }, id) {
-    //   await Axios.get(`cv/GetCvTemplate/${id}`)
-    //     .then(async (resp) => {
-    //       //this.CvTemp = resp.data;
-    //       console.log(resp.data)
-    //     })
-    //     .catch((err) => console.log(err));
-    //   commit("setCvTemp", this.CvTemp);
-    // },
-    //Funkar om response är Ok är borttaget, problem med stringId
-    // async getCvTemp( id) {
-    //   Axios({
-    //     method: 'post',
-    //     url: `cv/PostGetCvTemplate/${id}`,
-    //     responseType: 'arraybuffer',
-    //     //data: dates
-    //   }).then(function(response) {
-    //     let blob = new Blob([response.data], { type: 'application/docx' })
-    //     let link = document.createElement('a')
-    //     link.href = window.URL.createObjectURL(blob)
-    //     link.download = 'Template.docx'
-    //     link.click()
-    //   })
-    // },
-    // // Funkar,senaste, problem med stringId
-    // async getCvTemp( id) {
-    //   Axios({
-    //     method: 'GET',
-    //     url: `cv/GetCvTemplate/${id}`,
-    //     responseType: 'blob',
-    //     //data: dates
-    //   }).then((response) =>{
-    //     var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-    //     var fileLink = document.createElement('a');   
-    //     fileLink.href = fileURL;
-    //     fileLink.setAttribute('download', 'cvTemplate.docx');
-    //     document.body.appendChild(fileLink);   
-    //     fileLink.click();
-    //   })
-    // },
     async getCvTemp({ commit }, stringId) {
-      console.log("Inne i Get", stringId)
       Axios({
         method: 'GET',
         url: "cv/GetCvTemplate/"+stringId,
         responseType: 'blob',
-        //data: dates
       }).then((response) =>{
         var fileURL = window.URL.createObjectURL(new Blob([response.data]));
         var fileLink = document.createElement('a');   
@@ -397,16 +354,12 @@ export default new Vuex.Store({
       })
     },
     async postCvTemplate({ commit }, cvTemplate  ) {
-      console.log("inne i postcvtemplate", cvTemplate)
-      //this.cvTemplate=cvTemplate;
-      console.log("this.cvtemplate", this.cvTemplate);
       await Axios.post("cv/PostCvTemplate/", cvTemplate, {
         headers: {
           "Content-Type": "application/json"
         }
       })
         .then(async (resp) => {
-          //this.userPresentation = resp.data;
           console.log(resp)
           commit("setStatus", this.status);
         })
@@ -414,9 +367,6 @@ export default new Vuex.Store({
       
     },
     async getCvDocx({ commit }, input) {
-      console.log("inne i getCvDocx", input)
-      //this.cvTemplate=cvTemplate;
-      //console.log("this.cvtemplate", this.cvTemplate);
       await Axios.post("cv/GetCvDocx", input, { responseType: 'blob',
         headers: {
           "Content-Type": "application/json"
@@ -429,30 +379,11 @@ export default new Vuex.Store({
           fileLink.setAttribute('download', 'cvDocx.docx');
           document.body.appendChild(fileLink);   
           fileLink.click();
-          console.log("Response", resp.status)
           this.status=resp.status;
         })
         .catch((err) => console.log(err));
       commit("setStatus", this.status);
     },
-    //Funkar men tar inte emot fil
-    // async getCvDocx({ commit }, input) {
-    //   console.log("inne i getCvDocx", input)
-    //   //this.cvTemplate=cvTemplate;
-    //   //console.log("this.cvtemplate", this.cvTemplate);
-    //   await Axios.post("cv/GetCvDocx", input, {
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   })
-    //     .then(async (resp) => {
-    //       //this.userPresentation = resp.data;
-    //       console.log(resp)
-    //     })
-    //     .catch((err) => console.log(err));
-    //   commit("setUserPresentation", this.presentations);
-    // },
-
     async newConfirmationLink({ commit }, email) {
       console.log(email);
       await Axios.post(`user/Confirmation/${email}`, email)
@@ -494,7 +425,6 @@ export default new Vuex.Store({
     getCV(state) {
       return state.CV;
     },
-    // cvtemp
     getCvTempList(state) {
       return state.cvTempList;
     },
