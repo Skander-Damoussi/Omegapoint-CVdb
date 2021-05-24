@@ -16,6 +16,7 @@ namespace cv_api.DocxCreate
     public class DocxCreator
     {
         private List<Assignment> Assignments = new List<Assignment>();
+        private List<Assignment> Educations = new List<Assignment>();
         private List<string> Techniques = new List<string>();
 
         public async Task CreateDocx(MemoryStream memoryStream, ApplicationUser user)
@@ -64,11 +65,20 @@ namespace cv_api.DocxCreate
             Assignments = Assignments.OrderBy(x => x.EndDate)
                                     .ThenBy(x => x.StartDate)
                                     .ToList();
+
+            Educations = Assignments.Select(x => x).Where(x=> x.Role=="Student").ToList();
+            //foreach (var item in Assignments)
+            //{
+            //    if (item.Role == "Student")
+            //    {
+            //        Educations.Add(item);
+            //    }
+            //}
         }
 
         public DateTime CreateDateTime(string date)
         {
-            DateTime dateTime= dateTime = new DateTime(9999, 01, 01);
+            DateTime dateTime = new DateTime(9999, 01, 01);
             string [] dateSplit;
 
             if (date != null)
@@ -89,13 +99,6 @@ namespace cv_api.DocxCreate
 
         public async Task ReplaceFields(MemoryStream memoryStream, CV cv)
         {
-
-            string userStory = null;
-            foreach (var item in cv.consult_presentations)
-            {
-                userStory += item;
-            }
-
             await ReplaceTextBookmarks(memoryStream, "userName", cv.consult_name);
             await ReplaceTextBookmarks(memoryStream, "userRole", cv.consult_role);
             await ReplaceTextBookmarks(memoryStream, "story", cv.consult_presentations);
@@ -149,35 +152,40 @@ namespace cv_api.DocxCreate
                     if (bookmarkText != null)
                     {
                         //Last first
-                        bookmarkText.GetFirstChild<Text>().Text = input[input.Count-1];
+                        bookmarkText.GetFirstChild<Text>().Text = input[input.Count - 1];
                     }
                 }
-                //Loop backwards
-                for (int i = input.Count-2; i >= 0; i--)
+
+                if (bookmark != null)
                 {
-                    Run run = bookmark.NextSibling<Run>();
-
-                    Run bookmarkText = bookmark.NextSibling<Run>();
-
-                    //Clone bookmarkparent
-                    var p = bookmark.Parent.CloneNode(true);
-                    Run bookmarkText2 = bookmark.NextSibling<Run>();
-
-                    //Find bookmark in clone
-                    var res2 = from bm in p.Descendants<BookmarkStart>()
-                               where bm.Name == bookmarkName
-                               select bm;
-
-                    var bookmark3 = res2.FirstOrDefault();
-                    //Find text in bookmark-clone
-                    Run bookmarkText3 = bookmark.NextSibling<Run>();
-
-                    if (bookmarkText != null)
+                    //Loop backwards
+                    for (int i = input.Count - 2; i >= 0; i--)
                     {
-                        bookmarkText3.GetFirstChild<Text>().Text = input[i];
+                        Run run = bookmark.NextSibling<Run>();
+
+                        Run bookmarkText = bookmark.NextSibling<Run>();
+
+                        //Clone bookmarkparent
+                        var p = bookmark.Parent.CloneNode(true);
+                        Run bookmarkText2 = bookmark.NextSibling<Run>();
+
+                        //Find bookmark in clone
+                        var res2 = from bm in p.Descendants<BookmarkStart>()
+                                   where bm.Name == bookmarkName
+                                   select bm;
+
+                        var bookmark3 = res2.FirstOrDefault();
+                        //Find text in bookmark-clone
+                        Run bookmarkText3 = bookmark.NextSibling<Run>();
+
+                        if (bookmarkText != null)
+                        {
+                            bookmarkText3.GetFirstChild<Text>().Text = input[i];
+                        }
+                        bookmark.Parent.InsertAfterSelf(p);
                     }
-                    bookmark.Parent.InsertAfterSelf(p);
                 }
+                
             }
         }
 
@@ -316,7 +324,7 @@ namespace cv_api.DocxCreate
                         //Append data-para-run to tc, use FontStyle method (Font,Style,bool)
                         tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Assignments[i].Title))));
                         tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text(DateStringBuilder(Assignments[i].StartDate, Assignments[i].EndDate)))));
-                        tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("N/A"))));
+                        //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Location"))));
                         tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 13, true), new Text(Assignments[i].Role))));
                         tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Assignments[i].Description))));
 
@@ -372,12 +380,13 @@ namespace cv_api.DocxCreate
                 Table table = new Table();
                 //Shading
                 TableCellProperties tcp = new TableCellProperties();
-                //TableRowProperties trp = new TableRowProperties();
+
                 Shading shading = new Shading() { Color = "auto", Fill = "F7F7F7", Val = ShadingPatternValues.Clear };
                 tcp.Append(shading);
 
-                //Loopa listan
-                for (int i = 0; i < 5; i++)
+                int bgcCount=0;
+                //Loopa backwards
+                for (int i = Educations.Count-1; i >= 0; i--)
                 {
                     //Clone, reuse shading
                     var useTcp1 = tcp.CloneNode(true);
@@ -387,7 +396,7 @@ namespace cv_api.DocxCreate
                     var tr = new TableRow(new TableRowProperties(new CantSplit()));
 
                     //Create tc
-                    var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7500" }));
+                    var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7000" }));
 
                     Paragraph p1 = new Paragraph();
                     ParagraphProperties paraProperties = new ParagraphProperties();
@@ -397,14 +406,14 @@ namespace cv_api.DocxCreate
 
                     var tc2 = new TableCell();
 
-                    //Data
-                    p1.Append((new Run(FontStyle("Calibri", 11), new Text("2018 - 2020"))));
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text("Webbutvecklare - CMS"))));
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Yrkeshögskola"))));
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Medieinstitutet Malmö, Sverige"))));
+                    //Data 
+                    p1.Append((new Run(FontStyle("Calibri", 11), new Text(DateStringBuilderEducation(Educations[i].StartDate, Educations[i].EndDate)))));
+                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Educations[i].Title))));
+                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Educations[i].Description))));
+                    //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Medieinstitutet Malmö, Sverige"))));
 
                     //Backgroundcolor
-                    if (i % 2 == 0)
+                    if (bgcCount % 2 == 0)
                     {
                         tc1.Append(useTcp1);
                         tc2.Append(useTcp2);
@@ -415,6 +424,8 @@ namespace cv_api.DocxCreate
                     tr.Append(tc1, tc2);
 
                     table.Append(tr);
+
+                    bgcCount++;
                 }
 
                 if (bookmark != null)
@@ -505,6 +516,30 @@ namespace cv_api.DocxCreate
             }
         }
 
+        public string DateStringBuilderEducation(DateTime fromDate, DateTime toDate)
+        {
+            string dateString;
+
+            if (toDate.Year == 9999)
+            {
+                dateString = fromDate.ToString("yyyy") + " - pågående";
+            }
+            else if (fromDate.Year == 9999 && toDate.Year == 9999)
+            {
+                dateString = "N/A" + " - pågående";
+            }
+            else if (fromDate.Year == 9999)
+            {
+                dateString = "N/A" + " - " + toDate.ToString("yyyy");
+            }
+            else
+            {
+                dateString = fromDate.ToString("yyyy") + " - " + toDate.ToString("yyyy");
+            }
+
+            return dateString;
+        }
+
         public string DateStringBuilder(DateTime fromDate, DateTime toDate)
         {
             string dateString;
@@ -513,11 +548,11 @@ namespace cv_api.DocxCreate
             {
                 dateString = fromDate.ToString("MMMM yyyy") + " - pågående";
             }
-            else if (fromDate.Year == 0001 && toDate.Year == 0001)
+            else if (fromDate.Year == 9999 && toDate.Year == 9999)
             {
                 dateString = "N/A" + " - pågående";
             }
-            else if (fromDate.Year == 0001)
+            else if (fromDate.Year == 9999)
             {
                 dateString = "N/A" + " - " + toDate.ToString("MMMM yyyy");
             }
