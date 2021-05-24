@@ -9,6 +9,7 @@ import ConsultantExperience from "../components/ConsultantExperience.vue";
 import ConsultantExperienceEdit from "../components/ConsultantExperienceEdit.vue";
 import Verify from "../components/Verify.vue";
 import ConsultantPresentationEdit from "../components/ConsultantPresentationEdit.vue";
+import UploadCvTemp from "../components/UploadCvTemp.vue";
 import store from "../store/store.js";
 
 Vue.use(VueRouter);
@@ -74,6 +75,13 @@ const routes = [
       adminAuth: true,
       consultantManagerAuth: true,
     },
+  },
+  {
+    path: "/uploadCvTemp",
+    name: "UploadCvTemp",
+    component: UploadCvTemp,
+    meta: { reqAuth: true, consultAuth: false, consultantManagerAuth: true, adminAuth: true },
+    props: true
   },
   {
     path: "/verify/:token/:userId",

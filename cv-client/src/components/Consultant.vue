@@ -28,11 +28,31 @@
         ></i>
         <p class="marginleftIcon">Exportera till PDF</p>
       </div>
-      <div class="row icon-clickHome" v-on:click="goManagerHome">
+
+      <div class="icon-click row" v-on:click="exportToDocx">
         <i
-          class="btn fas fa-home fa-2x"
-          title="Hem"
+          class="btn fas fa-file-export fa-2x"
+          title="Tryck för att exportera"
         ></i>
+        <p class="marginleftIcon">Exportera till Word</p>
+      </div>
+      <div id="exDocx" v-if="exDocxToggle" @mouseleave="exDocxToggle = false">
+        <div class="list-table">
+          <table>
+            <p>Välj mall</p>
+            <tr v-for="(i, index) in cvTempList" :key="index">
+              <th
+                title="exportera till Word"
+                v-on:click="clickCvDocx(i.stringId)"
+              >
+                {{ i.name }}
+              </th>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="row icon-clickHome" v-on:click="goManagerHome">
+        <i class="btn fas fa-home fa-2x" title="Hem"></i>
         <p class="marginleftIcon marginright">Hem</p>
       </div>
     </div>
@@ -595,11 +615,17 @@ export default {
       sale_email: "",
       sale_phone: "",
       role_freeEdit: false,
-      showUserID: '',
+      showUserID: "",
       errorMessage: "",
       error: false,
-      errorLogo: false
+      errorLogo: false,
+      exDocxToggle: false,
     };
+  },
+  computed: {
+    cvTempList() {
+      return this.$store.getters.getCvTempList;
+    },
   },
   async mounted() {
     if (this.userID == null) {
@@ -610,6 +636,7 @@ export default {
     await this.$store.dispatch("getUserExperience", this.showUserID);
     await this.$store.dispatch("getUserPresentation", this.showUserID);
     await this.$store.dispatch("getCV", this.showUserID);
+    await this.$store.dispatch("getCvTempList");
     let cv = await this.$store.getters.getCV;
 
     this.company_name = cv.company_name;
@@ -710,7 +737,7 @@ export default {
       }
       let holder = this.consult_picture;
       let reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         this.consult_picture = e.target.result;
         let string = this.consult_picture.split(",");
         if (
@@ -735,7 +762,7 @@ export default {
       }
       let holder = this.company_logo;
       let reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         this.company_logo = e.target.result;
         let string = this.company_logo.split(",");
         if (
@@ -805,7 +832,10 @@ export default {
       }
     },
     editMethod() {
-      this.$router.push({ name: "ConsultantExperience", params: { userID: this.showUserID } });
+      this.$router.push({
+        name: "ConsultantExperience",
+        params: { userID: this.showUserID },
+      });
     },
     async saveMethod() {
       console.log(this.consult_picture);
@@ -842,6 +872,19 @@ export default {
         html2canvas: { dpi: 192, letterRendering: true },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       });
+    },
+    clickCvDocx(CvTempId) {
+      this.$store.dispatch("getCvDocx", {
+        UserId: this.showUserID,
+        TempId: CvTempId,
+      });
+
+      console.log("cvTempId", CvTempId);
+      this.exDocxToggle = !this.exDocxToggle;
+    },
+    exportToDocx() {
+      this.exDocxToggle = !this.exDocxToggle;
+      console.log("Toggle exDocx", this.exDocxToggle);
     },
     toggleTabs(input) {
       if (input === this.show) {
@@ -1261,7 +1304,7 @@ button:hover {
   width: 66%;
 }
 
-.marginright{
+.marginright {
   margin-right: 20px;
 }
 
@@ -1319,5 +1362,24 @@ button:hover {
   font-weight: normal;
   font-size: 1.5vh;
   color: red;
+}
+#exDocx {
+  position: absolute;
+  z-index: 1;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid grey;
+  border-radius: 5px;
+  right: 200px;
+  top: 100px;
+  text-align: left;
+  max-height: 30vh;
+  width: 150px;
+  align-items: center;
+  overflow-y: scroll;
+}
+.list-table > table > tr:hover {
+  cursor: pointer;
 }
 </style>

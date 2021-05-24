@@ -19,7 +19,10 @@ const getDefaultState = () => {
     verified: null,
     searchList: [],
     CV: [],
-    status: null
+    status: null,
+    //cvtemp
+    cvTempList: [],
+    cvTemp: null
   };
 };
 
@@ -72,7 +75,15 @@ export default new Vuex.Store({
     },
     setCV(state, token) {
       state.CV = token;
-    }
+    },
+    // cvtemp
+    setCvTempList(state, list) {
+      state.cvTempList = list;
+    },
+    setCvTemp(state, list) {
+      state.cvTemp = list;
+    },
+    
   },
   actions: {
     async login({ commit }, user) {
@@ -318,6 +329,69 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
       commit("setSearchList", this.searchList);
     },
+    async getCvTempList({ commit }) {
+      await Axios.get("cv/GetAllCvTemplate")
+        .then(async (resp) => {
+          this.cvTempList = resp.data;
+          console.log(resp.data)
+        })
+        .catch((err) => console.log(err));
+      commit("setCvTempList", this.cvTempList);
+    },
+    async getCvTemp({ commit }, stringId) {
+      Axios({
+        method: 'GET',
+        url: "cv/GetCvTemplate/"+stringId,
+        responseType: 'blob',
+      }).then((response) =>{
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement('a');   
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'cvTemplate.docx');
+        document.body.appendChild(fileLink);   
+        fileLink.click();
+        commit("setStatus", response.status);
+      })
+    },
+    async postCvTemplate({ commit }, cvTemplate  ) {
+      await Axios.post("cv/PostCvTemplate/", cvTemplate, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(async (resp) => {
+          console.log(resp)
+          commit("setStatus", this.status);
+        })
+        .catch((err) => console.log(err));
+      
+    },
+    async getCvDocx({ commit }, input) {
+      await Axios.post("cv/GetCvDocx", input, { responseType: 'blob',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(async (resp) => {
+          var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
+          var fileLink = document.createElement('a');   
+          fileLink.href = fileURL;
+          fileLink.setAttribute('download', 'cvDocx.docx');
+          document.body.appendChild(fileLink);   
+          fileLink.click();
+          this.status=resp.status;
+        })
+        .catch((err) => console.log(err));
+      commit("setStatus", this.status);
+    },
+    async removeCvTemp({ commit }, cvTemp) {
+      await Axios.put("cv/removeCvTemp/" +cvTemp)
+        .then(async (resp) => {
+          console.log(resp);
+        })
+        .catch((err) => console.log(err));
+      commit("setCvTempList", this.cvTempList);
+    },
     async newConfirmationLink({ commit }, email) {
       console.log(email);
       await Axios.post(`user/Confirmation/${email}`, email)
@@ -358,6 +432,12 @@ export default new Vuex.Store({
     },
     getCV(state) {
       return state.CV;
-    }
-  }
+    },
+    getCvTempList(state) {
+      return state.cvTempList;
+    },
+    getCVTemp(state) {
+      return state.CvTemp;
+    },
+  },
 });
