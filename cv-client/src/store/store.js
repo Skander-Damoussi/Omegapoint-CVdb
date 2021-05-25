@@ -298,7 +298,8 @@ export default new Vuex.Store({
     async updateActiveUser({ commit }, email) {
       await Axios.put(`user/updateActiveConsultant/${email}`)
         .then(async resp => {
-          console.log(resp);
+          this.status = resp.status;
+          commit("setStatus", this.status);
         })
         .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
@@ -314,7 +315,7 @@ export default new Vuex.Store({
     async getDeactivatedConsultants({ commit }) {
       await Axios.get(`user/getDeactivatedConsultants`)
         .then(async resp => {
-          this.searchList = resp.data;          
+          this.searchList = resp.data;
         })
         .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
