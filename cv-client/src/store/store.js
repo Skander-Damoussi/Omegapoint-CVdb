@@ -76,20 +76,17 @@ export default new Vuex.Store({
     setCV(state, token) {
       state.CV = token;
     },
-    // cvtemp
     setCvTempList(state, list) {
       state.cvTempList = list;
     },
     setCvTemp(state, list) {
       state.cvTemp = list;
-    },
-    
+    }    
   },
   actions: {
     async login({ commit }, user) {
       await Axios.post("user/login", user)
         .then(async resp => {
-          console.log(resp.status + "resp");
           this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
@@ -109,7 +106,6 @@ export default new Vuex.Store({
     async updateUser({ commit }, user) {
       await Axios.put("user/", user)
         .then(async resp => {
-          console.log("store", resp);
           this.status = resp.status;
           var respUser = {
             id: resp.data.userId,
@@ -122,7 +118,6 @@ export default new Vuex.Store({
           await commit("setStatus", this.status);
         })
         .catch(err => {
-          console.log("err resp", err.response.data);
           commit("setStatus", err.response.data);
         });
     },
@@ -141,7 +136,6 @@ export default new Vuex.Store({
           await commit("setStatus", this.status);
         })
         .catch(err => {
-          console.log("err resp", err.response);
           commit("setStatus", err.response.data);
         });
     },
@@ -180,7 +174,6 @@ export default new Vuex.Store({
         }
       })
         .then(async resp => {
-          console.log(resp.status);
           commit("setStatus", resp.status);
         })
         .catch(err => {
@@ -248,8 +241,6 @@ export default new Vuex.Store({
       commit("setUserExperience", this.userExperience);
     },
     async verify({ commit }, { userId, token }) {
-      console.log(userId);
-      console.log(token);
       await Axios.post("user/verify", userId, token)
         .then(async resp => {
           this.verified = resp.data;
@@ -323,8 +314,7 @@ export default new Vuex.Store({
     async getDeactivatedConsultants({ commit }) {
       await Axios.get(`user/getDeactivatedConsultants`)
         .then(async resp => {
-          this.searchList = resp.data;
-          console.log(resp.data);
+          this.searchList = resp.data;          
         })
         .catch(err => console.log(err));
       commit("setSearchList", this.searchList);
@@ -332,8 +322,7 @@ export default new Vuex.Store({
     async getCvTempList({ commit }) {
       await Axios.get("cv/GetAllCvTemplate")
         .then(async (resp) => {
-          this.cvTempList = resp.data;
-          console.log(resp.data)
+          this.cvTempList = resp.data;          
         })
         .catch((err) => console.log(err));
       commit("setCvTempList", this.cvTempList);
