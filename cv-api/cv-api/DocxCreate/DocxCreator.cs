@@ -24,12 +24,12 @@ namespace cv_api.DocxCreate
         public async Task CreateDocx(MemoryStream memoryStream, ApplicationUser user)
         {
             await BuildData(user);
-            await ReplaceFields(memoryStream, user.CV);
-            await AddTechniques(memoryStream, "techniques");
+            //await ReplaceFields(memoryStream, user.CV);
+            //await AddTechniques(memoryStream, "techniques");
             await AddAssignments(memoryStream, "assignments");
-            //await AddLanguage(memoryStream, "language");
-            //await AddEducation(memoryStream, "education");
-            await ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);
+            ////await AddLanguage(memoryStream, "language");
+            ////await AddEducation(memoryStream, "education");
+            //await ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);
         }
 
         public async Task BuildData(ApplicationUser user)
@@ -305,7 +305,7 @@ namespace cv_api.DocxCreate
 
                     //Append data-para-run to tc, use FontStyle method (Font,Style,bool)
                     tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Assignments[i].Title))));
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text(DateStringBuilder(Assignments[i].StartDate, Assignments[i].EndDate)))));
+                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text(await DateStringBuilder(Assignments[i].StartDate, Assignments[i].EndDate)))));
                     //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Location"))));
                     tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 13, true), new Text(Assignments[i].Role))));
                     tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Assignments[i].Description))));
@@ -503,7 +503,7 @@ namespace cv_api.DocxCreate
             return dateString;
         }
 
-        public string DateStringBuilder(DateTime fromDate, DateTime toDate)
+        public async Task<string> DateStringBuilder(DateTime fromDate, DateTime toDate)
         {
             string dateString;
 
