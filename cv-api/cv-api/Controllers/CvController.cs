@@ -147,7 +147,7 @@ namespace cv_api.Controllers
                     using MemoryStream memoryStream = new MemoryStream(0);
                     {
                         memoryStream.Write(cv.FileByte, 0, cv.FileByte.Length);
-                        //cv.CopyTo(memoryStream);
+                        
                         await docxCreate.CreateDocx(memoryStream, user);
                         bytearray = memoryStream.ToArray();
                         memoryStream.Close();

@@ -24,12 +24,12 @@ namespace cv_api.DocxCreate
         public async Task CreateDocx(MemoryStream memoryStream, ApplicationUser user)
         {
             await BuildData(user);
-            //await ReplaceFields(memoryStream, user.CV);
-            //await AddTechniques(memoryStream, "techniques");
+            await ReplaceFields(memoryStream, user.CV);
+            await AddTechniques(memoryStream, "techniques");
             await AddAssignments(memoryStream, "assignments");
             ////await AddLanguage(memoryStream, "language");
             ////await AddEducation(memoryStream, "education");
-            //await ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);
+            await ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);
         }
 
         public async Task BuildData(ApplicationUser user)
