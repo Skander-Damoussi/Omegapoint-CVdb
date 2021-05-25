@@ -299,16 +299,6 @@ namespace cv_api.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
-            //var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            //user.EmailConfirmationToken = code;
-
-            //var update = userManager.UpdateAsync(user);
-
-            //var link = Url.Action(nameof(VerifyEmail), "User", new { userId = user.Id , code}, Request.Scheme, Request.Host.ToString());
-
-
-            // await _emailService.SendAsync("skander_test@hotmail.com", "email verify", $"<a href=\"{link}\">Click here to verify email</a>", true);
             await Confirmation(newUser.Email);
 
             return Ok();
@@ -469,8 +459,7 @@ namespace cv_api.Controllers
             if (signInResult.IsNotAllowed)
                 return StatusCode(403,"Email is not confirmed"); //Email is not confirmed status
 
-            if (user.Active.HasValue) // Måste kolla så att dett finns ett true/false värde annars kraschar api om det är null. Tillfällig lösning tills db är helt klart
-                if ((bool)!user.Active)
+            if ((bool)!user.Active)
                     return Unauthorized("Inactive account");
 
             if (!signInResult.Succeeded)
