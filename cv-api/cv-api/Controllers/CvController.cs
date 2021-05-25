@@ -149,6 +149,7 @@ namespace cv_api.Controllers
                         //cv.CopyTo(memoryStream);
                         await docxCreate.CreateDocx(memoryStream, user);
                         cv.FileByte = memoryStream.ToArray();
+                        memoryStream.Close();
                     }
 
                     using (var net = new System.Net.WebClient())

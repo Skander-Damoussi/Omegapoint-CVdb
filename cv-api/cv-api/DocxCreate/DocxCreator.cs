@@ -17,9 +17,9 @@ namespace cv_api.DocxCreate
     public class DocxCreator
     {
         private List<Assignment> Assignments = new List<Assignment>();
-        private List<Assignment> Educations = new List<Assignment>();
+        //private List<Assignment> Educations = new List<Assignment>();
         private List<string> Techniques = new List<string>();
-        private List<Language> Languages = new List<Language>();
+        //private List<Language> Languages = new List<Language>();
 
         public async Task CreateDocx(MemoryStream memoryStream, ApplicationUser user)
         {
@@ -120,6 +120,7 @@ namespace cv_api.DocxCreate
                         bookmarkText.GetFirstChild<Text>().Text = input;
                     }
                 }
+                document.Close();
             }
         }
 
@@ -174,7 +175,7 @@ namespace cv_api.DocxCreate
                         bookmark.Parent.InsertAfterSelf(p);
                     }
                 }
-
+                document.Close();
             }
         }
 
@@ -217,7 +218,6 @@ namespace cv_api.DocxCreate
 
         public async Task AddTechniques(MemoryStream memoryStream, string bookmarkName)
         {
-
             for (int i = Techniques.Count - 1; i >= 0; i--)
             {
                 using (var document = WordprocessingDocument.Open(memoryStream, true))
@@ -344,140 +344,140 @@ namespace cv_api.DocxCreate
                 }
             }
         }
-        public async Task AddEducation(MemoryStream memoryStream, string bookmarkName)
-        {
-            using (var document = WordprocessingDocument.Open(memoryStream, true))
-            {
-                var doc = document.MainDocumentPart.Document;
+        //public async Task AddEducation(MemoryStream memoryStream, string bookmarkName)
+        //{
+        //    using (var document = WordprocessingDocument.Open(memoryStream, true))
+        //    {
+        //        var doc = document.MainDocumentPart.Document;
 
-                var mainPart = document.MainDocumentPart;
-                var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
-                          where bm.Name == bookmarkName
-                          select bm;
-                var bookmark = res.SingleOrDefault();
+        //        var mainPart = document.MainDocumentPart;
+        //        var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
+        //                  where bm.Name == bookmarkName
+        //                  select bm;
+        //        var bookmark = res.SingleOrDefault();
 
-                //Create table
-                Table table = new Table();
-                //Shading
-                TableCellProperties tcp = new TableCellProperties();
+        //        //Create table
+        //        Table table = new Table();
+        //        //Shading
+        //        TableCellProperties tcp = new TableCellProperties();
 
-                Shading shading = new Shading() { Color = "auto", Fill = "F7F7F7", Val = ShadingPatternValues.Clear };
-                tcp.Append(shading);
+        //        Shading shading = new Shading() { Color = "auto", Fill = "F7F7F7", Val = ShadingPatternValues.Clear };
+        //        tcp.Append(shading);
 
-                int bgcCount = 0;
-                //Loopa backwards
-                for (int i = Educations.Count - 1; i >= 0; i--)
-                {
-                    //Clone, reuse shading
-                    var useTcp1 = tcp.CloneNode(true);
-                    var useTcp2 = tcp.CloneNode(true);
+        //        int bgcCount = 0;
+        //        //Loopa backwards
+        //        for (int i = Educations.Count - 1; i >= 0; i--)
+        //        {
+        //            //Clone, reuse shading
+        //            var useTcp1 = tcp.CloneNode(true);
+        //            var useTcp2 = tcp.CloneNode(true);
 
-                    //Create row, CantSplit row between pages
-                    var tr = new TableRow(new TableRowProperties(new CantSplit()));
+        //            //Create row, CantSplit row between pages
+        //            var tr = new TableRow(new TableRowProperties(new CantSplit()));
 
-                    //Create tc
-                    var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7000" }));
+        //            //Create tc
+        //            var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7000" }));
 
-                    Paragraph p1 = new Paragraph();
-                    ParagraphProperties paraProperties = new ParagraphProperties();
-                    Justification justification = new Justification() { Val = JustificationValues.Right };
-                    paraProperties.Append(justification);
-                    p1.Append(paraProperties);
+        //            Paragraph p1 = new Paragraph();
+        //            ParagraphProperties paraProperties = new ParagraphProperties();
+        //            Justification justification = new Justification() { Val = JustificationValues.Right };
+        //            paraProperties.Append(justification);
+        //            p1.Append(paraProperties);
 
-                    var tc2 = new TableCell();
+        //            var tc2 = new TableCell();
 
-                    //Data 
-                    p1.Append((new Run(FontStyle("Calibri", 11), new Text(DateStringBuilderEducation(Educations[i].StartDate, Educations[i].EndDate)))));
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Educations[i].Title))));
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Educations[i].Description))));
-                    //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Medieinstitutet Malmö, Sverige"))));
+        //            //Data 
+        //            p1.Append((new Run(FontStyle("Calibri", 11), new Text(DateStringBuilderEducation(Educations[i].StartDate, Educations[i].EndDate)))));
+        //            tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Educations[i].Title))));
+        //            tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Educations[i].Description))));
+        //            //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Medieinstitutet Malmö, Sverige"))));
 
-                    //Backgroundcolor
-                    if (bgcCount % 2 == 0)
-                    {
-                        tc1.Append(useTcp1);
-                        tc2.Append(useTcp2);
-                    }
+        //            //Backgroundcolor
+        //            if (bgcCount % 2 == 0)
+        //            {
+        //                tc1.Append(useTcp1);
+        //                tc2.Append(useTcp2);
+        //            }
 
-                    tc2.Append(p1);
-                    tr.Append(tc1, tc2);
-                    table.Append(tr);
+        //            tc2.Append(p1);
+        //            tr.Append(tc1, tc2);
+        //            table.Append(tr);
 
-                    bgcCount++;
-                }
+        //            bgcCount++;
+        //        }
 
-                if (bookmark != null)
-                {
-                    var parent = bookmark.Parent;
+        //        if (bookmark != null)
+        //        {
+        //            var parent = bookmark.Parent;
 
-                    parent.InsertAfterSelf(table);
-                }
+        //            parent.InsertAfterSelf(table);
+        //        }
 
-                document.Close();
-            }
-        }
+        //        document.Close();
+        //    }
+        //}
 
-        public async Task AddLanguage(MemoryStream memoryStream, string bookmarkName)
-        {
+        //public async Task AddLanguage(MemoryStream memoryStream, string bookmarkName)
+        //{
 
-            using (var document = WordprocessingDocument.Open(memoryStream, true))
-            {
-                var doc = document.MainDocumentPart.Document;
+        //    using (var document = WordprocessingDocument.Open(memoryStream, true))
+        //    {
+        //        var doc = document.MainDocumentPart.Document;
 
-                var mainPart = document.MainDocumentPart;
-                var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
-                          where bm.Name == bookmarkName
-                          select bm;
-                var bookmark = res.SingleOrDefault();
+        //        var mainPart = document.MainDocumentPart;
+        //        var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
+        //                  where bm.Name == bookmarkName
+        //                  select bm;
+        //        var bookmark = res.SingleOrDefault();
 
-                //Create table
-                Table table = new Table();
-                //Shading
-                TableCellProperties tcp = new TableCellProperties();
+        //        //Create table
+        //        Table table = new Table();
+        //        //Shading
+        //        TableCellProperties tcp = new TableCellProperties();
 
-                Shading shading = new Shading() { Color = "auto", Fill = "F7F7F7", Val = ShadingPatternValues.Clear };
+        //        Shading shading = new Shading() { Color = "auto", Fill = "F7F7F7", Val = ShadingPatternValues.Clear };
 
-                tcp.Append(shading);
+        //        tcp.Append(shading);
 
-                for (int i = 0; i < Languages.Count; i++)
-                {
-                    //Clone shading
-                    var useTcp1 = tcp.CloneNode(true);
-                    var useTcp2 = tcp.CloneNode(true);
+        //        for (int i = 0; i < Languages.Count; i++)
+        //        {
+        //            //Clone shading
+        //            var useTcp1 = tcp.CloneNode(true);
+        //            var useTcp2 = tcp.CloneNode(true);
 
-                    var tr = new TableRow(new TableRowProperties(new CantSplit()));
-                    var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7500" }));
-                    var tc2 = new TableCell();
+        //            var tr = new TableRow(new TableRowProperties(new CantSplit()));
+        //            var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7500" }));
+        //            var tc2 = new TableCell();
 
-                    if (i % 2 == 0)
-                    {
-                        //shading
-                        tc1.Append(useTcp1);
-                        tc2.Append(useTcp2);
-                    }
+        //            if (i % 2 == 0)
+        //            {
+        //                //shading
+        //                tc1.Append(useTcp1);
+        //                tc2.Append(useTcp2);
+        //            }
 
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Title))));
+        //            tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Title))));
 
-                    Paragraph p1 = new Paragraph();
-                    ParagraphProperties paraProperties = new ParagraphProperties();
-                    Justification justification = new Justification() { Val = JustificationValues.Right };
-                    paraProperties.Append(justification);
-                    p1.Append(paraProperties);
-                    p1.Append(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Level)));
+        //            Paragraph p1 = new Paragraph();
+        //            ParagraphProperties paraProperties = new ParagraphProperties();
+        //            Justification justification = new Justification() { Val = JustificationValues.Right };
+        //            paraProperties.Append(justification);
+        //            p1.Append(paraProperties);
+        //            p1.Append(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Level)));
 
-                    tc2.Append(p1);
-                    tr.Append(tc1, tc2);
-                    table.Append(tr);
-                }
+        //            tc2.Append(p1);
+        //            tr.Append(tc1, tc2);
+        //            table.Append(tr);
+        //        }
 
-                if (bookmark != null)
-                {
-                    var parent = bookmark.Parent;
-                    parent.InsertAfterSelf(table);
-                }
-                document.Close();
-            }
-        }
+        //        if (bookmark != null)
+        //        {
+        //            var parent = bookmark.Parent;
+        //            parent.InsertAfterSelf(table);
+        //        }
+        //        document.Close();
+        //    }
+        //}
 
         public string DateStringBuilderEducation(DateTime fromDate, DateTime toDate)
         {
