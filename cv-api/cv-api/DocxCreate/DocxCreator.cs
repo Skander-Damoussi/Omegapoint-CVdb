@@ -1,5 +1,6 @@
 ﻿using cv_api.Areas.Identity.Data;
 using cv_api.Models;
+using cv_api.Models.Docx;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
@@ -18,6 +19,7 @@ namespace cv_api.DocxCreate
         private List<Assignment> Assignments = new List<Assignment>();
         private List<Assignment> Educations = new List<Assignment>();
         private List<string> Techniques = new List<string>();
+        private List<Language> Languages = new List<Language>();
 
         public async Task CreateDocx(MemoryStream memoryStream, ApplicationUser user)
         {
@@ -66,14 +68,13 @@ namespace cv_api.DocxCreate
                                     .ThenBy(x => x.StartDate)
                                     .ToList();
 
+            //Tillfällig
             Educations = Assignments.Select(x => x).Where(x=> x.Role=="Student").ToList();
-            //foreach (var item in Assignments)
-            //{
-            //    if (item.Role == "Student")
-            //    {
-            //        Educations.Add(item);
-            //    }
-            //}
+
+            Languages.Add(new Language { Title = "Svenska", Level = "Modersmål" });
+            Languages.Add(new Language { Title = "Tyska", Level = "Grundläggande" });
+            Languages.Add(new Language { Title = "Engelska", Level = "Flytande" });
+
         }
 
         public DateTime CreateDateTime(string date)
@@ -461,7 +462,7 @@ namespace cv_api.DocxCreate
 
                 tcp.Append(shading);
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < Languages.Count; i++)
                 {
                     //Clone shading
                     var useTcp1 = tcp.CloneNode(true);
@@ -471,32 +472,21 @@ namespace cv_api.DocxCreate
                     var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "7500" }));
                     var tc2 = new TableCell();
 
-                    //Språk, nivå, varannan
-                    string language = "";
-                    string level = "";
-                    //Tillfällig, data
                     if (i % 2 == 0)
                     {
-                        //Workaround för shading
+                        //shading
                         tc1.Append(useTcp1);
                         tc2.Append(useTcp2);
-                        language = "Svenska";
-                        level = "Modersmål";
-                    }
-                    else
-                    {
-                        language = "Engelska";
-                        level = "Flytande";
                     }
 
-                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(language))));
+                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Title))));
 
                     Paragraph p1 = new Paragraph();
                     ParagraphProperties paraProperties = new ParagraphProperties();
                     Justification justification = new Justification() { Val = JustificationValues.Right };
                     paraProperties.Append(justification);
                     p1.Append(paraProperties);
-                    p1.Append(new Run(FontStyle("Calibri", 11), new Text(level)));
+                    p1.Append(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Level)));
 
                     tc2.Append(p1);
 
