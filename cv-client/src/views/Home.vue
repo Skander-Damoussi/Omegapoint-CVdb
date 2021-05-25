@@ -134,31 +134,34 @@ export default {
           this.errorVerify = true;
         }
       } else {
-        var sUser = this.$store.getters.getLoggedInUser;
-        switch (sUser.role) {
-          case "Admin":
-            this.$router.push("/admin");
-            break;
-          case "Konsultchef":
-            this.$router.push("/consultantmanager");
-            break;
-          case "Konsult":
-            this.$router.push("/consultant");
-            break;
-          default:
-        }
+        this.navigateTo();
+      }
+    },
+    navigateTo() {
+      var sUser = this.$store.getters.getLoggedInUser;
+      switch (sUser.role) {
+        case "Admin":
+          this.$router.push("/admin");
+          break;
+        case "Konsultchef":
+          this.$router.push("/consultantmanager");
+          break;
+        case "Konsult":
+          this.$router.push("/consultant");
+          break;
+        default:
       }
     },
     checkForm() {
       this.emailField = this.$v.email.required;
       this.passwordField = this.$v.password.required;
-    },
+    }
   },
   created() {
     if (this.$store.getters.getLoggedIn) {
-      this.login();
+      this.navigateTo();
     }
-  },
+  }
 };
 </script>
 
