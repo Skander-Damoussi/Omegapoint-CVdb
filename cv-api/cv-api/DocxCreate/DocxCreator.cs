@@ -68,7 +68,7 @@ namespace cv_api.DocxCreate
 
         public DateTime CreateDateTime(string date)
         {
-            DateTime dateTime= dateTime = new DateTime(9999, 01, 01);
+            DateTime dateTime = new DateTime(9999, 01, 01);
             string [] dateSplit;
 
             if (date != null)
@@ -513,11 +513,11 @@ namespace cv_api.DocxCreate
             {
                 dateString = fromDate.ToString("MMMM yyyy") + " - pågående";
             }
-            else if (fromDate.Year == 0001 && toDate.Year == 0001)
+            else if (fromDate.Year == 9999 && toDate.Year == 9999)
             {
                 dateString = "N/A" + " - pågående";
             }
-            else if (fromDate.Year == 0001)
+            else if (fromDate.Year == 9999)
             {
                 dateString = "N/A" + " - " + toDate.ToString("MMMM yyyy");
             }
