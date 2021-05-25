@@ -143,29 +143,21 @@ namespace cv_api.Controllers
 
                 if (cv.FileByte != null)
                 {
-                    //Memorystream, byte array, make memorystream resizeable
                     using MemoryStream memoryStream = new MemoryStream(0);
                     {
-
                         memoryStream.Write(cv.FileByte, 0, cv.FileByte.Length);
                         //cv.CopyTo(memoryStream);
                         await docxCreate.CreateDocx(memoryStream, user);
                         cv.FileByte = memoryStream.ToArray();
-
                     }
 
                     using (var net = new System.Net.WebClient())
-                    {
-                        //Problem med return Ok()
-                        
-
+                    {                    
                         return new FileContentResult(cv.FileByte, "application/docx")
                         {
                             FileDownloadName = DateTime.Now.ToString() + ".docx"
                         };
-                        //return Ok(returnfile);
-                    }
-                    
+                    }                    
                 }
 
                 else

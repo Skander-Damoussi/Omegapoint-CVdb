@@ -25,14 +25,11 @@ namespace cv_api.DocxCreate
         {
             await BuildData(user);
             await ReplaceFields(memoryStream, user.CV);
-
             await AddTechniques(memoryStream, "techniques");
-            await AddAssignments(memoryStream, "assignments", user);
-            await AddLanguage(memoryStream, "language");
-            await AddEducation(memoryStream, "education");
+            await AddAssignments(memoryStream, "assignments");
+            //await AddLanguage(memoryStream, "language");
+            //await AddEducation(memoryStream, "education");
             await ReplaceInternalImage(memoryStream, "profilePicture", user.CV.consult_picture);
-
-
         }
 
         public async Task BuildData(ApplicationUser user)
@@ -47,7 +44,7 @@ namespace cv_api.DocxCreate
 
                 foreach (var experience in user.Experiences)
                 {
-                    if(assignment.Id==experience.id)
+                    if (assignment.Id == experience.id)
                     {
                         assignment.Title = experience.Title;
                         assignment.StartDate = CreateDateTime(experience.StartDate);
@@ -60,38 +57,30 @@ namespace cv_api.DocxCreate
 
                         Techniques.AddRange(experience.Language.Where(x => !Techniques.Any(y => y == x)));
                         Techniques.AddRange(experience.Software.Where(x => !Techniques.Any(y => y == x)));
-                    }                    
+                    }
                 }
                 Assignments.Add(assignment);
             }
             Assignments = Assignments.OrderBy(x => x.EndDate)
                                     .ThenBy(x => x.StartDate)
                                     .ToList();
-
-            //Tillfällig
-            Educations = Assignments.Select(x => x).Where(x=> x.Role=="Student").ToList();
-
-            Languages.Add(new Language { Title = "Svenska", Level = "Modersmål" });
-            Languages.Add(new Language { Title = "Tyska", Level = "Grundläggande" });
-            Languages.Add(new Language { Title = "Engelska", Level = "Flytande" });
-
         }
 
         public DateTime CreateDateTime(string date)
         {
             DateTime dateTime = new DateTime(9999, 01, 01);
-            string [] dateSplit;
+            string[] dateSplit;
 
             if (date != null)
             {
-                dateSplit=date.Split("-");
                 try
                 {
+                    dateSplit = date.Split("-");
                     dateTime = new DateTime(int.Parse(dateSplit[0]), int.Parse(dateSplit[1]), int.Parse(dateSplit[2]));
                 }
                 catch (Exception ex)
-                { 
-                
+                {
+
                 }
             }
 
@@ -113,7 +102,6 @@ namespace cv_api.DocxCreate
 
         public async Task ReplaceTextBookmarks(MemoryStream memoryStream, string bookmarkName, string input)
         {
-            
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {
                 var mainPart = document.MainDocumentPart;
@@ -186,7 +174,7 @@ namespace cv_api.DocxCreate
                         bookmark.Parent.InsertAfterSelf(p);
                     }
                 }
-                
+
             }
         }
 
@@ -250,7 +238,7 @@ namespace cv_api.DocxCreate
 
                             if (bookmarkText != null)
                             {
-                                bookmarkText.GetFirstChild<Text>().Text = Techniques[i];                                
+                                bookmarkText.GetFirstChild<Text>().Text = Techniques[i];
                             }
                         }
                     }
@@ -287,20 +275,14 @@ namespace cv_api.DocxCreate
             }
         }
 
-        public async Task AddAssignments(MemoryStream memoryStream, string bookmarkName, ApplicationUser user)
+        public async Task AddAssignments(MemoryStream memoryStream, string bookmarkName)
         {
-            await AddTable(memoryStream, bookmarkName, user);
-        }
-
-        public async Task AddTable(MemoryStream memoryStream, string bookmarkName, ApplicationUser user)
-        {   
-            
             for (int i = 0; i < Assignments.Count; i++)
-            {            
-                string techniques="";
+            {
+                string techniques = "";
                 for (int y = 0; y < Assignments[i].Experiences.Count; y++)
                 {
-                    if (y==Assignments[i].Experiences.Count-1)
+                    if (y == Assignments[i].Experiences.Count - 1)
                     {
                         techniques += Assignments[i].Experiences[y];
                     }
@@ -310,59 +292,56 @@ namespace cv_api.DocxCreate
                     }
                 }
 
-                    using (var document = WordprocessingDocument.Open(memoryStream, true))
+                using (var document = WordprocessingDocument.Open(memoryStream, true))
+                {
+                    var doc = document.MainDocumentPart.Document;
+                    //Create table
+                    Table table = new Table();
+                    //Create row, CantSplit row between pages
+                    var tr = new TableRow(new TableRowProperties(new CantSplit()));
+                    //Create tc
+                    var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2150" }));
+                    var tc2 = new TableCell();
+
+                    //Append data-para-run to tc, use FontStyle method (Font,Style,bool)
+                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Assignments[i].Title))));
+                    tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text(DateStringBuilder(Assignments[i].StartDate, Assignments[i].EndDate)))));
+                    //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Location"))));
+                    tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 13, true), new Text(Assignments[i].Role))));
+                    tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Assignments[i].Description))));
+
+                    //Create Paragraph, Run
+                    var p = new Paragraph();
+                    var r = new Run(FontStyle("Calibri", 13, true));
+                    //Text color
+                    var rp = new RunProperties();
+                    Color c = new Color();
+                    c.Val = "777777";
+                    rp.Append(c);
+                    r.Append(rp);
+
+                    r.Append(new Text(techniques));
+                    p.Append(r);
+                    tc2.Append(p);
+
+                    //Append tc to tr
+                    tr.Append(tc1, tc2);
+                    //Append tr to table
+                    table.Append(tr);
+
+                    var mainPart = document.MainDocumentPart;
+                    var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
+                              where bm.Name == bookmarkName
+                              select bm;
+                    var bookmark = res.SingleOrDefault();
+
+                    if (bookmark != null)
                     {
-                        var doc = document.MainDocumentPart.Document;
-
-                        //Create table
-                        Table table = new Table();
-                        //Create row, CantSplit row between pages
-                        var tr = new TableRow(new TableRowProperties(new CantSplit()));
-                        //Create tc
-                        var tc1 = new TableCell(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2150" }));
-                        var tc2 = new TableCell();
-
-                        //Append data-para-run to tc, use FontStyle method (Font,Style,bool)
-                        tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 11, true), new Text(Assignments[i].Title))));
-                        tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text(DateStringBuilder(Assignments[i].StartDate, Assignments[i].EndDate)))));
-                        //tc1.Append(new Paragraph(new Run(FontStyle("Calibri", 9), new Text("Location"))));
-                        tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 13, true), new Text(Assignments[i].Role))));
-                        tc2.Append(new Paragraph(new Run(FontStyle("Calibri", 11), new Text(Assignments[i].Description))));
-
-                        //Create Paragraph, Run
-                        var p = new Paragraph();
-                        var r = new Run(FontStyle("Calibri", 13, true));
-                        //Text color
-                        var rp = new RunProperties();
-                        Color c = new Color();
-                        c.Val = "777777";
-                        rp.Append(c);
-                        r.Append(rp);
-
-                        r.Append(new Text(techniques));
-                        p.Append(r);
-                        tc2.Append(p);
-
-                        //Append tc to tr
-                        tr.Append(tc1, tc2);
-                        //Append tr to table
-                        table.Append(tr);
-
-                        var mainPart = document.MainDocumentPart;
-                        var res = from bm in mainPart.Document.Body.Descendants<BookmarkStart>()
-                                  where bm.Name == bookmarkName
-                                  select bm;
-                        var bookmark = res.SingleOrDefault();
-
-                        if (bookmark != null)
-                        {
-                            var parent = bookmark.Parent;
-                            parent.InsertAfterSelf(table);
-                        }
-
-                        document.Close();
+                        var parent = bookmark.Parent;
+                        parent.InsertAfterSelf(table);
                     }
-                
+                    document.Close();
+                }
             }
         }
         public async Task AddEducation(MemoryStream memoryStream, string bookmarkName)
@@ -385,9 +364,9 @@ namespace cv_api.DocxCreate
                 Shading shading = new Shading() { Color = "auto", Fill = "F7F7F7", Val = ShadingPatternValues.Clear };
                 tcp.Append(shading);
 
-                int bgcCount=0;
+                int bgcCount = 0;
                 //Loopa backwards
-                for (int i = Educations.Count-1; i >= 0; i--)
+                for (int i = Educations.Count - 1; i >= 0; i--)
                 {
                     //Clone, reuse shading
                     var useTcp1 = tcp.CloneNode(true);
@@ -421,9 +400,7 @@ namespace cv_api.DocxCreate
                     }
 
                     tc2.Append(p1);
-
                     tr.Append(tc1, tc2);
-
                     table.Append(tr);
 
                     bgcCount++;
@@ -442,7 +419,7 @@ namespace cv_api.DocxCreate
 
         public async Task AddLanguage(MemoryStream memoryStream, string bookmarkName)
         {
-   
+
             using (var document = WordprocessingDocument.Open(memoryStream, true))
             {
                 var doc = document.MainDocumentPart.Document;
@@ -489,19 +466,15 @@ namespace cv_api.DocxCreate
                     p1.Append(new Run(FontStyle("Calibri", 11), new Text(Languages[i].Level)));
 
                     tc2.Append(p1);
-
                     tr.Append(tc1, tc2);
-
                     table.Append(tr);
                 }
 
                 if (bookmark != null)
                 {
                     var parent = bookmark.Parent;
-
                     parent.InsertAfterSelf(table);
                 }
-
                 document.Close();
             }
         }
