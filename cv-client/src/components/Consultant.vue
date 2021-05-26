@@ -51,7 +51,11 @@
           </table>
         </div>
       </div>
-      <div class="row icon-clickHome" v-on:click="goManagerHome">
+      <div
+        v-if="this.$store.getters.getLoggedInUser.role != 'Konsult'"
+        class="row icon-clickHome"
+        v-on:click="goManagerHome"
+      >
         <i class="btn fas fa-home fa-2x" title="Hem"></i>
         <p class="marginleftIcon marginright">Hem</p>
       </div>
@@ -434,141 +438,137 @@
         </div>
       </div>
       <div class="wrapperPdfbox mainwrapper">
-        <div class="row centerrow">
-          <div @click="page--">
-            <i class="fas fa-arrow-left icon-click-next"></i>
-          </div>
-          <p>Sida {{ this.page }}</p>
-          <div @click="page++">
-            <i class="fas fa-arrow-right icon-click-next"></i>
-          </div>
-        </div>
-        <div id="pdfBox">
-          <div v-if="page === 1" id="pdf" ref="document">
-            <div class="row">
-              <img :src="company_logo" alt="" height="53px" class="logo" />
-              <div class="contactdiv">
-                <p class="contact contactTitel">{{ this.company_name }}</p>
-                <p class="contact">{{ this.contact_phoneNumber }}</p>
-                <p class="contact">{{ this.contact_website }}</p>
-                <p class="contact">{{ this.contact_email }}</p>
+        <div ref="pdfprint">
+          <div id="pdfBox">
+            <div id="pdf" class="pdfpage" ref="document">
+              <div class="row">
+                <img :src="company_logo" alt="" height="53px" class="logo" />
+                <div class="contactdiv">
+                  <p class="contact contactTitel">{{ this.company_name }}</p>
+                  <p class="contact">{{ this.contact_phoneNumber }}</p>
+                  <p class="contact">{{ this.contact_website }}</p>
+                  <p class="contact">{{ this.contact_email }}</p>
+                </div>
               </div>
-            </div>
 
-            <div class="row">
-              <img
-                :src="consult_picture"
-                height="200px"
-                alt=""
-                v-if="consult_picture"
-                class="selfie"
-              />
-              <div class="cvTitelDiv">
-                <h1 class="cvTitel">{{ consult_name }}</h1>
-                <p class="cvTitelRoll">{{ consult_role }}</p>
+              <div class="row">
+                <img
+                  :src="consult_picture"
+                  height="200px"
+                  alt=""
+                  v-if="consult_picture"
+                  class="selfie"
+                />
+                <div class="cvTitelDiv">
+                  <h1 class="cvTitel">{{ consult_name }}</h1>
+                  <p class="cvTitelRoll">{{ consult_role }}</p>
+                </div>
               </div>
-            </div>
-            <div class="introstycke">
-              <p
-                class="stycke"
-                v-for="(text, index) in consult_presentations"
-                :key="index"
-              >
-                {{ text }}
-              </p>
-            </div>
-            <div v-if="consult_experience_focus.length != 0" class="fokusBox">
-              <h2 class="fokusTitel">Uppdrag i fokus</h2>
-              <div>
-                <h3 class="fokusRoll justify-left">
-                  {{ consult_experience_focus_role }}
-                </h3>
+              <div class="introstycke">
                 <p
-                  v-if="consult_experience_focus.endDate === ''"
-                  class="fokusFöretag"
+                  class="stycke"
+                  v-for="(text, index) in consult_presentations"
+                  :key="index"
                 >
-                  {{ consult_experience_focus_title }}
-                  <span class="smallText"
-                    >{{ consult_experience_focus.startDate }} - Pågående</span
-                  >
-                </p>
-                <p v-else class="fokusFöretag">
-                  {{ consult_experience_focus_title }}
-                  <span class="smallText">
-                    {{ consult_experience_focus.startDate }} -
-                    {{ consult_experience_focus.endDate }}
-                  </span>
-                </p>
-                <p class="stycke förstaStycke">
-                  {{ consult_experience_focus_description }}
+                  {{ text }}
                 </p>
               </div>
-            </div>
-            <div
-              v-if="sale_name !== null && sale_name !== ''"
-              class="contactFooterBox"
-            >
-              <h3 class="contactFooterTitel">Säljkontakt</h3>
-              <p class="contactFooterText">{{ sale_name }}</p>
-              <p class="contactFooterText">{{ sale_email }}</p>
-              <p class="contactFooterText">{{ sale_phone }}</p>
-            </div>
-            <div v-if="company_name !== null" class="footer">
-              <p class="bottomMidText">
-                {{ company_name }}
-                <span v-if="consult_name !== null && consult_name !== ''"
-                  >-</span
-                >
-                {{ consult_name }}
-              </p>
-            </div>
-          </div>
-          <div v-if="page === 2" id="pdf" ref="document">
-            <h3
-              v-if="consult_experience_other_list.length > 0"
-              class="tidigareTitel justify-left"
-            >
-              Tidigare projekt och uppdrag
-            </h3>
-            <div
-              class="blobspace"
-              v-for="(obj, index) in consult_experience_other_list"
-              :key="index"
-            >
-              <div v-if="getInfoByID('checked', obj.id)" class="row">
-                <div class="leftbox">
-                  <h4>{{ getInfoByID("title", obj.id) }}</h4>
+              <div v-if="consult_experience_focus.length != 0" class="fokusBox">
+                <h2 class="fokusTitel">Uppdrag i fokus</h2>
+                <div>
+                  <h3 class="fokusRoll justify-left">
+                    {{ consult_experience_focus_role }}
+                  </h3>
                   <p
-                    v-if="getInfoByID('endDate', obj.id) === ''"
-                    class="lightText"
+                    v-if="consult_experience_focus.endDate === ''"
+                    class="fokusFöretag"
                   >
-                    {{ getInfoByID("startDate", obj.id) }} - Pågående
+                    {{ consult_experience_focus_title }}
+                    <span class="smallText"
+                      >{{ consult_experience_focus.startDate }} - Pågående</span
+                    >
                   </p>
-                  <p v-else class="lightText">
-                    {{ getInfoByID("startDate", obj.id) }} -
-                    {{ getInfoByID("endDate", obj.id) }}
+                  <p v-else class="fokusFöretag">
+                    {{ consult_experience_focus_title }}
+                    <span class="smallText">
+                      {{ consult_experience_focus.startDate }} -
+                      {{ consult_experience_focus.endDate }}
+                    </span>
+                  </p>
+                  <p class="stycke förstaStycke">
+                    {{ consult_experience_focus_description }}
                   </p>
                 </div>
-                <div class="rightbox">
-                  <h3 class="justify-left">{{ obj.role }}</h3>
-                  <p class="lighterBreadText">
-                    {{ obj.description }}
-                  </p>
-                  <div class="row blobspace">
+              </div>
+              <div
+                v-if="sale_name !== null && sale_name !== ''"
+                class="contactFooterBox"
+              >
+                <h3 class="contactFooterTitel">Säljkontakt</h3>
+                <p class="contactFooterText">{{ sale_name }}</p>
+                <p class="contactFooterText">{{ sale_email }}</p>
+                <p class="contactFooterText">{{ sale_phone }}</p>
+              </div>
+              <div v-if="company_name !== null" class="footer">
+                <p class="bottomMidText">
+                  {{ company_name }}
+                  <span v-if="consult_name !== null && consult_name !== ''"
+                    >-</span
+                  >
+                  {{ consult_name }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="html2pdf__page-break"></div>
+          <div id="pdfBox">
+            <div id="pdf" class="pdfpage" ref="document">
+              <h3
+                v-if="consult_experience_other_list.length > 0"
+                class="tidigareTitel justify-left"
+              >
+                Tidigare projekt och uppdrag
+              </h3>
+              <div
+                class="blobspace"
+                v-for="(obj, index) in consult_experience_other_list"
+                :key="index"
+              >
+                <div v-if="getInfoByID('checked', obj.id)" class="row">
+                  <div class="leftbox">
+                    <h4>{{ getInfoByID("title", obj.id) }}</h4>
                     <p
-                      class="blob"
-                      v-for="blob in getInfoByID('software', obj.id)"
-                      :key="blob"
+                      v-if="getInfoByID('endDate', obj.id) === ''"
+                      class="lightText"
                     >
-                      {{ blob }}
+                      {{ getInfoByID("startDate", obj.id) }} - Pågående
                     </p>
-                    <p
-                      class="blob"
-                      v-for="blob in getInfoByID('language', obj.id)"
-                      :key="blob"
-                    >
-                      {{ blob }}
+                    <p v-else class="lightText">
+                      {{ getInfoByID("startDate", obj.id) }} -
+                      {{ getInfoByID("endDate", obj.id) }}
                     </p>
+                  </div>
+                  <div class="rightbox">
+                    <h3 class="justify-left">{{ obj.role }}</h3>
+                    <p class="lighterBreadText">
+                      {{ obj.description }}
+                    </p>
+                    <div class="row blobspace">
+                      <p
+                        class="blob"
+                        v-for="blob in getInfoByID('software', obj.id)"
+                        :key="blob"
+                      >
+                        {{ blob }}
+                      </p>
+                      <p
+                        class="blob"
+                        v-for="blob in getInfoByID('language', obj.id)"
+                        :key="blob"
+                      >
+                        {{ blob }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -865,8 +865,8 @@ export default {
       });
     },
     exportToPDF() {
-      html2pdf(this.$refs.document, {
-        margin: [0, 0, 0, 0],
+      html2pdf(this.$refs.pdfprint, {
+        margin: [0, -20, 0, 0],
         filename: "document.pdf",
         image: { type: "jpeg", quality: 1 },
         html2canvas: { dpi: 192, letterRendering: true },
@@ -930,7 +930,7 @@ div {
 
 #pdf {
   width: 210mm;
-  height: 297mm;
+  height: 295mm;
   margin-right: auto;
   margin-left: auto;
   padding-left: 40px;
@@ -943,8 +943,6 @@ div {
   margin-right: auto;
   margin-left: auto;
   width: 250mm;
-  border-style: solid;
-  border-width: 1px;
   position: relative;
 }
 
@@ -1124,11 +1122,15 @@ div {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: auto;
+  position: sticky;
+  top: 50px;
 }
 
 .wrapperPdfbox {
   margin-left: auto;
   margin-right: auto;
+  border-style: solid;
+  border-width: 1px;
 }
 
 .tablewrapper {
