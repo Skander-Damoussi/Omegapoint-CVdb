@@ -55,7 +55,7 @@
     </div>
     <Modal v-show="isModalVisible" @close="cancel()">
       <template v-slot:header>
-        Avaktivering av användare
+        Hantera användare
       </template>
 
       <template v-slot:body>

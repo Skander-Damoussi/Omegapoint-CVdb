@@ -54,7 +54,7 @@
         <div class="container" id="container" v-if="col.show">
           <div class="rownomargin">
             <h3 v-if="col.language.length > 0">
-              Programeringsspråk & tekniker
+              Programmeringsspråk & tekniker
             </h3>
             <div class="stickright">
               <div
