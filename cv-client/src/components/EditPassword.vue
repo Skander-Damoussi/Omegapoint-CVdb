@@ -49,7 +49,7 @@
       </section>
       <section>
         <button @click.prevent="submitForm" class="submit bttn">Ändra</button>
-        <p v-if="errors || (empty && state === 'submit clicked')" class="error">
+        <p v-if="errors && state === 'submit clicked'" class="error">
           Fyll i fälten för att byta lösenord.
         </p>
       </section>
@@ -102,10 +102,9 @@ export default {
   methods: {
     async submitForm() {
       this.status = "";
-      this.empty = !this.$v.formResponses.$anyDirty;
       this.errors = this.$v.formResponses.$anyError;
       this.state = "submit clicked";
-      if (this.errors === false && this.empty === false) {
+      if (!this.$v.$invalid) {
         var updatePassword = {
           id: this.user.id,
           currentPassword: this.formResponses.currentPassword,
@@ -117,6 +116,8 @@ export default {
         if (this.status == 200) {
           this.status = "Lösenord ändrat.";
         }
+      } else {
+        this.errors = true;
       }
     }
   }
